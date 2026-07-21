@@ -1,42 +1,42 @@
-# 🌐 Conexión y Consumo de Servicios Web REST API (Backend Laravel 11 & Cliente Web JS)
+# 🌐 Conexión del Frontend Web a la REST API Backend (Sistema de Gestión de Citas Médicas)
 
 ## 🎯 Objetivo
-Aprenderás a construir servicios web seguros y desacoplados utilizando la arquitectura **Repository-Controller-Request (Estilo Proyectu3)** en Laravel 11, y a consumirlos desde un cliente o panel web mediante JavaScript moderno (`Fetch API` / `async-await`) enviando encabezados de autenticación con **Laravel Sanctum**.
+Guiaremos paso a paso cómo conectar una interfaz web (Frontend HTML/JS) al **Backend REST API en Laravel 11 ya terminado**. Aprenderás a estructurar un cliente HTTP, manejar autenticación por Tokens Bearer con **Laravel Sanctum**, consumir endpoints de especialidades, doctores y disponibilidad, y renderizar datos en vivo en el DOM sin recargar la página.
 
 ---
 
 ## 🧠 Conceptos clave
 
-- **Servicio Web REST API** — *Como la ventanilla única de atención al cliente de un banco:* Una interfaz estandarizada que recibe solicitudes HTTP desde cualquier cliente (panel web, app móvil, sistema externo) y devuelve respuestas estructuradas en formato JSON.
-- **Patrón Repositorio (Repository Pattern)** — *Como el encargado de un almacén:* La capa intermedia encargada exclusivamente de buscar, guardar o eliminar datos en la base de datos. Evita que el gerente (Controlador) tenga que ir personalmente a mover cajas.
-- **Inyección de Dependencias** — *Como entregarle las herramientas de trabajo a un técnico en su mano:* En lugar de que el controlador cree su propio repositorio desde cero con `new`, el framework Laravel se lo entrega listo en el constructor.
-- **Form Request (Capa de Validación)** — *Como el oficial de seguridad en la entrada:* Revisa que la petición contenga todos los campos obligatorios y con el formato correcto antes de permitirle llegar al controlador. Si falla, rebota la petición de inmediato con un código HTTP 422.
-- **Sanctum Bearer Token** — *Como un brazalete VIP de acceso a un evento:* Una clave criptográfica enviada en la cabecera HTTP de cada petición que le demuestra al servidor quién eres sin necesidad de ingresar tu usuario y contraseña repetidamente.
+- **Cliente HTTP Centralizado (Fetch API Helper)** — *Como el embajador diplomático de la aplicación:* Un módulo central en JavaScript que se encarga de enviar todas las peticiones a la API, adjuntando automáticamente las cabeceras de autorización y el formato JSON en cada mensaje.
+- **Token Bearer & localStorage** — *Como la credencial VIP del club:* Cuando el backend responde al login con un token Sanctum, el navegador lo almacena en `localStorage` para presentarlo en cada petición posterior sin pedir la contraseña de nuevo.
+- **Flujo de Peticiones Asíncronas (Async / Await)** — *Como pedir turno en la recepción y esperar cómodamente:* Te permite solicitar información al servidor y continuar respondiendo a eventos de la interfaz sin congelar o congelar la pantalla mientras llega la respuesta.
+- **Manejo de Respuestas HTTP (200, 401, 403, 422, 500)** — *Como los semáforos en la vía pública:* Indicadores que informan al frontend si la petición fue exitosa (`200`), si la sesión expiró (`401`), si no tiene permisos de rol (`403`), si fallaron las validaciones de entrada (`422`) o si ocurrió un error en el servidor (`500`).
+- **Renderizado Dinámico del DOM** — *Como la pantalla interactiva de llegadas en un aeropuerto:* Toma la respuesta en JSON del servidor y actualiza únicamente la tabla o tarjeta de citas en la pantalla sin necesidad de refrescar toda la página web.
 
 ---
 
 ## 🗺️ Mapa del proyecto
 
-Estructura de archivos backend y cliente web bajo la arquitectura `Proyectu3` en Laravel 11:
+Estructura del cliente Web Frontend y su conexión con la API REST existente en Laravel 11:
 
 ```
 sistema-de-gestion-de-citas-medicas/
-├── app/
-│   ├── Http/
-│   │   ├── Controllers/
-│   │   │   └── CitasController.php        <-- Controlador REST (Inyecta el Repositorio)
-│   │   ├── Repository/
-│   │   │   └── CitasRepository.php       <-- Consultas Eloquent y Lógica de BD
-│   │   └── Requests/
-│   │       └── StoreCitaRequest.php      <-- Validación de entrada con HTTP 422
-│   └── Models/
-│       └── Cita.php                      <-- Modelo Eloquent ($table y $fillable)
-├── routes/
-│   └── api.php                           <-- Definición de endpoints REST y Sanctum
-└── public/
-    ├── js/
-    │   └── citas-api.js                  <-- Cliente JavaScript (Fetch API + async/await)
-    └── index.html                        <-- Interfaz de usuario web
+├── public/                               <-- Raíz del servidor web / cliente frontend
+│   ├── css/
+│   │   └── dashboard.css                <-- Estilos visuales del cliente web
+│   ├── js/
+│   │   ├── api/
+│   │   │   ├── config.js                <-- Configuración global y Helper Fetch API
+│   │   │   ├── auth-service.js          <-- Conexión a /api/auth/* (Login, Perfil, Logout)
+│   │   │   ├── doctores-service.js      <-- Conexión a /api/obtenerEspecialidades y Doctores
+│   │   │   └── citas-service.js         <-- Conexión a /api/misCitas, agendar y cancelar
+│   │   └── ui/
+│   │       ├── login-view.js            <-- Manejo del formulario de Login en pantalla
+│   │       └── dashboard-view.js        <-- Manejo de catálogo de citas y eventos en DOM
+│   ├── login.html                       <-- Pantalla de inicio de sesión
+│   └── dashboard.html                   <-- Panel principal de citas médicas
+└── routes/
+    └── api.php                           <-- Backend Laravel 11 (Endpoints ya existentes)
 ```
 
 ---
@@ -45,426 +45,436 @@ sistema-de-gestion-de-citas-medicas/
 
 ---
 
-### Paso 1: Definir el Modelo Eloquent (`Cita.php`)
+### Paso 1: Crear el Helper de Peticiones HTTP (`js/api/config.js`)
 
 **🤔 ¿Por qué este paso?**
-El modelo representa la tabla de la base de datos en código orientado a objetos. En Laravel, especificar `$table` y la propiedad `$fillable` protege a tu base de datos contra vulnerabilidades de asignación masiva (*Mass Assignment Vulnerability*).
+El backend en Laravel exige que todas las peticiones lleven las cabeceras `'Content-Type': 'application/json'` y `'Accept': 'application/json'`. Además, los endpoints protegidos requieren enviar el Token Bearer almacenado. Crear un helper centralizado evita duplicar este código en cada llamada y gestiona automáticamente la expiración de sesión (HTTP 401).
 
 **🛠️ ¿Cómo?**
-Crea el archivo `app/Models/Cita.php` importando `HasFactory` e indicando los campos permitidos para inserción.
-
-**Código de referencia:**
-
-```php
-<?php
-
-namespace App\Models;
-
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-
-class Cita extends Model
-{
-    use HasFactory;
-
-    // Definición explícita de la tabla en la base de datos MySQL
-    protected $table = 'citas';
-
-    // Lista blanca de campos que se pueden registrar de forma masiva
-    protected $fillable = [
-        'paciente_id',
-        'doctor_id',
-        'especialidad_id',
-        'fecha_hora',
-        'estado',
-        'motivo_consulta'
-    ];
-}
-```
-
-> 💡 **Qué hace este fragmento:** Define el mapeo de la entidad Cita hacia la tabla `citas` especificando explícitamente qué columnas se pueden escribir desde la aplicación.
-
-> ⚠️ **Error común:** Olvidar declarar la propiedad `$fillable`. Si intentas guardar un registro masivo con `Cita::create()`, Laravel lanzará una excepción `MassAssignmentException`.
-
----
-
-### Paso 2: Crear la Capa de Validación `StoreCitaRequest.php`
-
-**🤔 ¿Por qué este paso?**
-Los controladores no deben lidiar con lógica de validación de entradas. Un `Form Request` aísla las reglas de negocio y, si la validación falla, sobrescribimos `failedValidation()` para garantizar que el servicio web responda con formato JSON estandarizado y código HTTP 422.
-
-**🛠️ ¿Cómo?**
-Crea `app/Http/Requests/StoreCitaRequest.php` definiendo las reglas en `rules()` y personalizando la respuesta de error en `failedValidation()`.
-
-**Código de referencia:**
-
-```php
-<?php
-
-namespace App\Http\Requests;
-
-use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Http\Exceptions\HttpResponseException;
-
-class StoreCitaRequest extends FormRequest
-{
-    public function authorize(): bool
-    {
-        return true; // Permitir que la petición pase a la fase de validación
-    }
-
-    public function rules(): array
-    {
-        return [
-            'doctor_id'       => 'required|exists:doctores,id',
-            'especialidad_id' => 'required|exists:especialidades,id',
-            'fecha_hora'      => 'required|date|after:now',
-            'motivo_consulta' => 'required|string|max:255',
-        ];
-    }
-
-    public function messages(): array
-    {
-        return [
-            'doctor_id.required'       => 'El médico es obligatorio.',
-            'fecha_hora.after'         => 'La cita debe agendarse para una fecha posterior a la actual.',
-            'motivo_consulta.required' => 'Debe ingresar el motivo de la consulta.'
-        ];
-    }
-
-    // Sobrescribir respuesta de falla para devolver formato JSON 422 estandarizado
-    protected function failedValidation(Validator $validator)
-    {
-        throw new HttpResponseException(response()->json([
-            "msj"    => "Error de validacion",
-            "errors" => $validator->errors()
-        ], 422));
-    }
-}
-```
-
-> 💡 **Qué hace este fragmento:** Valida los datos recibidos antes de tocar el controlador y, en caso de error, responde inmediatamente con un JSON estructurado de estado 422.
-
-> ⚠️ **Error común:** No sobrescribir `failedValidation()`. Si no lo haces, Laravel redirigirá la petición como si fuera un formulario HTML tradicional en lugar de responder un JSON.
-
----
-
-### Paso 3: Construir el Repositorio de Datos (`CitasRepository.php`)
-
-**🤔 ¿Por qué este paso?**
-La regla de oro de la arquitectura `Proyectu3` prohíbe invocar Eloquent en los controladores. Toda la interacción con MySQL se concentra en esta capa utilizando métodos nombrados en español (`obtener...`, `registrar...`, `cancelar...`) envueltos en bloques `try-catch`.
-
-**🛠️ ¿Cómo?**
-Crea `app/Http/Repository/CitasRepository.php` asegurando que pertenece al namespace `App\Http\Repository`.
-
-**Código de referencia:**
-
-```php
-<?php
-
-namespace App\Http\Repository;
-
-use App\Models\Cita;
-use Exception;
-
-class CitasRepository
-{
-    // Obtener todas las citas registradas en el sistema
-    public function obtenerCitas()
-    {
-        try {
-            $citas = Cita::with(['paciente', 'doctor', 'especialidad'])->get();
-            return [
-                "mensaje" => "Citas obtenidas correctamente",
-                "data"    => $citas
-            ];
-        } catch (Exception $e) {
-            return ["mensaje" => $e->getMessage()];
-        }
-    }
-
-    // Registrar una nueva cita médica en la BD
-    public function registrarCita(array $data)
-    {
-        try {
-            $cita = Cita::create([
-                "paciente_id"     => $data["paciente_id"],
-                "doctor_id"       => $data["doctor_id"],
-                "especialidad_id" => $data["especialidad_id"],
-                "fecha_hora"      => $data["fecha_hora"],
-                "estado"          => 'pendiente',
-                "motivo_consulta" => $data["motivo_consulta"],
-            ]);
-
-            return [
-                "mensaje" => "Cita registrada correctamente",
-                "data"    => $cita
-            ];
-        } catch (Exception $e) {
-            return ["mensaje" => $e->getMessage()];
-        }
-    }
-
-    // Cancelar cita por ID
-    public function cancelarCita(int $id)
-    {
-        try {
-            $cita = Cita::find($id);
-            if (!$cita) {
-                return ["mensaje" => "La cita no existe"];
-            }
-            $cita->estado = 'cancelada';
-            $cita->save();
-
-            return ["mensaje" => "Cita cancelada correctamente", "data" => $cita];
-        } catch (Exception $e) {
-            return ["mensaje" => $e->getMessage()];
-        }
-    }
-}
-```
-
-> 💡 **Qué hace este fragmento:** Aísla las consultas de base de datos en funciones reutilizables con control de excepciones y estructura de respuesta homogénea.
-
-> ⚠️ **Error común:** Escribir `namespace App\Repositories;`. El namespace obligatorio según las normas de arquitectura del proyecto es `App\Http\Repository`.
-
----
-
-### Paso 4: Programar el Controlador REST (`CitasController.php`)
-
-**🤔 ¿Por qué este paso?**
-El controlador actúa como un orquestador ligero. Recibe la petición ya validada por el `Form Request`, llama al repositorio inyectado en su constructor y transforma el resultado en una respuesta HTTP JSON adecuada (200 OK o 500 Error).
-
-**🛠️ ¿Cómo?**
-Crea `app/Http/Controllers/CitasController.php` inyectando `CitasRepository` en el constructor.
-
-**Código de referencia:**
-
-```php
-<?php
-
-namespace App\Http\Controllers;
-
-use App\Http\Requests\StoreCitaRequest;
-use App\Http\Repository\CitasRepository;
-use Illuminate\Http\Request;
-
-class CitasController extends Controller
-{
-    protected $citasRepository;
-
-    // Inyección de dependencias del repositorio mediante constructor
-    public function __construct(CitasRepository $citasRepository)
-    {
-        $this->citasRepository = $citasRepository;
-    }
-
-    public function index()
-    {
-        try {
-            $respuesta = $this->citasRepository->obtenerCitas();
-            return response()->json($respuesta, 200);
-        } catch (\Exception $e) {
-            return response()->json(["mensaje" => $e->getMessage()], 500);
-        }
-    }
-
-    public function store(StoreCitaRequest $request)
-    {
-        try {
-            // Asignar el ID del usuario autenticado vía Sanctum como paciente
-            $datos = $request->all();
-            $datos['paciente_id'] = $request->user()->id;
-
-            $respuesta = $this->citasRepository->registrarCita($datos);
-            return response()->json($respuesta, 200);
-        } catch (\Exception $e) {
-            return response()->json(["mensaje" => $e->getMessage()], 500);
-        }
-    }
-
-    public function cancel(int $id)
-    {
-        try {
-            $respuesta = $this->citasRepository->cancelarCita($id);
-            return response()->json($respuesta, 200);
-        } catch (\Exception $e) {
-            return response()->json(["mensaje" => $e->getMessage()], 500);
-        }
-    }
-}
-```
-
-> 💡 **Qué hace este fragmento:** Expone los endpoints de la API delegando la persistencia al repositorio y garantizando respuestas JSON envueltas en bloques `try-catch`.
-
-> ⚠️ **Error común:** Escribir consultas Eloquent como `Cita::all()` dentro del controlador. Violaría la regla estricta de separación de capas.
-
----
-
-### Paso 5: Registrar las Rutas API en `routes/api.php`
-
-**🤔 ¿Por qué este paso?**
-Define las direcciones URL (Endpoints) por las que los clientes web y móviles accederán al servicio web. Agrupamos las rutas protegidas dentro del middleware `auth:sanctum` para requerir token de sesión.
-
-**🛠️ ¿Cómo?**
-Edita `routes/api.php` agregando las rutas de autenticación y recursos médicos.
-
-**Código de referencia:**
-
-```php
-<?php
-
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\CitasController;
-
-// Rutas Públicas (Login y Registro)
-Route::post('/login', [AuthController::class, 'login']);
-Route::post('/registro', [AuthController::class, 'register']);
-
-// Rutas Protegidas por Token Sanctum
-Route::middleware('auth:sanctum')->group(function () {
-    
-    // Obtener todas las citas
-    Route::get('/citas', [CitasController.php, 'index']);
-    
-    // Agendar una nueva cita
-    Route::post('/citas', [CitasController.php, 'store']);
-    
-    // Cancelar cita por ID
-    Route::put('/citas/{id}/cancelar', [CitasController.php, 'cancel']);
-    
-});
-```
-
-> 💡 **Qué hace este fragmento:** Mapea las URLs del servidor hacia los métodos del controlador, exigiendo un token de autenticación para las rutas protegidas.
-
-> ⚠️ **Error común:** Declarar rutas API en `routes/web.php`. Las rutas en `web.php` incluyen protección CSRF orientada a vistas de navegador y no a clientes API REST.
-
----
-
-### Paso 6: Consumir el Servicio Web desde el Cliente Frontend JavaScript (`Fetch API`)
-
-**🤔 ¿Por me este paso?**
-Una vez construido el servicio web en Laravel, demostraremos cómo una aplicación web del lado del cliente (Frontend) se conecta enviando la cabecera `Authorization: Bearer <TOKEN>` y procesa la respuesta JSON asíncronamente con `async/await`.
-
-**🛠️ ¿Cómo?**
-Crea el archivo `public/js/citas-api.js` implementando funciones para realizar llamadas a la API REST.
+Crea el archivo `public/js/api/config.js` definiendo la constante `API_BASE_URL` y la función asíncrona `apiFetch(endpoint, options)`.
 
 **Código de referencia:**
 
 ```javascript
-// public/js/citas-api.js
+// public/js/api/config.js
 
-const API_BASE_URL = 'http://localhost:8000/api';
+// URL Base donde se encuentra ejecutándose la API REST en Laravel 11
+export const API_BASE_URL = 'http://localhost:8000/api';
 
-// Función para obtener la lista de citas desde la Web API
-async function obtenerCitasServicioWeb() {
+/**
+ * Realiza peticiones HTTP centralizadas a la API REST de Laravel
+ * @param {string} endpoint - Ruta relativa del recurso (ej: '/auth/login')
+ * @param {object} options - Opciones de la petición fetch (method, body, headers)
+ */
+export async function apiFetch(endpoint, options = {}) {
     const token = localStorage.getItem('token_sanctum');
 
-    try {
-        const response = await fetch(`${API_BASE_URL}/citas`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'Authorization': `Bearer ${token}` // Envío del Token Sanctum
-            }
-        });
+    // Inyección estandarizada de cabeceras requeridas por el Backend
+    const headers = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        ...options.headers
+    };
 
-        const resultado = await response.json();
-
-        if (!response.ok) {
-            throw new Error(resultado.mensaje || 'Error al obtener citas');
-        }
-
-        console.log('Citas recibidas:', resultado.data);
-        renderizarTablaCitas(resultado.data);
-
-    } catch (error) {
-        console.error('Error en la petición:', error.message);
-        alert(`Error de conexión: ${error.message}`);
+    // Si existe un token de sesión en localStorage, se adjunta como Bearer Token
+    if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
     }
-}
 
-// Función para agendar cita enviando datos JSON por POST
-async function agendarCitaServicioWeb(datosCita) {
-    const token = localStorage.getItem('token_sanctum');
+    const config = {
+        ...options,
+        headers
+    };
 
     try {
-        const response = await fetch(`${API_BASE_URL}/citas`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify(datosCita)
-        });
+        const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
+        const data = await response.json().catch(() => ({}));
 
-        const resultado = await response.json();
-
-        if (response.status === 422) {
-            // Manejo de errores de validación del Form Request
-            console.warn('Errores de validación:', resultado.errors);
-            alert('Por favor revise los datos ingresados.');
-            return;
+        // Si el token expiró o es inválido, redirigir al login
+        if (response.status === 401) {
+            localStorage.clear();
+            window.location.href = '/login.html';
+            throw new Error('Sesión expirada. Por favor inicie sesión de nuevo.');
         }
 
-        if (!response.ok) {
-            throw new Error(resultado.mensaje);
-        }
-
-        alert('¡Cita agendada con éxito!');
-        obtenerCitasServicioWeb(); // Recargar la lista
-
+        return { ok: response.ok, status: response.status, data };
     } catch (error) {
-        console.error('Error al agendar:', error.message);
+        console.error(`[API Error] ${endpoint}:`, error.message);
+        throw error;
     }
 }
 ```
 
-> 💡 **Qué hace este fragmento:** Consume la REST API desde el cliente web mediante `Fetch API`, inyectando el token Bearer en los encabezados HTTP y manejando respuestas HTTP 200 y 422.
+> 💡 **Qué hace este fragmento:** Centraliza la URL base de la API, inyecta la cabecera `Authorization: Bearer` recuperada de `localStorage` y redirige automáticamente al login ante errores HTTP 401.
 
-> ⚠️ **Error común:** Olvidar la cabecera `'Accept': 'application/json'`. Sin esta cabecera, ante un error Laravel podría devolver una página de error en HTML completo en lugar de JSON.
+> ⚠️ **Error común:** Escribir `http://localhost:8000` sin el sufijo `/api`. Las rutas del backend Laravel están prefijadas en `routes/api.php` bajo `/api/`.
+
+---
+
+### Paso 2: Implementar el Servicio de Autenticación (`js/api/auth-service.js`)
+
+**🤔 ¿Por qué este paso?**
+El backend ya cuenta con los endpoints `/api/auth/login`, `/api/miPerfil` y `/api/auth/cerrarSesion`. Necesitamos un módulo en JavaScript que exponga funciones limpias para comunicarse con estos servicios y administrar el almacenamiento del token en `localStorage`.
+
+**🛠️ ¿Cómo?**
+Crea `public/js/api/auth-service.js` utilizando la función `apiFetch` configurada en el paso anterior.
+
+**Código de referencia:**
+
+```javascript
+// public/js/api/auth-service.js
+import { apiFetch } from './config.js';
+
+export const authService = {
+    // Iniciar sesión contra el endpoint /api/auth/login del backend
+    async login(email, password) {
+        const respuesta = await apiFetch('/auth/login', {
+            method: 'POST',
+            body: JSON.stringify({ email, password })
+        });
+
+        if (respuesta.ok && respuesta.data.token) {
+            // Guardar token Sanctum y datos del usuario en la sesión del navegador
+            localStorage.setItem('token_sanctum', respuesta.data.token);
+            localStorage.setItem('usuario_nombre', respuesta.data.usuario.nombre);
+            localStorage.setItem('usuario_rol', respuesta.data.usuario.rol);
+        }
+
+        return respuesta;
+    },
+
+    // Obtener información del usuario autenticado vía /api/miPerfil
+    async obtenerPerfil() {
+        return await apiFetch('/miPerfil', { method: 'GET' });
+    },
+
+    // Cerrar sesión e invalidar token mediante /api/auth/cerrarSesion
+    async logout() {
+        try {
+            await apiFetch('/auth/cerrarSesion', { method: 'POST' });
+        } finally {
+            localStorage.clear();
+            window.location.href = '/login.html';
+        }
+    }
+};
+```
+
+> 💡 **Qué hace este fragmento:** Ofrece métodos para iniciar sesión, consultar el perfil y cerrar sesión contra la API en Laravel, gestionando de forma segura la persistencia del token Sanctum.
+
+> ⚠️ **Error común:** No invocar `localStorage.clear()` al cerrar sesión. Si el token permanece en el navegador, otras sesiones en el mismo equipo podrían acceder a datos privados.
+
+---
+
+### Paso 3: Conectar el Formulario de Login en el Frontend (`js/ui/login-view.js`)
+
+**🤔 ¿Por qué este paso?**
+Conecta la interfaz visual `login.html` con el servicio `authService`. Captura los datos ingresados por el paciente o médico, procesa la respuesta del backend y maneje errores de credenciales (HTTP 401) o de validación (HTTP 422).
+
+**🛠️ ¿Cómo?**
+Crea el script de vista `public/js/ui/login-view.js` y vincúlalo al evento `submit` del formulario HTML.
+
+**Código de referencia — Formulario HTML (`login.html`):**
+
+```html
+<!-- public/login.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Iniciar Sesión - Citas Médicas</title>
+    <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+    <div class="login-container">
+        <h2>Ingreso al Sistema de Citas</h2>
+        <div id="alerta_error" class="alerta oculto"></div>
+
+        <form id="form_login">
+            <input type="email" id="txt_email" placeholder="Correo Electrónico" required>
+            <input type="password" id="txt_password" placeholder="Contraseña" required>
+            <button type="submit" id="btn_ingresar">Ingresar</button>
+        </form>
+    </div>
+    <script type="module" src="js/ui/login-view.js"></script>
+</body>
+</html>
+```
+
+**Código de referencia — Lógica de Vista (`js/ui/login-view.js`):**
+
+```javascript
+// public/js/ui/login-view.js
+import { authService } from '../api/auth-service.js';
+
+const formLogin = document.getElementById('form_login');
+const txtEmail = document.getElementById('txt_email');
+const txtPassword = document.getElementById('txt_password');
+const alertaError = document.getElementById('alerta_error');
+
+formLogin.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    alertaError.classList.add('oculto');
+
+    const email = txtEmail.value.trim();
+    const password = txtPassword.value.trim();
+
+    try {
+        const respuesta = await authService.login(email, password);
+
+        if (respuesta.ok) {
+            // Redirigir al dashboard según el éxito del backend
+            window.location.href = '/dashboard.html';
+        } else {
+            // Manejar errores de credenciales incorrectas (401) o validación (422)
+            const msj = respuesta.data.mensaje || respuesta.data.msj || 'Error de autenticación';
+            alertaError.textContent = msj;
+            alertaError.classList.remove('oculto');
+        }
+    } catch (error) {
+        alertaError.textContent = 'No se pudo conectar con el servidor backend.';
+        alertaError.classList.remove('oculto');
+    }
+});
+```
+
+> 💡 **Qué hace este fragmento:** Intercepta el envío del formulario, invoca la autenticación vía API REST y redirige al panel principal si las credenciales son válidas en la base de datos.
+
+> ⚠️ **Error común:** Olvidar `e.preventDefault()`. Esto provoca que el formulario recargue la página completa mediante un envío HTTP tradicional sin ejecutar el código de la API.
+
+---
+
+### Paso 4: Módulo de Consulta de Especialidades y Médicos (`js/api/doctores-service.js`)
+
+**🤔 ¿Por qué este paso?**
+Para agendar una cita, la pantalla debe llenar dinámicamente un listado desplegable de especialidades médicas y médicos activos consultando los endpoints existentes `/api/obtenerEspecialidades` y `/api/obtenerDoctores`.
+
+**🛠️ ¿Cómo?**
+Crea `public/js/api/doctores-service.js` exponiendo métodos para consultar los catálogos públicos y la disponibilidad en tiempo real de un doctor.
+
+**Código de referencia:**
+
+```javascript
+// public/js/api/doctores-service.js
+import { apiFetch } from './config.js';
+
+export const doctoresService = {
+    // Obtener catálogo de especialidades activas desde /api/obtenerEspecialidades
+    async obtenerEspecialidades() {
+        return await apiFetch('/obtenerEspecialidades', { method: 'GET' });
+    },
+
+    // Obtener lista de doctores activos desde /api/obtenerDoctores
+    async obtenerDoctores(especialidadId = null) {
+        const query = especialidadId ? `?especialidad_id=${especialidadId}` : '';
+        return await apiFetch(`/obtenerDoctores${query}`, { method: 'GET' });
+    },
+
+    // Consultar slots de horarios disponibles vía /api/obtenerDisponibilidad/{doctorId}?fecha=YYYY-MM-DD
+    async obtenerDisponibilidad(doctorId, fecha) {
+        return await apiFetch(`/obtenerDisponibilidad/${doctorId}?fecha=${fecha}`, { method: 'GET' });
+    }
+};
+```
+
+> 💡 **Qué hace este fragmento:** Proporciona funciones asíncronas para obtener especialidades, médicos filtrados y bloques de horarios disponibles desde el backend Laravel.
+
+> ⚠️ **Error común:** No enviar el parámetro `fecha` en formato `YYYY-MM-DD`. El backend esperará esa estructura exacta para calcular la disponibilidad del médico.
+
+---
+
+### Paso 5: Módulo de Gestión de Citas Médicas (`js/api/citas-service.js`)
+
+**🤔 ¿Por qué este paso?**
+El backend cuenta con los endpoints `/api/misCitas`, `/api/agendarCita` y `/api/cancelarMiCita/{id}` para el rol `paciente`. Encapsularemos estas llamadas para ser reutilizadas desde cualquier vista del cliente web.
+
+**🛠️ ¿Cómo?**
+Crea `public/js/api/citas-service.js` con las peticiones `GET`, `POST` y `PATCH`.
+
+**Código de referencia:**
+
+```javascript
+// public/js/api/citas-service.js
+import { apiFetch } from './config.js';
+
+export const citasService = {
+    // Obtener historial y citas del paciente desde /api/misCitas
+    async obtenerMisCitas() {
+        return await apiFetch('/misCitas', { method: 'GET' });
+    },
+
+    // Agendar una nueva cita médica vía /api/agendarCita
+    async agendarCita(datosCita) {
+        return await apiFetch('/agendarCita', {
+            method: 'POST',
+            body: JSON.stringify(datosCita)
+        });
+    },
+
+    // Cancelar cita propia vía /api/cancelarMiCita/{id} (método PATCH)
+    async cancelarCita(citaId, motivo) {
+        return await apiFetch(`/cancelarMiCita/${citaId}`, {
+            method: 'PATCH',
+            body: JSON.stringify({ motivo_cancelacion: motivo })
+        });
+    }
+};
+```
+
+> 💡 **Qué hace este fragmento:** Mapea las operaciones CRUD de citas contra los endpoints protegidos del backend aplicando los verbos HTTP correctos (GET, POST, PATCH).
+
+> ⚠️ **Error común:** Usar `DELETE` en lugar de `PATCH` para la cancelación de citas. El backend de este proyecto utiliza `PATCH /api/cancelarMiCita/{id}` para actualizar el estado a 'cancelada'.
+
+---
+
+### Paso 6: Renderizado Dinámico del Dashboard y Agendamiento (`js/ui/dashboard-view.js`)
+
+**🤔 ¿Por qué este paso?**
+Integra la vista principal `dashboard.html`. Carga los datos del perfil del usuario, llena los selectores de médicos, despliega la disponibilidad y renderiza dinámicamente la tabla de citas médicas agendadas en el DOM.
+
+**🛠️ ¿Cómo?**
+Crea `public/js/ui/dashboard-view.js` coordinando las llamadas a los servicios y actualizando los elementos HTML.
+
+**Código de referencia — Lógica de Pantalla Dashboard:**
+
+```javascript
+// public/js/ui/dashboard-view.js
+import { authService } from '../api/auth-service.js';
+import { doctoresService } from '../api/doctores-service.js';
+import { citasService } from '../api/citas-service.js';
+
+// Referencias a elementos del DOM
+const lblUsuario = document.getElementById('lbl_usuario');
+const btnLogout = document.getElementById('btn_logout');
+const tablaCitas = document.getElementById('tabla_citas_body');
+const formAgendar = document.getElementById('form_agendar_cita');
+const selectDoctor = document.getElementById('select_doctor');
+const inputFecha = document.getElementById('input_fecha');
+const selectHora = document.getElementById('select_hora');
+
+// Inicialización de la pantalla al cargar
+document.addEventListener('DOMContentLoaded', async () => {
+    lblUsuario.textContent = localStorage.getItem('usuario_nombre') || 'Paciente';
+    
+    btnLogout.addEventListener('click', () => authService.logout());
+
+    await cargarMedicos();
+    await cargarCitasTabla();
+
+    // Evento de cambio para cargar horarios disponibles dinámicamente
+    inputFecha.addEventListener('change', consultarDisponibilidadHorarios);
+    selectDoctor.addEventListener('change', consultarDisponibilidadHorarios);
+});
+
+// Cargar catálogo de médicos en el elemento <select>
+async function cargarMedicos() {
+    const res = await doctoresService.obtenerDoctores();
+    if (res.ok && Array.isArray(res.data.data)) {
+        selectDoctor.innerHTML = '<option value="">Seleccione un Médico</option>';
+        res.data.data.forEach(doc => {
+            selectDoctor.innerHTML += `<option value="${doc.id}">Dr. ${doc.nombre}</option>`;
+        });
+    }
+}
+
+// Consultar slots de disponibilidad al backend cuando cambie la fecha o doctor
+async function consultarDisponibilidadHorarios() {
+    const doctorId = selectDoctor.value;
+    const fecha = inputFecha.value;
+
+    if (!doctorId || !fecha) return;
+
+    const res = await doctoresService.obtenerDisponibilidad(doctorId, fecha);
+    selectHora.innerHTML = '<option value="">Seleccione Horario</option>';
+
+    if (res.ok && Array.isArray(res.data.slots_disponibles)) {
+        res.data.slots_disponibles.forEach(hora => {
+            selectHora.innerHTML += `<option value="${hora}">${hora}</option>`;
+        });
+    }
+}
+
+// Renderizar tabla dinámica de citas médicas en el DOM
+async function cargarCitasTabla() {
+    const res = await citasService.obtenerMisCitas();
+    tablaCitas.innerHTML = '';
+
+    if (res.ok && Array.isArray(res.data.data)) {
+        res.data.data.forEach(cita => {
+            const fila = document.createElement('tr');
+            fila.innerHTML = `
+                <td>${cita.id}</td>
+                <td>Dr. ${cita.doctor?.nombre || 'N/A'}</td>
+                <td>${cita.fecha_hora}</td>
+                <td><span class="badge ${cita.estado}">${cita.estado}</span></td>
+                <td>
+                    ${cita.estado === 'pendiente' ? `<button onclick="cancelarCitaId(${cita.id})" class="btn-danger">Cancelar</button>` : '-'}
+                </td>
+            `;
+            tablaCitas.appendChild(fila);
+        });
+    }
+}
+
+// Evento de envío del formulario de agendamiento
+formAgendar.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const datos = {
+        doctor_id: selectDoctor.value,
+        especialidad_id: 1, // Asignado según doctor
+        fecha_hora: `${inputFecha.value} ${selectHora.value}:00`,
+        motivo_consulta: document.getElementById('txt_motivo').value
+    };
+
+    const res = await citasService.agendarCita(datos);
+
+    if (res.ok) {
+        alert('Cita agendada correctamente.');
+        formAgendar.reset();
+        await cargarCitasTabla();
+    } else {
+        alert(res.data.mensaje || 'No se pudo agendar la cita.');
+    }
+});
+```
+
+> 💡 **Qué hace este fragmento:** Coordina la interfaz web al iniciar, cargando médicos, consultando la disponibilidad de horarios mediante la API y actualizando el DOM tras agendar o cancelar citas.
+
+> ⚠️ **Error común:** No verificar si la respuesta contiene arreglos válidos con `Array.isArray()`. Si el backend devuelve un mensaje de error en JSON, el método `.forEach()` rompería la ejecución en JavaScript.
 
 ---
 
 ## 🔍 Preguntas de comprensión
 
-1. **¿Por qué la arquitectura `Proyectu3` exige que los Controladores no ejecuten consultas Eloquent directamente y se use la capa `Repository`?**
-2. **¿Qué sucede cuando una petición falla la validación en `StoreCitaRequest` gracias al método `failedValidation()`?**
-3. **¿Por qué es necesario incluir la cabecera `Authorization: Bearer <token>` en cada petición realizada a rutas protegidas por Sanctum?**
-4. **¿Cuál es la diferencia de responsabilidad entre un `Form Request` y un `Repository` en Laravel?**
+1. **¿Por qué centralizamos las llamadas a la API dentro del módulo `apiFetch(endpoint, options)` en lugar de escribir `fetch()` directamente en los eventos de los botones HTML?**
+2. **¿Cómo reconoce el backend en Laravel 11 qué usuario está realizando la petición en el endpoint `/api/misCitas`?**
+3. **¿Qué sucede en el cliente web si el backend devuelve un código HTTP `401 Unauthorized` y cómo responde el helper de configuración?**
+4. **¿Por qué la consulta de slots de disponibilidad (`/api/obtenerDisponibilidad`) debe volver a ejecutarse dinámicamente cuando el usuario cambia la fecha en el formulario web?**
 
 ---
 
 ## ✅ Cómo saber que funciona
 
-1. **Prueba de Servicio Web REST (Postman / Thunder Client / JS):**
-   - Haz una petición `POST` a `http://localhost:8000/api/login` con email y password válidos. Verifica que responda con código `200 OK` y contenga una propiedad `"token"`.
-2. **Prueba de Validación 422:**
-   - Realiza un `POST` a `/api/citas` enviando un cuerpo vacío `{}`. El servicio debe responder HTTP `422` con la estructura:
-     ```json
-     {
-       "msj": "Error de validacion",
-       "errors": { "doctor_id": ["El médico es obligatorio."] }
-     }
-     ```
-3. **Prueba de Consumo Exitoso:**
-   - Llama a `obtenerCitasServicioWeb()` desde tu consola o navegador web y confirma que el objeto impreso en consola contiene la lista de citas almacenadas en la base de datos MySQL.
+1. **Flujo de Inicio de Sesión:**
+   - Abre `login.html`, ingresa un correo de paciente válido (ej. `paciente@ejemplo.com`) y su contraseña. Haz clic en **Ingresar**. Debe guardar el token en `localStorage` y redirigir a `dashboard.html`.
+
+2. **Carga Dinámica de Médicos y Horarios:**
+   - En el formulario de agendamiento, elige un médico del desplegable `<select>` y selecciona una fecha. El selector de horas debe poblarse automáticamente con las horas libres devueltas por el servidor.
+
+3. **Agendamiento y Renderizado en Tiempo Real:**
+   - Agenda una cita. La nueva fila debe aparecer inmediatamente en la tabla HTML de `dashboard.html` con estado **'pendiente'** sin recargar la página.
 
 ---
 
 ## 🚀 Reto extra (opcional)
 
-Crea un repositorio `ReportesRepository` con un método `obtenerEstadisticasCitas()` que devuelva el total de citas agendadas, atendidas y canceladas del mes actual mediante consultas agregadas de Eloquent, y expón este servicio web en un endpoint `/api/reportes/estadisticas`.
+Implementa una función de **búsqueda y filtrado en tiempo real** en el cliente web para que el usuario pueda filtrar la tabla de citas por estado (`pendiente`, `atendida`, `cancelada`) utilizando la función `.filter()` de JavaScript sobre la colección devuelta por la API REST.
 
 ---
 
 ## 📚 Para profundizar (opcional)
 
-- **Laravel Middleware & Role Authorization** — Creación de middlewares personalizados para restringir el consumo de servicios web según el rol del usuario (`admin`, `doctor`, `paciente`).
-- **CORS (Cross-Origin Resource Sharing)** — Configuración de `config/cors.php` en Laravel para permitir llamadas de servicios web desde dominios y puertos externos de forma segura.
-- **RESTful API Rate Limiting** — Limitación de tasa de peticiones (*Throttle*) en Laravel para proteger los servicios web contra ataques de denegación de servicio (DDoS).
+- **JWT vs Laravel Sanctum Tokens** — Diferencias de expiración y revocación de tokens en aplicaciones SPA (Single Page Application).
+- **Manejo Global de Errores con Axios/Fetch Interceptors** — Patrones avanzados de intercepción de peticiones en JavaScript.
+- **WebSockets / Laravel Reverb** — Actualización en vivo del panel de citas médicas sin necesidad de refrescar o consultar la API manualmente (*polling*).
