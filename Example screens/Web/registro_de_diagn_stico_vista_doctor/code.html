@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MediAdmin - Registrar Diagnóstico</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .fill-icon {
+            font-variation-settings: 'FILL' 1;
+        }
+        body {
+            background-color: #F7F9FC;
+            font-family: 'Inter', sans-serif;
+        }
+        /* Custom scrollbar for clinical look */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #F1F5F9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #CBD5E1;
+            border-radius: 10px;
+        }
+        .clinical-card {
+            box-shadow: 0 2px 12px rgba(27,107,147,0.08);
+            transition: box-shadow 0.2s ease;
+        }
+        .clinical-input:focus {
+            outline: none;
+            border-color: #1B6B93;
+            box-shadow: 0 0 0 2px rgba(27,107,147,0.1);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "secondary-container": "#8cf5e4",
+                      "primary-fixed": "#c7e7ff",
+                      "on-secondary-fixed": "#00201c",
+                      "on-error-container": "#93000a",
+                      "surface-tint": "#0e658c",
+                      "on-primary-fixed": "#001e2e",
+                      "surface-variant": "#e0e3e6",
+                      "primary-light": "#A8D5E2",
+                      "inverse-on-surface": "#eff1f4",
+                      "text-muted": "#A0AEC0",
+                      "primary-container": "#1b6b93",
+                      "surface": "#FFFFFF",
+                      "secondary": "#006a60",
+                      "on-surface": "#191c1e",
+                      "on-secondary-fixed-variant": "#005048",
+                      "on-tertiary": "#ffffff",
+                      "surface-container-highest": "#e0e3e6",
+                      "outline-variant": "#c0c7cf",
+                      "secondary-fixed-dim": "#6fd8c8",
+                      "on-tertiary-container": "#ffdeaf",
+                      "text-secondary": "#4A5568",
+                      "danger": "#E76F51",
+                      "on-secondary": "#ffffff",
+                      "inverse-surface": "#2d3133",
+                      "surface-container": "#eceef1",
+                      "background": "#f7f9fc",
+                      "surface-bright": "#f7f9fc",
+                      "on-primary-container": "#c7e7ff",
+                      "surface-container-high": "#e6e8eb",
+                      "tertiary-fixed-dim": "#ffba42",
+                      "on-primary": "#ffffff",
+                      "primary-fixed-dim": "#8bcefb",
+                      "on-tertiary-fixed-variant": "#614000",
+                      "inverse-primary": "#8bcefb",
+                      "on-background": "#191c1e",
+                      "danger-light": "#FADED4",
+                      "primary": "#005275",
+                      "surface-container-low": "#f2f4f7",
+                      "on-secondary-container": "#007166",
+                      "on-error": "#ffffff",
+                      "tertiary": "#684600",
+                      "surface-dim": "#d8dadd",
+                      "error": "#ba1a1a",
+                      "outline": "#70787f",
+                      "secondary-fixed": "#8cf5e4",
+                      "primary-dark": "#0F4C6B",
+                      "surface-container-lowest": "#ffffff",
+                      "on-primary-fixed-variant": "#004c6c",
+                      "border": "#E2E8F0",
+                      "on-tertiary-fixed": "#281800",
+                      "tertiary-fixed": "#ffddaf",
+                      "on-surface-variant": "#40484e",
+                      "text-primary": "#1A1A2E",
+                      "secondary-light": "#B5E8D5",
+                      "tertiary-container": "#885c00",
+                      "error-container": "#ffdad6"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "unit": "4px",
+                      "gutter-sm": "16px",
+                      "gutter-md": "24px",
+                      "margin-edge": "24px",
+                      "sidebar-width": "260px",
+                      "header-height": "64px"
+              },
+              "fontFamily": {
+                      "headline-sm": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "headline-lg": ["Inter"],
+                      "body-sm": ["Inter"],
+                      "body-md": ["Inter"],
+                      "label-md": ["Inter"],
+                      "caption": ["Inter"]
+              },
+              "fontSize": {
+                      "headline-sm": ["18px", {"lineHeight": "24px", "fontWeight": "500"}],
+                      "headline-md": ["22px", {"lineHeight": "28px", "fontWeight": "600"}],
+                      "headline-lg": ["28px", {"lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "label-md": ["15px", {"lineHeight": "20px", "fontWeight": "600"}],
+                      "caption": ["13px", {"lineHeight": "18px", "fontWeight": "400"}]
+              }
+            },
+          },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-surface">
+<!-- Sidebar Navigation -->
+<aside class="bg-primary-dark w-sidebar-width h-screen fixed left-0 top-0 flex flex-col py-6 shadow-md z-50">
+<div class="px-6 mb-10">
+<h1 class="font-headline-sm text-headline-sm text-on-primary tracking-tight">MediAdmin</h1>
+<p class="text-[11px] uppercase tracking-widest text-primary-light/60 mt-1">Hospital Central</p>
+</div>
+<nav class="flex-1 space-y-1 px-3">
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-primary-light/70 hover:text-on-primary transition-colors hover:bg-primary/50 group" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-primary bg-primary-container/20 border-l-4 border-secondary-light group" href="#">
+<span class="material-symbols-outlined fill-icon">calendar_today</span>
+<span class="font-label-md text-label-md">Citas</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-primary-light/70 hover:text-on-primary transition-colors hover:bg-primary/50 group" href="#">
+<span class="material-symbols-outlined">medical_services</span>
+<span class="font-label-md text-label-md">Doctores</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-primary-light/70 hover:text-on-primary transition-colors hover:bg-primary/50 group" href="#">
+<span class="material-symbols-outlined">history</span>
+<span class="font-label-md text-label-md">Historial</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-primary-light/70 hover:text-on-primary transition-colors hover:bg-primary/50 group" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-md text-label-md">Ajustes</span>
+</a>
+</nav>
+<div class="px-6 mt-auto">
+<button class="w-full bg-secondary text-on-secondary font-label-md text-label-md py-3 rounded-xl shadow-lg active:scale-95 transition-transform flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[20px]">add</span>
+                Nueva Cita
+            </button>
+</div>
+</aside>
+<!-- Header -->
+<header class="h-header-height fixed top-0 right-0 w-[calc(100%-260px)] bg-surface border-b border-outline-variant flex items-center justify-between px-gutter-md z-40">
+<div class="flex items-center gap-4 flex-1">
+<div class="relative w-full max-w-md">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="w-full pl-10 pr-4 py-2 bg-surface-container-low rounded-full border-none focus:ring-2 focus:ring-primary/20 text-body-sm font-body-sm" placeholder="Buscar paciente o expediente..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<button class="relative text-on-surface-variant hover:bg-surface-container-low p-2 rounded-full transition-all">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-danger rounded-full border-2 border-surface"></span>
+</button>
+<div class="flex items-center gap-3 pl-4 border-l border-outline-variant">
+<div class="text-right">
+<p class="font-label-md text-label-md text-on-surface">Dr. Ricardo Silva</p>
+<p class="text-[12px] text-text-secondary">Cardiólogo Principal</p>
+</div>
+<img class="w-10 h-10 rounded-full object-cover border-2 border-primary-light" data-alt="A professional studio portrait of a middle-aged male doctor with a kind smile, wearing a clean white medical coat and a stethoscope. The background is a soft, out-of-focus modern clinic with high-key lighting and a cool blue and white color palette. The image is crisp, bright, and communicates extreme professionalism and trustworthiness." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAKfzKiLCapxQVyontwCT7BLCZMqxnxkbKGsCxx-SJPPzGnDJt8i_NH31rBU-NCwlvTSZkx0Gm1o-WvRkuTsPmWA6nL7lcCELavtm8t82xuAYnBZPup8tloRwDxij7qsPCLUuzFxwH_Vp7IDbV8mrto0pimxvTstkrU7gMIkia4Yv6blpD3b5ulIidnEbhluJIYqtk64fqBp5h_ZCscvnoOrnDM-TY03MQIaObHODyEec2bK_DRLFZAAvSThkHliX_Jer3mzXzsZw0"/>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-sidebar-width pt-[calc(64px+24px)] px-gutter-md pb-12">
+<!-- Breadcrumb -->
+<nav class="mb-6 flex items-center gap-2 text-text-secondary font-body-sm text-body-sm">
+<a class="hover:text-primary transition-colors" href="#">Mi Agenda</a>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+<a class="hover:text-primary transition-colors" href="#">Consulta Actual</a>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+<span class="text-primary font-semibold">Registrar Diagnóstico</span>
+</nav>
+<!-- Patient Summary Mini-Card -->
+<div class="bg-surface rounded-xl p-5 mb-6 clinical-card flex items-center justify-between border-l-4 border-primary">
+<div class="flex items-center gap-5">
+<div class="relative">
+<img class="w-14 h-14 rounded-full object-cover border-2 border-surface-container-high" data-alt="A portrait of a 45-year-old Hispanic man with a clean-shaven face and short dark hair, wearing a casual light blue polo shirt. He has a neutral, calm expression. The photography style is bright and medical, with soft shadows and a high-key background that feels professional and clinical. The focus is sharp on his facial features." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCO3jj-4tg2vj8rklvTudnhX9M7IVbT2m1rv1RPyLkl5qfvBun_2rcmeopsYG-lA4bxL0YQBOcJB_u4neRba35czAeORSA-faG20zu9kDt9XRF9B4O63sGKbbYZQzldj6W9JEy-iiFbbAjvk5m1FEmKsxHyVlbXXws4PEmB_-KBb0JFK0-zgoTnYr4X80bzWtLPEwP-FmbYpoxjX6djWq48SHhl1TPn4qOvy8HtiZ2-ZHsM8AQzEq7UBBOH9-QlW5RYb-58l1dx2TY"/>
+<div class="absolute bottom-0 right-0 w-4 h-4 bg-secondary rounded-full border-2 border-surface animate-pulse" title="En Consulta"></div>
+</div>
+<div>
+<h2 class="font-headline-md text-headline-md text-primary-dark">Juan García Hernández</h2>
+<div class="flex items-center gap-4 mt-1">
+<span class="flex items-center gap-1 text-text-secondary text-body-sm">
+<span class="material-symbols-outlined text-[18px]">fingerprint</span>
+                            Exp. #0023
+                        </span>
+<span class="flex items-center gap-1 text-text-secondary text-body-sm">
+<span class="material-symbols-outlined text-[18px]">calendar_month</span>
+                            45 años
+                        </span>
+</div>
+</div>
+</div>
+<div class="text-right">
+<div class="bg-primary-fixed text-on-primary-fixed-variant px-4 py-2 rounded-lg inline-block">
+<p class="font-label-md text-label-md">Cita: 10:00 AM</p>
+<p class="text-[12px] opacity-80">Cardiología — Cubículo 4</p>
+</div>
+</div>
+</div>
+<!-- Main Form Card -->
+<form class="bg-surface rounded-[12px] p-8 clinical-card w-full border border-outline-variant/30">
+<!-- Section 1: Signos Vitales -->
+<section class="mb-10">
+<div class="flex items-center gap-3 mb-6">
+<div class="w-10 h-10 rounded-lg bg-danger/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-danger fill-icon">favorite</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Signos Vitales</h3>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+<div class="space-y-2">
+<label class="font-label-md text-label-md text-on-surface-variant flex items-center gap-1">
+                            Presión Arterial
+                        </label>
+<div class="relative">
+<input class="clinical-input w-full px-4 py-3 rounded-lg border border-border text-body-md bg-surface-container-lowest" placeholder="120/80" type="text"/>
+<span class="absolute right-4 top-1/2 -translate-y-1/2 text-text-muted text-caption">mmHg</span>
+</div>
+</div>
+<div class="space-y-2">
+<label class="font-label-md text-label-md text-on-surface-variant flex items-center gap-1">
+                            Frecuencia Cardíaca
+                        </label>
+<div class="relative">
+<input class="clinical-input w-full px-4 py-3 rounded-lg border border-border text-body-md bg-surface-container-lowest" placeholder="72" type="text"/>
+<span class="absolute right-4 top-1/2 -translate-y-1/2 text-text-muted text-caption">bpm</span>
+</div>
+</div>
+<div class="space-y-2">
+<label class="font-label-md text-label-md text-on-surface-variant flex items-center gap-1">
+                            Temperatura
+                        </label>
+<div class="relative">
+<input class="clinical-input w-full px-4 py-3 rounded-lg border border-border text-body-md bg-surface-container-lowest" placeholder="36.5" type="text"/>
+<span class="absolute right-4 top-1/2 -translate-y-1/2 text-text-muted text-caption">°C</span>
+</div>
+</div>
+<div class="space-y-2">
+<label class="font-label-md text-label-md text-on-surface-variant flex items-center gap-1">
+                            Peso
+                        </label>
+<div class="relative">
+<input class="clinical-input w-full px-4 py-3 rounded-lg border border-border text-body-md bg-surface-container-lowest" placeholder="82" type="text"/>
+<span class="absolute right-4 top-1/2 -translate-y-1/2 text-text-muted text-caption">kg</span>
+</div>
+</div>
+</div>
+</section>
+<hr class="border-outline-variant/30 mb-10"/>
+<!-- Section 2: Diagnóstico -->
+<section class="mb-10">
+<div class="flex items-center gap-3 mb-6">
+<div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary fill-icon">content_paste</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Diagnóstico</h3>
+</div>
+<div class="space-y-2">
+<label class="font-label-md text-label-md text-on-surface-variant">Descripción del diagnóstico</label>
+<textarea class="clinical-input w-full px-4 py-3 rounded-lg border border-border text-body-md bg-surface-container-lowest resize-none" placeholder="Ingrese el diagnóstico clínico detallado..." rows="5"></textarea>
+</div>
+</section>
+<!-- Section 3: Tratamiento Indicado -->
+<section class="mb-10">
+<div class="flex items-center gap-3 mb-6">
+<div class="w-10 h-10 rounded-lg bg-secondary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary fill-icon">medication</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Tratamiento Indicado</h3>
+</div>
+<div class="space-y-2">
+<label class="font-label-md text-label-md text-on-surface-variant">Tratamiento y recomendaciones</label>
+<textarea class="clinical-input w-full px-4 py-3 rounded-lg border border-border text-body-md bg-surface-container-lowest resize-none" placeholder="Recetas, posología y cambios en el estilo de vida..." rows="4"></textarea>
+</div>
+</section>
+<!-- Section 4: Notas Adicionales (Collapsible) -->
+<section class="mb-12">
+<button class="flex items-center gap-2 text-primary font-label-md text-label-md hover:underline" onclick="document.getElementById('collapsible-notes').classList.toggle('hidden')" type="button">
+<span class="material-symbols-outlined">add_circle</span>
+                    Notas Adicionales (Opcional)
+                </button>
+<div class="hidden mt-6 space-y-2" id="collapsible-notes">
+<label class="font-label-md text-label-md text-on-surface-variant">Observaciones extra</label>
+<textarea class="clinical-input w-full px-4 py-3 rounded-lg border border-border text-body-md bg-surface-container-lowest resize-none" placeholder="Notas internas o comentarios para seguimiento..." rows="3"></textarea>
+</div>
+</section>
+<!-- Footer Buttons -->
+<footer class="flex items-center justify-end gap-4 pt-6 border-t border-outline-variant/30">
+<button class="px-6 py-3 rounded-xl border border-text-secondary text-text-secondary font-label-md text-label-md hover:bg-surface-container-low transition-colors active:scale-95" type="button">
+                    Guardar como borrador
+                </button>
+<button class="px-8 py-3 rounded-xl bg-secondary text-on-secondary font-label-md text-label-md hover:bg-secondary/90 transition-all shadow-md hover:shadow-lg active:scale-95 flex items-center gap-2" type="submit">
+<span class="material-symbols-outlined text-[20px]">check_circle</span>
+                    Completar Consulta
+                </button>
+</footer>
+</form>
+</main>
+<script>
+        // Micro-interaction for form completion
+        document.querySelector('form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            const originalContent = btn.innerHTML;
+            
+            btn.innerHTML = `<span class="material-symbols-outlined animate-spin">progress_activity</span> Guardando...`;
+            btn.disabled = true;
+
+            setTimeout(() => {
+                btn.innerHTML = `<span class="material-symbols-outlined">done_all</span> ¡Completado!`;
+                btn.classList.replace('bg-secondary', 'bg-green-600');
+                
+                // Reset after 2 seconds
+                setTimeout(() => {
+                    btn.innerHTML = originalContent;
+                    btn.classList.replace('bg-green-600', 'bg-secondary');
+                    btn.disabled = false;
+                }, 2000);
+            }, 1200);
+        });
+
+        // Add visual feedback to inputs
+        const inputs = document.querySelectorAll('.clinical-input');
+        inputs.forEach(input => {
+            input.addEventListener('focus', () => {
+                input.parentElement.classList.add('scale-[1.01]');
+                input.parentElement.style.transition = 'transform 0.2s ease';
+            });
+            input.addEventListener('blur', () => {
+                input.parentElement.classList.remove('scale-[1.01]');
+            });
+        });
+    </script>
+</body></html>

@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                "outline": "#70787f",
+                "inverse-primary": "#8bcefb",
+                "on-surface": "#191c1e",
+                "primary": "#005275",
+                "surface-variant": "#e0e3e6",
+                "on-tertiary": "#ffffff",
+                "surface": "#FFFFFF",
+                "on-primary": "#ffffff",
+                "danger-light": "#FADED4",
+                "tertiary-fixed-dim": "#ffba42",
+                "tertiary-container": "#885c00",
+                "secondary": "#006a60",
+                "on-tertiary-fixed": "#281800",
+                "error-container": "#ffdad6",
+                "error": "#ba1a1a",
+                "secondary-light": "#B5E8D5",
+                "on-tertiary-fixed-variant": "#614000",
+                "primary-fixed": "#c7e7ff",
+                "primary-light": "#A8D5E2",
+                "primary-fixed-dim": "#8bcefb",
+                "text-primary": "#1A1A2E",
+                "on-secondary-fixed": "#00201c",
+                "danger": "#E76F51",
+                "surface-dim": "#d8dadd",
+                "secondary-container": "#8cf5e4",
+                "secondary-fixed-dim": "#6fd8c8",
+                "text-muted": "#A0AEC0",
+                "tertiary-fixed": "#ffddaf",
+                "surface-container-low": "#f2f4f7",
+                "inverse-surface": "#2d3133",
+                "border": "#E2E8F0",
+                "surface-container-highest": "#e0e3e6",
+                "surface-container": "#eceef1",
+                "on-surface-variant": "#40484e",
+                "on-secondary-container": "#007166",
+                "surface-container-high": "#e6e8eb",
+                "primary-dark": "#0F4C6B",
+                "on-primary-fixed": "#001e2e",
+                "background": "#f7f9fc",
+                "tertiary": "#684600",
+                "surface-tint": "#0e658c",
+                "on-primary-container": "#c7e7ff",
+                "primary-container": "#1b6b93",
+                "secondary-fixed": "#8cf5e4",
+                "on-primary-fixed-variant": "#004c6c",
+                "on-background": "#191c1e",
+                "on-tertiary-container": "#ffdeaf",
+                "text-secondary": "#4A5568",
+                "surface-container-lowest": "#ffffff",
+                "on-error-container": "#93000a",
+                "on-secondary": "#ffffff",
+                "outline-variant": "#c0c7cf",
+                "on-secondary-fixed-variant": "#005048",
+                "on-error": "#ffffff",
+                "inverse-on-surface": "#eff1f4",
+                "surface-bright": "#f7f9fc"
+            },
+            "borderRadius": {
+                "DEFAULT": "0.25rem",
+                "lg": "0.5rem",
+                "xl": "0.75rem",
+                "full": "9999px"
+            },
+            "spacing": {
+                "unit": "4px",
+                "margin-edge": "24px",
+                "gutter-md": "24px",
+                "gutter-sm": "16px",
+                "header-height": "64px",
+                "sidebar-width": "260px"
+            },
+            "fontFamily": {
+                "caption": ["Inter"],
+                "headline-sm": ["Inter"],
+                "label-md": ["Inter"],
+                "headline-md": ["Inter"],
+                "headline-lg": ["Inter"],
+                "headline-lg-mobile": ["Inter"],
+                "body-md": ["Inter"],
+                "body-sm": ["Inter"]
+            },
+            "fontSize": {
+                "caption": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                "headline-sm": ["18px", {"lineHeight": "24px", "fontWeight": "500"}],
+                "label-md": ["15px", {"lineHeight": "20px", "fontWeight": "600"}],
+                "headline-md": ["22px", {"lineHeight": "28px", "fontWeight": "600"}],
+                "headline-lg": ["28px", {"lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                "headline-lg-mobile": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #f7f9fc;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            user-select: none;
+        }
+        .input-focus-ring:focus-within {
+            box-shadow: 0 0 0 2px rgba(27, 107, 147, 0.2);
+            border-color: #1B6B93;
+        }
+        .step-active {
+            background-color: #1B6B93;
+            transform: scale(1.2);
+        }
+        .step-inactive {
+            background-color: #E2E8F0;
+        }
+        /* Custom Dropdown Arrow */
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2370787f'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1.25em;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-body-md text-on-surface antialiased">
+<!-- Top App Bar -->
+<header class="h-header-height bg-surface flex items-center px-4 sticky top-0 z-40 shadow-sm">
+<button aria-label="Volver" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-low transition-colors active:scale-90">
+<span class="material-symbols-outlined text-primary">arrow_back</span>
+</button>
+<h1 class="ml-2 font-headline-sm text-headline-sm text-primary-dark">Crear Cuenta</h1>
+</header>
+<main class="max-w-md mx-auto pb-24">
+<!-- Progress Indicator -->
+<div class="flex justify-center items-center gap-3 py-6">
+<div class="w-2.5 h-2.5 rounded-full step-active shadow-sm transition-all duration-300"></div>
+<div class="w-2 h-2 rounded-full step-inactive transition-all duration-300"></div>
+<div class="w-2 h-2 rounded-full step-inactive transition-all duration-300"></div>
+</div>
+<!-- Form Body -->
+<div class="px-5 space-y-5">
+<div class="space-y-1">
+<p class="font-headline-lg-mobile text-headline-lg-mobile text-text-primary tracking-tight">Información Personal</p>
+<p class="font-body-sm text-body-sm text-text-secondary">Paso 1 de 3: Datos de identificación básica.</p>
+</div>
+<form class="space-y-5 mt-6">
+<!-- Nombre Completo Field (Validated State) -->
+<div class="group">
+<label class="block font-label-md text-label-md text-text-secondary mb-1.5 transition-colors group-focus-within:text-primary-container" for="fullname">
+                        Nombre Completo
+                    </label>
+<div class="relative flex items-center border border-secondary rounded-lg bg-surface transition-all duration-200 input-focus-ring">
+<span class="material-symbols-outlined absolute left-3 text-secondary text-[20px]">person</span>
+<input class="w-full bg-transparent border-none focus:ring-0 py-3 pl-10 pr-10 font-body-md text-body-md placeholder:text-outline-variant text-on-surface" id="fullname" placeholder="Ej. Juan Pérez" type="text" value="Alejandro Martínez"/>
+<span class="material-symbols-outlined absolute right-3 text-secondary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<p class="mt-1 font-caption text-caption text-secondary flex items-center gap-1">
+                        Nombre validado correctamente
+                    </p>
+</div>
+<!-- Fecha de Nacimiento -->
+<div class="group">
+<label class="block font-label-md text-label-md text-text-secondary mb-1.5 group-focus-within:text-primary-container" for="birthdate">
+                        Fecha de Nacimiento
+                    </label>
+<div class="relative flex items-center border border-border rounded-lg bg-surface transition-all duration-200 input-focus-ring">
+<span class="material-symbols-outlined absolute left-3 text-outline text-[20px]">calendar_today</span>
+<input class="w-full bg-transparent border-none focus:ring-0 py-3 pl-10 pr-4 font-body-md text-body-md text-on-surface" id="birthdate" type="date"/>
+</div>
+</div>
+<!-- Sexo Dropdown -->
+<div class="group">
+<label class="block font-label-md text-label-md text-text-secondary mb-1.5 group-focus-within:text-primary-container" for="gender">
+                        Sexo
+                    </label>
+<div class="relative flex items-center border border-border rounded-lg bg-surface transition-all duration-200 input-focus-ring">
+<span class="material-symbols-outlined absolute left-3 text-outline text-[20px]">wc</span>
+<select class="w-full bg-transparent border-none focus:ring-0 py-3 pl-10 pr-10 font-body-md text-body-md text-on-surface appearance-none" id="gender">
+<option disabled="" selected="" value="">Seleccionar opción</option>
+<option value="male">Masculino</option>
+<option value="female">Femenino</option>
+<option value="other">Otro</option>
+</select>
+</div>
+</div>
+<!-- Teléfono -->
+<div class="group">
+<label class="block font-label-md text-label-md text-text-secondary mb-1.5 group-focus-within:text-primary-container" for="phone">
+                        Teléfono
+                    </label>
+<div class="relative flex items-center border border-border rounded-lg bg-surface transition-all duration-200 input-focus-ring">
+<span class="material-symbols-outlined absolute left-3 text-outline text-[20px]">call</span>
+<input class="w-full bg-transparent border-none focus:ring-0 py-3 pl-10 pr-4 font-body-md text-body-md text-on-surface placeholder:text-outline-variant" id="phone" placeholder="+52 000 000 0000" type="tel"/>
+</div>
+</div>
+<!-- Dirección -->
+<div class="group">
+<label class="block font-label-md text-label-md text-text-secondary mb-1.5 group-focus-within:text-primary-container" for="address">
+                        Dirección
+                    </label>
+<div class="relative flex items-start border border-border rounded-lg bg-surface transition-all duration-200 input-focus-ring">
+<span class="material-symbols-outlined absolute left-3 top-3 text-outline text-[20px]">location_on</span>
+<textarea class="w-full bg-transparent border-none focus:ring-0 py-3 pl-10 pr-4 font-body-md text-body-md text-on-surface placeholder:text-outline-variant resize-none" id="address" placeholder="Calle, Número, Colonia..." rows="3"></textarea>
+</div>
+</div>
+</form>
+</div>
+</main>
+<!-- Fixed Bottom Action Bar -->
+<footer class="fixed bottom-0 left-0 right-0 p-4 bg-surface/80 backdrop-blur-md border-t border-outline-variant/30 flex justify-center z-50">
+<div class="w-full max-w-md">
+<button class="w-full py-4 bg-primary-container text-on-primary font-label-md text-label-md rounded-xl shadow-lg active:scale-[0.98] transition-all flex items-center justify-center gap-2 hover:bg-primary-dark group">
+                Siguiente
+                <span class="material-symbols-outlined text-[20px] transition-transform group-hover:translate-x-1">arrow_forward</span>
+</button>
+</div>
+</footer>
+<!-- Decorative Atmosphere (Subtle medical icon background) -->
+<div class="fixed inset-0 -z-10 opacity-[0.03] pointer-events-none overflow-hidden select-none">
+<div class="absolute top-20 right-[-5%] transform rotate-12">
+<span class="material-symbols-outlined text-[200px]">medical_services</span>
+</div>
+<div class="absolute bottom-40 left-[-10%] transform -rotate-12">
+<span class="material-symbols-outlined text-[250px]">health_and_safety</span>
+</div>
+</div>
+<script>
+        // Micro-interaction for inputs
+        document.querySelectorAll('input, select, textarea').forEach(el => {
+            el.addEventListener('focus', () => {
+                const parent = el.closest('.border');
+                if (parent) parent.classList.add('shadow-sm');
+            });
+            el.addEventListener('blur', () => {
+                const parent = el.closest('.border');
+                if (parent) parent.classList.remove('shadow-sm');
+            });
+        });
+
+        // Simple validation visualization toggle for demo
+        const phoneInput = document.getElementById('phone');
+        phoneInput.addEventListener('input', (e) => {
+            const container = e.target.closest('.border');
+            if (e.target.value.length > 8) {
+                container.classList.remove('border-border');
+                container.classList.add('border-secondary');
+            } else {
+                container.classList.add('border-border');
+                container.classList.remove('border-secondary');
+            }
+        });
+    </script>
+</body></html>

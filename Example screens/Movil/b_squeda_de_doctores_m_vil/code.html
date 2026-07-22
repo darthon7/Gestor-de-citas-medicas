@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MediAdmin - Buscar Doctores</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary-fixed-variant": "#004c6c",
+                        "surface-bright": "#f7f9fc",
+                        "on-secondary": "#ffffff",
+                        "danger-light": "#FADED4",
+                        "tertiary-fixed": "#ffddaf",
+                        "on-error-container": "#93000a",
+                        "surface-dim": "#d8dadd",
+                        "primary": "#005275",
+                        "border": "#E2E8F0",
+                        "surface-tint": "#0e658c",
+                        "surface-container-highest": "#e0e3e6",
+                        "on-surface-variant": "#40484e",
+                        "tertiary": "#684600",
+                        "surface-container": "#eceef1",
+                        "text-secondary": "#4A5568",
+                        "on-tertiary-fixed": "#281800",
+                        "inverse-surface": "#2d3133",
+                        "on-background": "#191c1e",
+                        "primary-dark": "#0F4C6B",
+                        "on-tertiary-container": "#ffdeaf",
+                        "tertiary-fixed-dim": "#ffba42",
+                        "primary-container": "#1b6b93",
+                        "inverse-on-surface": "#eff1f4",
+                        "secondary": "#006a60",
+                        "surface-container-low": "#f2f4f7",
+                        "on-tertiary-fixed-variant": "#614000",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-fixed-variant": "#005048",
+                        "on-primary-fixed": "#001e2e",
+                        "outline": "#70787f",
+                        "primary-fixed-dim": "#8bcefb",
+                        "secondary-fixed": "#8cf5e4",
+                        "primary-fixed": "#c7e7ff",
+                        "danger": "#E76F51",
+                        "surface-variant": "#e0e3e6",
+                        "secondary-light": "#B5E8D5",
+                        "on-secondary-container": "#007166",
+                        "outline-variant": "#c0c7cf",
+                        "secondary-fixed-dim": "#6fd8c8",
+                        "secondary-container": "#8cf5e4",
+                        "inverse-primary": "#8bcefb",
+                        "surface-container-high": "#e6e8eb",
+                        "on-primary-container": "#c7e7ff",
+                        "on-secondary-fixed": "#00201c",
+                        "text-muted": "#A0AEC0",
+                        "background": "#f7f9fc",
+                        "surface": "#FFFFFF",
+                        "error": "#ba1a1a",
+                        "on-error": "#ffffff",
+                        "tertiary-container": "#885c00",
+                        "text-primary": "#1A1A2E",
+                        "primary-light": "#A8D5E2",
+                        "on-surface": "#191c1e",
+                        "on-primary": "#ffffff",
+                        "error-container": "#ffdad6"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "sidebar-width": "260px",
+                        "gutter-md": "24px",
+                        "header-height": "64px",
+                        "gutter-sm": "16px",
+                        "unit": "4px",
+                        "margin-edge": "24px"
+                    },
+                    "fontFamily": {
+                        "body-sm": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "caption": ["Inter"],
+                        "headline-lg-mobile": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "label-md": ["15px", {"lineHeight": "20px", "fontWeight": "600"}],
+                        "headline-lg": ["28px", {"lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-sm": ["18px", {"lineHeight": "24px", "fontWeight": "500"}],
+                        "headline-md": ["22px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "caption": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f9fc;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .doctor-card-shadow {
+            box-shadow: 0 2px 12px rgba(27,107,147,0.08);
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="flex flex-col items-center min-h-screen">
+<!-- Mobile Viewport Simulation Container (360x800) -->
+<div class="w-[360px] h-[800px] bg-background relative overflow-hidden flex flex-col shadow-2xl border border-outline-variant">
+<!-- Top App Bar -->
+<header class="h-header-height bg-surface flex items-center px-gutter-sm shrink-0">
+<button class="p-2 -ml-2 text-primary">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h1 class="font-headline-sm text-headline-sm text-text-primary ml-2">Doctores Disponibles</h1>
+</header>
+<!-- Main Content Area (Scrollable) -->
+<main class="flex-1 overflow-y-auto pb-20 hide-scrollbar">
+<!-- Search Bar -->
+<section class="p-4">
+<div class="relative flex items-center h-12 bg-surface-bright border border-border rounded-[24px] px-4">
+<span class="material-symbols-outlined text-text-muted mr-3">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-body-sm w-full placeholder:text-text-muted" placeholder="Buscar doctor o especialidad..." type="text"/>
+</div>
+</section>
+<!-- Filter Chips -->
+<section class="px-4 mb-4">
+<div class="flex gap-2 overflow-x-auto hide-scrollbar whitespace-nowrap py-1">
+<button class="px-4 py-2 bg-primary-container text-on-primary rounded-full font-label-md text-label-md">Todas</button>
+<button class="px-4 py-2 border border-border text-text-secondary rounded-full font-label-md text-label-md">Cardiología</button>
+<button class="px-4 py-2 border border-border text-text-secondary rounded-full font-label-md text-label-md">Pediatría</button>
+<button class="px-4 py-2 border border-border text-text-secondary rounded-full font-label-md text-label-md">Dermatología</button>
+<button class="px-4 py-2 border border-border text-text-secondary rounded-full font-label-md text-label-md">Traumatología</button>
+</div>
+</section>
+<!-- Sort Toggle -->
+<section class="px-4 mb-3">
+<button class="flex items-center gap-1 text-primary-container font-medium text-[12px]">
+                    Ordenar por: Disponibilidad más próxima
+                    <span class="material-symbols-outlined text-[14px]">arrow_drop_down</span>
+</button>
+</section>
+<!-- Doctor List -->
+<section class="px-4 space-y-3">
+<!-- Doctor Card 1 -->
+<article class="bg-surface rounded-xl p-4 doctor-card-shadow border-l-4 border-secondary">
+<div class="flex gap-3 mb-3">
+<div class="w-14 h-14 rounded-full overflow-hidden bg-primary-light flex items-center justify-center shrink-0">
+<img class="w-full h-full object-cover" data-alt="Professional studio portrait of a friendly male doctor in a white medical coat, soft studio lighting, medical office background, modern light-mode aesthetic, high-quality digital photography." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD4bInF1JwdN9vqkKMMvmItb3eS7WEQk6da8XinZPavCt_PbveUOijtCr0cpCRcnu7nT3r02N70tZ5r0ZjdMiSi9trfdiahxP4CXnLEP91_FRbxXDOl9YaLEOok7N_0cwhzaH6k41_uSuIthK58q5AURY37Dx7K0gBOhviZ5TsvCWGeESsvYAJxeDKoSgCWYAAmvvfxb2yRs2eh8WN86IbZ1U3S7wnJuXRWx03PEOvr1fRJsPIlVBtBLJH205Li9vwrEZeFdiThfFY"/>
+</div>
+<div class="flex-1 min-w-0">
+<h3 class="font-label-md text-label-md text-text-primary truncate">Dr. Roberto Sánchez</h3>
+<p class="font-body-sm text-body-sm text-text-secondary">Cardiología</p>
+<p class="text-[11px] text-text-muted">Céd. Prof. 12345678</p>
+<div class="flex items-center mt-1">
+<span class="material-symbols-outlined text-[12px] text-[#E9A319]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[12px] text-[#E9A319]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[12px] text-[#E9A319]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[12px] text-[#E9A319]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[12px] text-[#E9A319]" style="font-variation-settings: 'FILL' 1;">star_half</span>
+<span class="text-[11px] text-text-secondary ml-1">(4.8)</span>
+</div>
+</div>
+<div class="text-right shrink-0">
+<div class="flex items-center justify-end text-[12px] text-[#2A9D8F] font-medium">
+<span class="w-2 h-2 rounded-full bg-[#2A9D8F] mr-1"></span>
+                                Disponible
+                            </div>
+<p class="text-[12px] font-bold text-primary-container mt-1">Hoy 3:00 PM</p>
+</div>
+</div>
+<hr class="border-outline-variant mb-3"/>
+<div class="flex justify-between items-center">
+<button class="text-text-secondary font-label-md text-label-md hover:underline">Ver perfil</button>
+<button class="bg-primary-container text-on-primary px-4 py-2 rounded-[20px] font-label-md text-label-md shadow-sm active:scale-95 transition-transform">Agendar cita <span class="ml-1">→</span></button>
+</div>
+</article>
+<!-- Doctor Card 2 -->
+<article class="bg-surface rounded-xl p-4 doctor-card-shadow border-l-4 border-secondary">
+<div class="flex gap-3 mb-3">
+<div class="w-14 h-14 rounded-full overflow-hidden bg-primary-light flex items-center justify-center shrink-0">
+<img class="w-full h-full object-cover" data-alt="Portrait of a professional female pediatrician smiling, wearing a light blue stethoscope and white lab coat, clean clinical background with warm lighting, modern medical corporate style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDlf6qL51tfAf5Ift8I3sv7VcWNcbJwkCCyrVI_kZXS94X9qzxeoQ165lp3Dhbx9YTc-XuHkWbmxqoWirQfVoU4SgsjlU3fv19KW_hq8w8bUgl1zeddF4zmvPpMQ6qYNhzRIo-MAxJSDUwLnMSzT6-CerUHFv5l0N_T3slU5nT-YgQ8UjJbaLNC5PE5FyJl21FmjBDwCFP-dtbqIaE__cxqlzkIzO7MiO8EdTJ27zkvRnHz3H8haXq9YkQoitQlLqzG0UTfA8I3ZUI"/>
+</div>
+<div class="flex-1 min-w-0">
+<h3 class="font-label-md text-label-md text-text-primary truncate">Dra. Elena Martínez</h3>
+<p class="font-body-sm text-body-sm text-text-secondary">Pediatría</p>
+<p class="text-[11px] text-text-muted">Céd. Prof. 87654321</p>
+<div class="flex items-center mt-1">
+<span class="material-symbols-outlined text-[12px] text-[#E9A319]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[12px] text-[#E9A319]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[12px] text-[#E9A319]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[12px] text-[#E9A319]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[12px] text-[#E9A319]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-[11px] text-text-secondary ml-1">(5.0)</span>
+</div>
+</div>
+<div class="text-right shrink-0">
+<div class="flex items-center justify-end text-[12px] text-[#2A9D8F] font-medium">
+<span class="w-2 h-2 rounded-full bg-[#2A9D8F] mr-1"></span>
+                                Disponible
+                            </div>
+<p class="text-[12px] font-bold text-primary-container mt-1">Mañana 9:00 AM</p>
+</div>
+</div>
+<hr class="border-outline-variant mb-3"/>
+<div class="flex justify-between items-center">
+<button class="text-text-secondary font-label-md text-label-md hover:underline">Ver perfil</button>
+<button class="bg-primary-container text-on-primary px-4 py-2 rounded-[20px] font-label-md text-label-md shadow-sm active:scale-95 transition-transform">Agendar cita <span class="ml-1">→</span></button>
+</div>
+</article>
+<!-- Doctor Card 3 (Sin Disponibilidad) -->
+<article class="bg-surface rounded-xl p-4 doctor-card-shadow border-l-4 border-danger opacity-80">
+<div class="flex gap-3 mb-3">
+<div class="w-14 h-14 rounded-full overflow-hidden bg-primary-light flex items-center justify-center shrink-0">
+<img class="w-full h-full object-cover" data-alt="Portrait of a male dermatologist in a modern clinic, clean professional lighting, blue background accents, trustworthy and professional medical look, modern SaaS aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDPPHy0RfEOxT7lhoLnWuu8ArGsOTkw8Zha3IQAAbqKS6v1-a2BHIR5_9HPM9BoyhfECa5FI5q5G1vKG8PreEdxTj9i6ubroomv-zEvBJYKMN5gRhoULrGbydn79klfv6dWb1aQ3WTGtHTY_3TSeeTvjwDKolOZfYU_5aI5tG124ka9SNBvhLIbO3zW9syM1W9Zd6GVkimanVqvS5PuWDqO8jhMRPSGZjiHPl7fH5b25K-jHLk_94WBZX6Cwc8_3V1yJkK_dhaxDhA"/>
+</div>
+<div class="flex-1 min-w-0">
+<h3 class="font-label-md text-label-md text-text-primary truncate">Dr. Carlos Ruiz</h3>
+<p class="font-body-sm text-body-sm text-text-secondary">Dermatología</p>
+<p class="text-[11px] text-text-muted">Céd. Prof. 54321678</p>
+<div class="flex items-center mt-1">
+<span class="material-symbols-outlined text-[12px] text-[#E9A319]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[12px] text-[#E9A319]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[12px] text-[#E9A319]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[12px] text-[#E9A319]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[12px] text-[#E9A319]">star_outline</span>
+<span class="text-[11px] text-text-secondary ml-1">(4.2)</span>
+</div>
+</div>
+<div class="text-right shrink-0">
+<div class="flex items-center justify-end text-[12px] text-danger font-medium">
+<span class="material-symbols-outlined text-[14px] mr-1">event_busy</span>
+                                Sin disponibilidad
+                            </div>
+<p class="text-[11px] text-danger mt-1">esta semana</p>
+</div>
+</div>
+<hr class="border-outline-variant mb-3"/>
+<div class="flex justify-between items-center">
+<button class="text-text-secondary font-label-md text-label-md hover:underline">Ver perfil</button>
+<button class="bg-outline-variant text-on-surface-variant cursor-not-allowed px-4 py-2 rounded-[20px] font-label-md text-label-md shadow-none" disabled="">Agendar cita <span class="ml-1">→</span></button>
+</div>
+</article>
+<!-- Doctor Card 4 -->
+<article class="bg-surface rounded-xl p-4 doctor-card-shadow border-l-4 border-secondary">
+<div class="flex gap-3 mb-3">
+<div class="w-14 h-14 rounded-full overflow-hidden bg-primary-light flex items-center justify-center shrink-0">
+<img class="w-full h-full object-cover" data-alt="Portrait of an experienced orthopedic surgeon in a medical environment, focused and professional expression, wearing scrubs and a lab coat, clinical precision lighting, modern healthcare style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuADfF-wvQjRKGkXPyrdBktSZ1r-ces7PvWlkV5ChDNcnJX1Vq9Ak02Eye_YKcZJeKgu79KCNzafQ4haTs5lyvPANCKAOhBfT3kSE9x0c72qxfySMWGPwGnXuCriNBQh0ras3WwEWPxE6F3UJKSwT5QQEbyn3mdx2RV9PW6tEpKjUXKNFQRa5TY4eVWCwVuMTSpll5AgxYVlLcfXB5emYFfqwU2tN99MLJvfEBap0_z1arjtbDjIJTonmAmHWu2YDW57q9RZcuDOtms"/>
+</div>
+<div class="flex-1 min-w-0">
+<h3 class="font-label-md text-label-md text-text-primary truncate">Dra. Lucía Torres</h3>
+<p class="font-body-sm text-body-sm text-text-secondary">Traumatología</p>
+<p class="text-[11px] text-text-muted">Céd. Prof. 11223344</p>
+<div class="flex items-center mt-1">
+<span class="material-symbols-outlined text-[12px] text-[#E9A319]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[12px] text-[#E9A319]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[12px] text-[#E9A319]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[12px] text-[#E9A319]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[12px] text-[#E9A319]" style="font-variation-settings: 'FILL' 1;">star_half</span>
+<span class="text-[11px] text-text-secondary ml-1">(4.6)</span>
+</div>
+</div>
+<div class="text-right shrink-0">
+<div class="flex items-center justify-end text-[12px] text-[#2A9D8F] font-medium">
+<span class="w-2 h-2 rounded-full bg-[#2A9D8F] mr-1"></span>
+                                Disponible
+                            </div>
+<p class="text-[12px] font-bold text-primary-container mt-1">Vie 11:30 AM</p>
+</div>
+</div>
+<hr class="border-outline-variant mb-3"/>
+<div class="flex justify-between items-center">
+<button class="text-text-secondary font-label-md text-label-md hover:underline">Ver perfil</button>
+<button class="bg-primary-container text-on-primary px-4 py-2 rounded-[20px] font-label-md text-label-md shadow-sm active:scale-95 transition-transform">Agendar cita <span class="ml-1">→</span></button>
+</div>
+</article>
+</section>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 w-[360px] h-16 bg-surface shadow-lg z-50 flex justify-around items-center px-4 border-t border-outline-variant">
+<div class="flex flex-col items-center justify-center text-on-surface-variant cursor-pointer">
+<span class="material-symbols-outlined text-[24px]">home</span>
+<span class="font-label-md text-[10px]">Inicio</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant cursor-pointer">
+<span class="material-symbols-outlined text-[24px]">event</span>
+<span class="font-label-md text-[10px]">Citas</span>
+</div>
+<!-- Active Tab: Doctores -->
+<div class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-4 py-1 cursor-pointer">
+<span class="material-symbols-outlined text-[24px]" style="font-variation-settings: 'FILL' 1;">stethoscope</span>
+<span class="font-label-md text-[10px]">Doctores</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant cursor-pointer">
+<span class="material-symbols-outlined text-[24px]">receipt_long</span>
+<span class="font-label-md text-[10px]">Historial</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant cursor-pointer">
+<span class="material-symbols-outlined text-[24px]">person</span>
+<span class="font-label-md text-[10px]">Perfil</span>
+</div>
+</nav>
+</div>
+<script>
+        // Micro-interactions for chips
+        const chips = document.querySelectorAll('.whitespace-nowrap button');
+        chips.forEach(chip => {
+            chip.addEventListener('click', () => {
+                chips.forEach(c => {
+                    c.classList.remove('bg-primary-container', 'text-on-primary');
+                    c.classList.add('border', 'border-border', 'text-text-secondary');
+                });
+                chip.classList.remove('border', 'border-border', 'text-text-secondary');
+                chip.classList.add('bg-primary-container', 'text-on-primary');
+            });
+        });
+    </script>
+</body></html>

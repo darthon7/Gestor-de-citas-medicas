@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Configuración de Horarios | MediAdmin</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .diagonal-stripes {
+            background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(231, 111, 81, 0.1) 10px, rgba(231, 111, 81, 0.1) 20px);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f7f9fc;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e0;
+            border-radius: 10px;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-container": "#8cf5e4",
+                        "primary-fixed": "#c7e7ff",
+                        "on-secondary-fixed": "#00201c",
+                        "on-error-container": "#93000a",
+                        "surface-tint": "#0e658c",
+                        "on-primary-fixed": "#001e2e",
+                        "surface-variant": "#e0e3e6",
+                        "primary-light": "#A8D5E2",
+                        "inverse-on-surface": "#eff1f4",
+                        "text-muted": "#A0AEC0",
+                        "primary-container": "#1b6b93",
+                        "surface": "#FFFFFF",
+                        "secondary": "#006a60",
+                        "on-surface": "#191c1e",
+                        "on-secondary-fixed-variant": "#005048",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-highest": "#e0e3e6",
+                        "outline-variant": "#c0c7cf",
+                        "secondary-fixed-dim": "#6fd8c8",
+                        "on-tertiary-container": "#ffdeaf",
+                        "text-secondary": "#4A5568",
+                        "danger": "#E76F51",
+                        "on-secondary": "#ffffff",
+                        "inverse-surface": "#2d3133",
+                        "surface-container": "#eceef1",
+                        "background": "#f7f9fc",
+                        "surface-bright": "#f7f9fc",
+                        "on-primary-container": "#c7e7ff",
+                        "surface-container-high": "#e6e8eb",
+                        "tertiary-fixed-dim": "#ffba42",
+                        "on-primary": "#ffffff",
+                        "primary-fixed-dim": "#8bcefb",
+                        "on-tertiary-fixed-variant": "#614000",
+                        "inverse-primary": "#8bcefb",
+                        "on-background": "#191c1e",
+                        "danger-light": "#FADED4",
+                        "primary": "#005275",
+                        "surface-container-low": "#f2f4f7",
+                        "on-secondary-container": "#007166",
+                        "on-error": "#ffffff",
+                        "tertiary": "#684600",
+                        "surface-dim": "#d8dadd",
+                        "error": "#ba1a1a",
+                        "outline": "#70787f",
+                        "secondary-fixed": "#8cf5e4",
+                        "primary-dark": "#0F4C6B",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary-fixed-variant": "#004c6c",
+                        "border": "#E2E8F0",
+                        "on-tertiary-fixed": "#281800",
+                        "tertiary-fixed": "#ffddaf",
+                        "on-surface-variant": "#40484e",
+                        "text-primary": "#1A1A2E",
+                        "secondary-light": "#B5E8D5",
+                        "tertiary-container": "#885c00",
+                        "error-container": "#ffdad6"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "unit": "4px",
+                        "gutter-sm": "16px",
+                        "gutter-md": "24px",
+                        "margin-edge": "24px",
+                        "sidebar-width": "260px",
+                        "header-height": "64px"
+                    },
+                    "fontFamily": {
+                        "headline-sm": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-md": ["Inter"],
+                        "caption": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-sm": ["18px", {"lineHeight": "24px", "fontWeight": "500"}],
+                        "headline-md": ["22px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "headline-lg": ["28px", {"lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "label-md": ["15px", {"lineHeight": "20px", "fontWeight": "600"}],
+                        "caption": ["13px", {"lineHeight": "18px", "fontWeight": "400"}]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background font-body-md text-on-surface custom-scrollbar overflow-x-hidden">
+<!-- SideNavBar (Authority Source: JSON) -->
+<aside class="w-sidebar-width h-screen fixed left-0 top-0 bg-primary-dark shadow-md flex flex-col h-full py-6 z-50">
+<div class="px-6 mb-8">
+<h1 class="font-headline-sm text-headline-sm text-on-primary tracking-tight">MediAdmin</h1>
+<p class="text-primary-light/60 text-caption">Hospital Central</p>
+</div>
+<nav class="flex-1 space-y-1">
+<div class="flex items-center px-6 py-3 text-primary-light/70 hover:text-on-primary hover:bg-primary/50 transition-colors cursor-pointer active:scale-95 group">
+<span class="material-symbols-outlined mr-3">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</div>
+<div class="flex items-center px-6 py-3 text-primary-light/70 hover:text-on-primary hover:bg-primary/50 transition-colors cursor-pointer active:scale-95 group">
+<span class="material-symbols-outlined mr-3">calendar_today</span>
+<span class="font-label-md text-label-md">Citas</span>
+</div>
+<!-- Active Navigation: Doctores -->
+<div class="flex items-center px-6 py-3 text-on-primary bg-primary-container/20 border-l-4 border-secondary-light transition-colors cursor-pointer active:scale-95 group">
+<span class="material-symbols-outlined mr-3" style="font-variation-settings: 'FILL' 1;">medical_services</span>
+<span class="font-label-md text-label-md">Doctores</span>
+</div>
+<div class="flex items-center px-6 py-3 text-primary-light/70 hover:text-on-primary hover:bg-primary/50 transition-colors cursor-pointer active:scale-95 group">
+<span class="material-symbols-outlined mr-3">history</span>
+<span class="font-label-md text-label-md">Historial</span>
+</div>
+<div class="flex items-center px-6 py-3 text-primary-light/70 hover:text-on-primary hover:bg-primary/50 transition-colors cursor-pointer active:scale-95 group">
+<span class="material-symbols-outlined mr-3">settings</span>
+<span class="font-label-md text-label-md">Ajustes</span>
+</div>
+</nav>
+<div class="px-6 mt-auto">
+<button class="w-full bg-secondary text-on-secondary py-3 rounded-lg font-label-md hover:bg-secondary-fixed transition-colors active:scale-95">
+                Nueva Cita
+            </button>
+</div>
+</aside>
+<!-- TopNavBar (Authority Source: JSON) -->
+<header class="h-header-height fixed top-0 right-0 w-[calc(100%-260px)] bg-surface border-b border-outline-variant flex items-center justify-between px-gutter-md ml-sidebar-width z-40">
+<div class="flex items-center bg-surface-container-low px-4 py-2 rounded-full w-96">
+<span class="material-symbols-outlined text-outline mr-2">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-body-sm w-full" placeholder="Buscar doctor, paciente..." type="text"/>
+</div>
+<div class="flex items-center space-x-6">
+<button class="relative text-on-surface-variant hover:bg-surface-container-low p-2 rounded-full transition-all">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-danger rounded-full"></span>
+</button>
+<button class="text-on-surface-variant hover:bg-surface-container-low p-2 rounded-full transition-all">
+<span class="material-symbols-outlined">help_outline</span>
+</button>
+<div class="flex items-center space-x-3 border-l pl-6 border-outline-variant">
+<div class="text-right">
+<p class="font-label-md text-label-md text-on-surface leading-none">Admin Elena</p>
+<p class="text-caption text-text-muted">Administrador</p>
+</div>
+<img class="w-10 h-10 rounded-full border border-outline-variant object-cover" data-alt="A professional headshot portrait of a female medical hospital administrator with a kind smile, wearing a clean white lab coat over a professional navy blouse, set against a soft blurred medical office background with natural bright lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC4EFIszmoTMzpuzUOLwxepKCjSI16m4RhBPpE_9dxVQUvT6L0O6OmiTSP-ZzIXPtfkl1p9OY-NC6wVauW5qmZQ92cQWScQ-x6MwUr_RuwGO0QzVaiuj7qzPA9RrcvnNdiNQfpJHCqmEbAUYdOd_blblWsreKgzJBsx6rftd0xzPZ4EbSnhOTS_z7JvRbzZERIpSVaBUYiyiZfWFFpIUhD8VklXZIxEnatolJFDODjOUNelCi4WZ8omp0YMqSfmH9Hb6pN8x7vWweM"/>
+</div>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="ml-sidebar-width pt-[64px] min-h-screen p-gutter-md">
+<div class="max-w-[1400px] mx-auto">
+<!-- Breadcrumb -->
+<nav class="flex items-center space-x-2 text-text-secondary mb-6 font-body-sm">
+<span>Doctores</span>
+<span class="material-symbols-outlined text-body-sm">chevron_right</span>
+<span>Dr. Roberto Sánchez</span>
+<span class="material-symbols-outlined text-body-sm">chevron_right</span>
+<span class="font-bold text-primary">Horarios</span>
+</nav>
+<!-- Doctor Info Card -->
+<div class="bg-surface rounded-xl p-4 shadow-sm mb-6 flex items-center justify-between border-l-4 border-primary">
+<div class="flex items-center space-x-4">
+<img class="w-12 h-12 rounded-full object-cover ring-2 ring-primary-fixed" data-alt="A close-up portrait of Dr. Roberto Sanchez, a male doctor in his 40s with professional eyeglasses and a stethoscope around his neck, looking confident and approachable. The lighting is bright and airy, consistent with a modern clinical environment, using a soft blue and white color palette." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD6bVOq1QHvy1wQpQPAmHOjVG9Nz0I_ufjaPVs270rtmocJGre-PxsDSbjI6YD9drZ5NgPW-oDqHLLqGP5kVTA4kCKb8F9bRmxDEnpMUW2lIZ7leikgEQOUBhJcmnanwTN_XCgsXemqHdGNGNCZZ66XqfAlUDly_vC1g4Eoxpugzss-dDwM7YjDRqlC2VME5S1grfhaXJHCe-alpXXS3kny8bUfYBmqx_9iPiB7Ghv2pSo1SZyaTbM-JEC2lbC_RzFDjP5ZVf6WRQk"/>
+<div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Dr. Roberto Sánchez</h2>
+<div class="flex items-center space-x-2 mt-1">
+<span class="bg-secondary-fixed text-on-secondary-container px-2 py-0.5 rounded-md text-[11px] font-bold uppercase tracking-wider">Consulta General</span>
+<span class="text-text-muted text-caption">• ID: MED-9942</span>
+</div>
+</div>
+</div>
+<div class="flex space-x-3">
+<button class="flex items-center space-x-2 px-4 py-2 border border-outline rounded-lg text-label-md hover:bg-surface-container-low transition-all">
+<span class="material-symbols-outlined text-body-md">edit</span>
+<span>Editar Perfil</span>
+</button>
+<button class="flex items-center space-x-2 px-4 py-2 bg-primary text-on-primary rounded-lg text-label-md shadow-md hover:opacity-90 transition-all active:scale-95">
+<span class="material-symbols-outlined text-body-md">save</span>
+<span>Guardar Cambios</span>
+</button>
+</div>
+</div>
+<div class="flex gap-6">
+<!-- Weekly Schedule Grid -->
+<div class="flex-1 bg-surface rounded-xl shadow-sm border border-outline-variant overflow-hidden">
+<div class="grid grid-cols-7 border-b border-outline-variant bg-surface-container-low">
+<div class="py-3 px-2 text-center font-label-md text-on-surface-variant border-r border-outline-variant">Lunes</div>
+<div class="py-3 px-2 text-center font-label-md text-on-surface-variant border-r border-outline-variant">Martes</div>
+<div class="py-3 px-2 text-center font-label-md text-on-surface-variant border-r border-outline-variant">Miércoles</div>
+<div class="py-3 px-2 text-center font-label-md text-on-surface-variant border-r border-outline-variant">Jueves</div>
+<div class="py-3 px-2 text-center font-label-md text-on-surface-variant border-r border-outline-variant">Viernes</div>
+<div class="py-3 px-2 text-center font-label-md text-on-surface-variant border-r border-outline-variant text-danger">Sábado</div>
+<div class="py-3 px-2 text-center font-label-md text-on-surface-variant text-text-muted">Domingo</div>
+</div>
+<div class="grid grid-cols-7 h-[640px]">
+<!-- Lunes -->
+<div class="p-2 border-r border-outline-variant flex flex-col space-y-2 overflow-y-auto custom-scrollbar">
+<div class="bg-primary-light p-3 rounded-lg border border-primary/20 transition-all hover:shadow-md cursor-pointer">
+<p class="text-[11px] font-bold text-primary-dark mb-1">8:00 AM — 2:00 PM</p>
+<p class="text-caption text-primary-dark/80">Consulta General</p>
+</div>
+<div class="bg-background p-3 rounded-lg border border-outline-variant border-dashed flex flex-col justify-center items-center text-text-muted">
+<p class="text-[10px] font-bold uppercase">Descanso</p>
+</div>
+<div class="bg-primary-light p-3 rounded-lg border border-primary/20 transition-all hover:shadow-md cursor-pointer">
+<p class="text-[11px] font-bold text-primary-dark mb-1">3:00 PM — 7:00 PM</p>
+<p class="text-caption text-primary-dark/80">Consulta General</p>
+</div>
+<button class="mt-auto py-2 border-2 border-dashed border-outline-variant rounded-lg text-outline flex items-center justify-center hover:bg-surface-container-low transition-all">
+<span class="material-symbols-outlined text-body-md">add</span>
+<span class="text-caption ml-1">Agregar</span>
+</button>
+</div>
+<!-- Martes -->
+<div class="p-2 border-r border-outline-variant flex flex-col space-y-2">
+<div class="bg-primary-light p-3 rounded-lg border border-primary/20">
+<p class="text-[11px] font-bold text-primary-dark mb-1">8:00 AM — 2:00 PM</p>
+<p class="text-caption text-primary-dark/80">Consulta General</p>
+</div>
+<div class="bg-background p-3 rounded-lg border border-outline-variant border-dashed flex flex-col justify-center items-center text-text-muted">
+<p class="text-[10px] font-bold uppercase">Descanso</p>
+</div>
+<div class="bg-primary-light p-3 rounded-lg border border-primary/20">
+<p class="text-[11px] font-bold text-primary-dark mb-1">3:00 PM — 7:00 PM</p>
+<p class="text-caption text-primary-dark/80">Consulta General</p>
+</div>
+<button class="mt-auto py-2 border-2 border-dashed border-outline-variant rounded-lg text-outline flex items-center justify-center hover:bg-surface-container-low transition-all">
+<span class="material-symbols-outlined text-body-md">add</span>
+<span class="text-caption ml-1">Agregar</span>
+</button>
+</div>
+<!-- Miércoles (Blocked) -->
+<div class="p-2 border-r border-outline-variant flex flex-col space-y-2">
+<div class="bg-danger-light diagonal-stripes p-3 rounded-lg border border-danger/30 flex flex-col items-center justify-center min-h-[120px]">
+<span class="material-symbols-outlined text-danger mb-1">lock</span>
+<p class="text-[11px] font-bold text-danger uppercase tracking-tighter">Bloqueado</p>
+<p class="text-[9px] text-danger/80">Personal</p>
+</div>
+<button class="mt-auto py-2 border-2 border-dashed border-outline-variant rounded-lg text-outline flex items-center justify-center hover:bg-surface-container-low transition-all">
+<span class="material-symbols-outlined text-body-md">add</span>
+<span class="text-caption ml-1">Agregar</span>
+</button>
+</div>
+<!-- Jueves -->
+<div class="p-2 border-r border-outline-variant flex flex-col space-y-2">
+<div class="bg-primary-light p-3 rounded-lg border border-primary/20">
+<p class="text-[11px] font-bold text-primary-dark mb-1">8:00 AM — 2:00 PM</p>
+<p class="text-caption text-primary-dark/80">Consulta General</p>
+</div>
+<div class="bg-background p-3 rounded-lg border border-outline-variant border-dashed flex flex-col justify-center items-center text-text-muted">
+<p class="text-[10px] font-bold uppercase">Descanso</p>
+</div>
+<div class="bg-primary-light p-3 rounded-lg border border-primary/20">
+<p class="text-[11px] font-bold text-primary-dark mb-1">3:00 PM — 7:00 PM</p>
+<p class="text-caption text-primary-dark/80">Consulta General</p>
+</div>
+<button class="mt-auto py-2 border-2 border-dashed border-outline-variant rounded-lg text-outline flex items-center justify-center hover:bg-surface-container-low transition-all">
+<span class="material-symbols-outlined text-body-md">add</span>
+<span class="text-caption ml-1">Agregar</span>
+</button>
+</div>
+<!-- Viernes -->
+<div class="p-2 border-r border-outline-variant flex flex-col space-y-2">
+<div class="bg-primary-light p-3 rounded-lg border border-primary/20">
+<p class="text-[11px] font-bold text-primary-dark mb-1">8:00 AM — 12:00 PM</p>
+<p class="text-caption text-primary-dark/80">Consulta General</p>
+</div>
+<button class="mt-auto py-2 border-2 border-dashed border-outline-variant rounded-lg text-outline flex items-center justify-center hover:bg-surface-container-low transition-all">
+<span class="material-symbols-outlined text-body-md">add</span>
+<span class="text-caption ml-1">Agregar</span>
+</button>
+</div>
+<!-- Sábado -->
+<div class="p-2 border-r border-outline-variant flex flex-col space-y-2">
+<div class="bg-primary-light p-3 rounded-lg border border-primary/20 opacity-60">
+<p class="text-[11px] font-bold text-primary-dark mb-1">9:00 AM — 1:00 PM</p>
+<p class="text-caption text-primary-dark/80">Consulta Especial</p>
+</div>
+<button class="mt-auto py-2 border-2 border-dashed border-outline-variant rounded-lg text-outline flex items-center justify-center hover:bg-surface-container-low transition-all">
+<span class="material-symbols-outlined text-body-md">add</span>
+<span class="text-caption ml-1">Agregar</span>
+</button>
+</div>
+<!-- Domingo -->
+<div class="p-2 bg-surface-container-low flex flex-col items-center justify-center text-text-muted">
+<span class="material-symbols-outlined mb-2 text-[32px] opacity-20">event_busy</span>
+<p class="text-caption font-bold uppercase tracking-widest text-center">No disponible</p>
+</div>
+</div>
+</div>
+<!-- Right Panel: Block Scheduling -->
+<aside class="w-[280px] space-y-6">
+<div class="bg-surface p-6 rounded-xl shadow-sm border border-outline-variant">
+<div class="flex items-center space-x-2 mb-6">
+<span class="material-symbols-outlined text-danger">event_busy</span>
+<h3 class="font-headline-sm text-headline-sm">Bloqueo</h3>
+</div>
+<form class="space-y-4">
+<div>
+<label class="block font-label-md text-label-md text-on-surface-variant mb-2">Desde</label>
+<div class="relative">
+<input class="w-full border-border rounded-lg text-body-sm focus:ring-primary focus:border-primary pl-10 h-10" type="date"/>
+<span class="material-symbols-outlined absolute left-3 top-2.5 text-body-md text-outline">calendar_today</span>
+</div>
+</div>
+<div>
+<label class="block font-label-md text-label-md text-on-surface-variant mb-2">Hasta</label>
+<div class="relative">
+<input class="w-full border-border rounded-lg text-body-sm focus:ring-primary focus:border-primary pl-10 h-10" type="date"/>
+<span class="material-symbols-outlined absolute left-3 top-2.5 text-body-md text-outline">calendar_today</span>
+</div>
+</div>
+<div>
+<label class="block font-label-md text-label-md text-on-surface-variant mb-2">Motivo</label>
+<select class="w-full border-border rounded-lg text-body-sm focus:ring-primary focus:border-primary h-10 px-3">
+<option>Vacaciones</option>
+<option>Incapacidad</option>
+<option>Personal</option>
+</select>
+</div>
+<div class="bg-danger-light p-4 rounded-lg flex items-start space-x-3 border border-danger/20">
+<span class="material-symbols-outlined text-danger text-body-md flex-shrink-0 mt-0.5">warning</span>
+<p class="text-[11px] leading-tight text-danger font-medium">
+                                    Al bloquear este horario, 3 citas ya agendadas serán afectadas.
+                                </p>
+</div>
+<button class="w-full bg-danger text-on-primary py-3 rounded-lg font-label-md flex items-center justify-center space-x-2 shadow-md hover:brightness-95 transition-all active:scale-95" type="button">
+<span class="material-symbols-outlined text-body-md">lock</span>
+<span>Bloquear Horario</span>
+</button>
+</form>
+</div>
+<div class="bg-surface p-6 rounded-xl shadow-sm border border-outline-variant">
+<h4 class="font-label-md text-label-md mb-4 flex items-center">
+<span class="material-symbols-outlined mr-2 text-primary">info</span>
+                            Resumen Semanal
+                        </h4>
+<div class="space-y-3">
+<div class="flex justify-between items-center text-caption">
+<span class="text-text-secondary">Horas Laborales</span>
+<span class="font-bold text-on-surface">36h / semana</span>
+</div>
+<div class="w-full bg-surface-container-high h-2 rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[72%]"></div>
+</div>
+<div class="flex justify-between items-center text-[11px]">
+<span class="text-text-secondary">Cupos Disponibles</span>
+<span class="text-secondary font-bold">144 pacientes</span>
+</div>
+</div>
+</div>
+</aside>
+</div>
+</div>
+</main>
+<script>
+        // Micro-interactions for schedule blocks
+        document.querySelectorAll('.bg-primary-light').forEach(block => {
+            block.addEventListener('click', function() {
+                this.classList.toggle('ring-2');
+                this.classList.toggle('ring-primary');
+            });
+        });
+    </script>
+</body></html>

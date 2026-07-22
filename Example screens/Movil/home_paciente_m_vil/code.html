@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MediAdmin - Home Paciente</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                "outline": "#70787f",
+                "on-primary-fixed-variant": "#004c6c",
+                "on-primary-container": "#c7e7ff",
+                "on-primary": "#ffffff",
+                "outline-variant": "#c0c7cf",
+                "secondary": "#006a60",
+                "surface-container-lowest": "#ffffff",
+                "surface-container-low": "#f2f4f7",
+                "tertiary-fixed-dim": "#ffba42",
+                "on-surface": "#191c1e",
+                "error": "#ba1a1a",
+                "surface": "#FFFFFF",
+                "primary-fixed": "#c7e7ff",
+                "on-secondary-fixed-variant": "#005048",
+                "on-secondary": "#ffffff",
+                "danger": "#E76F51",
+                "background": "#f7f9fc",
+                "inverse-surface": "#2d3133",
+                "primary-fixed-dim": "#8bcefb",
+                "on-tertiary": "#ffffff",
+                "surface-container-highest": "#e0e3e6",
+                "surface-bright": "#f7f9fc",
+                "primary-light": "#A8D5E2",
+                "border": "#E2E8F0",
+                "on-surface-variant": "#40484e",
+                "on-tertiary-fixed-variant": "#614000",
+                "tertiary-container": "#885c00",
+                "on-primary-fixed": "#001e2e",
+                "on-error": "#ffffff",
+                "primary-dark": "#0F4C6B",
+                "on-tertiary-container": "#ffdeaf",
+                "error-container": "#ffdad6",
+                "secondary-fixed": "#8cf5e4",
+                "on-background": "#191c1e",
+                "text-secondary": "#4A5568",
+                "secondary-fixed-dim": "#6fd8c8",
+                "secondary-container": "#8cf5e4",
+                "surface-container": "#eceef1",
+                "on-tertiary-fixed": "#281800",
+                "surface-container-high": "#e6e8eb",
+                "inverse-on-surface": "#eff1f4",
+                "tertiary": "#684600",
+                "danger-light": "#FADED4",
+                "primary-container": "#1b6b93",
+                "on-error-container": "#93000a",
+                "surface-dim": "#d8dadd",
+                "text-muted": "#A0AEC0",
+                "text-primary": "#1A1A2E",
+                "inverse-primary": "#8bcefb",
+                "tertiary-fixed": "#ffddaf",
+                "surface-tint": "#0e658c",
+                "surface-variant": "#e0e3e6",
+                "on-secondary-container": "#007166",
+                "secondary-light": "#B5E8D5",
+                "primary": "#005275",
+                "on-secondary-fixed": "#00201c"
+            },
+            "borderRadius": {
+                "DEFAULT": "0.25rem",
+                "lg": "0.5rem",
+                "xl": "0.75rem",
+                "full": "9999px"
+            },
+            "spacing": {
+                "margin-edge": "24px",
+                "sidebar-width": "260px",
+                "gutter-md": "24px",
+                "gutter-sm": "16px",
+                "unit": "4px",
+                "header-height": "64px"
+            },
+            "fontFamily": {
+                "headline-lg": ["Inter"],
+                "body-md": ["Inter"],
+                "headline-md": ["Inter"],
+                "body-sm": ["Inter"],
+                "caption": ["Inter"],
+                "headline-sm": ["Inter"],
+                "headline-lg-mobile": ["Inter"],
+                "label-md": ["Inter"]
+            },
+            "fontSize": {
+                "headline-lg": ["28px", {"lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                "headline-md": ["22px", {"lineHeight": "28px", "fontWeight": "600"}],
+                "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                "caption": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                "headline-sm": ["18px", {"lineHeight": "24px", "fontWeight": "500"}],
+                "headline-lg-mobile": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                "label-md": ["15px", {"lineHeight": "20px", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #f7f9fc;
+            font-family: 'Inter', sans-serif;
+        }
+        .header-curve {
+            border-bottom-left-radius: 40px;
+            border-bottom-right-radius: 40px;
+        }
+        .custom-shadow {
+            box-shadow: 0 2px 12px rgba(27, 107, 147, 0.08);
+        }
+        .active-tab-indicator {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="min-h-screen pb-24">
+<!-- Header Section -->
+<header class="bg-primary-container text-on-primary header-curve pt-12 pb-24 px-6 relative overflow-hidden">
+<div class="absolute top-0 right-0 opacity-10 pointer-events-none transform translate-x-1/4 -translate-y-1/4">
+<span class="material-symbols-outlined text-[200px]" style="font-variation-settings: 'FILL' 1;">medical_services</span>
+</div>
+<div class="flex justify-between items-center relative z-10">
+<div class="flex items-center gap-3">
+<div class="w-14 h-14 rounded-full border-2 border-primary-light p-0.5 overflow-hidden">
+<img class="w-full h-full object-cover rounded-full" data-alt="A professional close-up portrait of a young Latino man named Juan, smiling warmly with a friendly and approachable expression. He is wearing a simple casual shirt, and the background is a soft-focus modern interior with natural morning light. The image style is clean, high-key, and clinical yet warm, reflecting a modern healthcare application aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAmpdZndNwUFC6SCo8IItpiBbqHtBKEqwAhFZHpz7Ix7Y0qnEF1O9vYWYzKPvzOGr0f-U7YSypock5_HnBCIsr3uaTkmfv3ElzqFpu9HyxDI8HzusmRsfm9d-qsvbh87BlqUTbfmYu-qTMV3Z-6k4kQZTW4fi9vlPXripMwQY0k6B3Bk1ypEcANHQ3Xi_eWX1GM7qw2zUOcQDEuA50rHiJgenw8V-Ti9krzW6fWem4DC9g_kEwwysNAVhBeG5VuqZbvcqz7ggiLoZY"/>
+</div>
+<div>
+<p class="font-body-sm text-body-sm text-primary-light">Bienvenido de nuevo</p>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile font-bold">Hola, Juan 👋</h1>
+</div>
+</div>
+<div class="flex gap-2">
+<button class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Content Area (Overlapping Header) -->
+<main class="px-6 -mt-16 relative z-20 space-y-8">
+<!-- Next Appointment Card -->
+<section>
+<div class="bg-white rounded-xl custom-shadow p-5 border-l-4 border-secondary overflow-hidden relative">
+<div class="flex justify-between items-start mb-4">
+<div>
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-secondary-light text-on-secondary-container text-[11px] font-bold uppercase tracking-wider mb-2">
+                            Próxima Cita
+                        </span>
+<h3 class="font-headline-sm text-headline-sm text-text-primary">Dr. Roberto Sánchez</h3>
+<p class="font-body-sm text-body-sm text-text-secondary">Cardiología • Hospital Central</p>
+</div>
+<div class="w-12 h-12 bg-surface-container-low rounded-lg flex flex-col items-center justify-center border border-outline-variant">
+<span class="text-[10px] font-bold text-primary-dark">JUL</span>
+<span class="text-lg font-bold text-text-primary leading-tight">22</span>
+</div>
+</div>
+<div class="flex items-center justify-between border-t border-outline-variant pt-4">
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-1 text-text-secondary">
+<span class="material-symbols-outlined text-sm">schedule</span>
+<span class="font-body-sm text-body-sm">10:00 AM</span>
+</div>
+<div class="flex items-center gap-1 text-text-secondary">
+<span class="material-symbols-outlined text-sm">location_on</span>
+<span class="font-body-sm text-body-sm">Consultorio 402</span>
+</div>
+</div>
+<button class="text-primary font-label-md text-label-md flex items-center gap-1 hover:underline">
+                        Detalles
+                        <span class="material-symbols-outlined text-sm">chevron_right</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Quick Actions Grid -->
+<section>
+<div class="flex justify-between items-center mb-4">
+<h2 class="font-headline-sm text-headline-sm text-text-primary font-bold">Servicios</h2>
+<button class="text-primary font-label-md text-label-md">Ver todo</button>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<!-- Agendar Cita -->
+<button class="bg-white p-5 rounded-xl custom-shadow flex flex-col items-center gap-3 hover:scale-[1.02] active:scale-95 transition-all">
+<div class="w-12 h-12 rounded-2xl bg-primary-light/20 flex items-center justify-center text-primary-dark">
+<span class="material-symbols-outlined text-3xl">add_circle</span>
+</div>
+<span class="font-label-md text-label-md text-text-primary">Agendar Cita</span>
+</button>
+<!-- Mis Citas -->
+<button class="bg-white p-5 rounded-xl custom-shadow flex flex-col items-center gap-3 hover:scale-[1.02] active:scale-95 transition-all">
+<div class="w-12 h-12 rounded-2xl bg-secondary-light/20 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-3xl">event</span>
+</div>
+<span class="font-label-md text-label-md text-text-primary">Mis Citas</span>
+</button>
+<!-- Doctores -->
+<button class="bg-white p-5 rounded-xl custom-shadow flex flex-col items-center gap-3 hover:scale-[1.02] active:scale-95 transition-all">
+<div class="w-12 h-12 rounded-2xl bg-tertiary-fixed/20 flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined text-3xl">medical_services</span>
+</div>
+<span class="font-label-md text-label-md text-text-primary">Doctores</span>
+</button>
+<!-- Historial -->
+<button class="bg-white p-5 rounded-xl custom-shadow flex flex-col items-center gap-3 hover:scale-[1.02] active:scale-95 transition-all">
+<div class="w-12 h-12 rounded-2xl bg-danger-light/20 flex items-center justify-center text-danger">
+<span class="material-symbols-outlined text-3xl">receipt_long</span>
+</div>
+<span class="font-label-md text-label-md text-text-primary">Historial</span>
+</button>
+</div>
+</section>
+<!-- Specialties Section -->
+<section>
+<div class="flex justify-between items-center mb-4">
+<h2 class="font-headline-sm text-headline-sm text-text-primary font-bold">Especialidades</h2>
+</div>
+<div class="flex gap-3 overflow-x-auto pb-4 -mx-1 px-1 scrollbar-hide no-scrollbar">
+<button class="flex-none px-6 py-2 rounded-full bg-primary-container text-on-primary font-label-md text-label-md custom-shadow">
+                    Cardiología
+                </button>
+<button class="flex-none px-6 py-2 rounded-full bg-white border border-outline-variant text-text-secondary font-label-md text-label-md hover:bg-surface-container-low transition-colors">
+                    Pediatría
+                </button>
+<button class="flex-none px-6 py-2 rounded-full bg-white border border-outline-variant text-text-secondary font-label-md text-label-md hover:bg-surface-container-low transition-colors">
+                    Dermatología
+                </button>
+<button class="flex-none px-6 py-2 rounded-full bg-white border border-outline-variant text-text-secondary font-label-md text-label-md hover:bg-surface-container-low transition-colors">
+                    Psicología
+                </button>
+<button class="flex-none px-6 py-2 rounded-full bg-white border border-outline-variant text-text-secondary font-label-md text-label-md hover:bg-surface-container-low transition-colors">
+                    Nutrición
+                </button>
+</div>
+</section>
+<!-- Health Tips / Promo Section -->
+<section class="pb-10">
+<div class="bg-primary-dark rounded-xl p-5 relative overflow-hidden">
+<div class="relative z-10">
+<h3 class="font-headline-sm text-headline-sm text-white mb-2">Cuida tu salud hoy</h3>
+<p class="font-body-sm text-body-sm text-primary-light max-w-[70%]">Realiza tu chequeo anual preventivo con un 20% de descuento este mes.</p>
+<button class="mt-4 px-4 py-2 bg-secondary text-white rounded-lg font-label-md text-label-md hover:opacity-90 active:scale-95 transition-all">
+                        Más información
+                    </button>
+</div>
+<div class="absolute bottom-[-20px] right-[-20px] opacity-20 transform rotate-12">
+<span class="material-symbols-outlined text-[120px] text-white">stethoscope</span>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 w-full rounded-t-xl z-50 shadow-lg bg-surface flex justify-around items-center px-4 py-2 border-t border-outline-variant">
+<!-- Inicio (Active) -->
+<a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-4 py-1 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="font-label-md text-label-md text-[10px]">Inicio</span>
+</a>
+<!-- Citas -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-high p-2 rounded-xl transition-colors" href="#">
+<span class="material-symbols-outlined">event</span>
+<span class="font-label-md text-label-md text-[10px]">Citas</span>
+</a>
+<!-- Doctores -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-high p-2 rounded-xl transition-colors" href="#">
+<span class="material-symbols-outlined">stethoscope</span>
+<span class="font-label-md text-label-md text-[10px]">Doctores</span>
+</a>
+<!-- Historial -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-high p-2 rounded-xl transition-colors" href="#">
+<span class="material-symbols-outlined">receipt_long</span>
+<span class="font-label-md text-label-md text-[10px]">Historial</span>
+</a>
+<!-- Perfil -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-high p-2 rounded-xl transition-colors" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-md text-label-md text-[10px]">Perfil</span>
+</a>
+</nav>
+<script>
+        // Simple micro-interaction for specialty chips
+        const chips = document.querySelectorAll('section:nth-of-type(3) button');
+        chips.forEach(chip => {
+            chip.addEventListener('click', () => {
+                chips.forEach(c => {
+                    c.classList.remove('bg-primary-container', 'text-on-primary', 'custom-shadow');
+                    c.classList.add('bg-white', 'border', 'border-outline-variant', 'text-text-secondary');
+                });
+                chip.classList.remove('bg-white', 'border', 'border-outline-variant', 'text-text-secondary');
+                chip.classList.add('bg-primary-container', 'text-on-primary', 'custom-shadow');
+            });
+        });
+    </script>
+</body></html>

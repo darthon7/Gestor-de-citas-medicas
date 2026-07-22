@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+
+<html lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Recuperar Contraseña | MediAdmin</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary-container": "#8cf5e4",
+                    "primary-fixed": "#c7e7ff",
+                    "on-secondary-fixed": "#00201c",
+                    "on-error-container": "#93000a",
+                    "surface-tint": "#0e658c",
+                    "on-primary-fixed": "#001e2e",
+                    "surface-variant": "#e0e3e6",
+                    "primary-light": "#A8D5E2",
+                    "inverse-on-surface": "#eff1f4",
+                    "text-muted": "#A0AEC0",
+                    "primary-container": "#1b6b93",
+                    "surface": "#FFFFFF",
+                    "secondary": "#006a60",
+                    "on-surface": "#191c1e",
+                    "on-secondary-fixed-variant": "#005048",
+                    "on-tertiary": "#ffffff",
+                    "surface-container-highest": "#e0e3e6",
+                    "outline-variant": "#c0c7cf",
+                    "secondary-fixed-dim": "#6fd8c8",
+                    "on-tertiary-container": "#ffdeaf",
+                    "text-secondary": "#4A5568",
+                    "danger": "#E76F51",
+                    "on-secondary": "#ffffff",
+                    "inverse-surface": "#2d3133",
+                    "surface-container": "#eceef1",
+                    "background": "#f7f9fc",
+                    "surface-bright": "#f7f9fc",
+                    "on-primary-container": "#c7e7ff",
+                    "surface-container-high": "#e6e8eb",
+                    "tertiary-fixed-dim": "#ffba42",
+                    "on-primary": "#ffffff",
+                    "primary-fixed-dim": "#8bcefb",
+                    "on-tertiary-fixed-variant": "#614000",
+                    "inverse-primary": "#8bcefb",
+                    "on-background": "#191c1e",
+                    "danger-light": "#FADED4",
+                    "primary": "#005275",
+                    "surface-container-low": "#f2f4f7",
+                    "on-secondary-container": "#007166",
+                    "on-error": "#ffffff",
+                    "tertiary": "#684600",
+                    "surface-dim": "#d8dadd",
+                    "error": "#ba1a1a",
+                    "outline": "#70787f",
+                    "secondary-fixed": "#8cf5e4",
+                    "primary-dark": "#0F4C6B",
+                    "surface-container-lowest": "#ffffff",
+                    "on-primary-fixed-variant": "#004c6c",
+                    "border": "#E2E8F0",
+                    "on-tertiary-fixed": "#281800",
+                    "tertiary-fixed": "#ffddaf",
+                    "on-surface-variant": "#40484e",
+                    "text-primary": "#1A1A2E",
+                    "secondary-light": "#B5E8D5",
+                    "tertiary-container": "#885c00",
+                    "error-container": "#ffdad6"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "unit": "4px",
+                    "gutter-sm": "16px",
+                    "gutter-md": "24px",
+                    "margin-edge": "24px",
+                    "sidebar-width": "260px",
+                    "header-height": "64px"
+            },
+            "fontFamily": {
+                    "headline-sm": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "body-md": ["Inter"],
+                    "label-md": ["Inter"],
+                    "caption": ["Inter"],
+                    "headline-lg-mobile": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-sm": ["18px", {"lineHeight": "24px", "fontWeight": "500"}],
+                    "headline-md": ["22px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "headline-lg": ["28px", {"lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "label-md": ["15px", {"lineHeight": "20px", "fontWeight": "600"}],
+                    "caption": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #F7F9FC 0%, #A8D5E2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 1);
+            box-shadow: 0 4px 20px rgba(27, 107, 147, 0.08);
+            backdrop-filter: blur(10px);
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        .input-glow:focus {
+            outline: none;
+            border-color: #1B6B93;
+            box-shadow: 0 0 0 2px rgba(27, 107, 147, 0.1);
+        }
+
+        /* Ambient floating decoration */
+        .ambient-blob {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(168, 213, 226, 0.4) 0%, rgba(247, 249, 252, 0) 70%);
+            border-radius: 50%;
+            z-index: -1;
+            filter: blur(40px);
+            animation: float 20s infinite alternate ease-in-out;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 100px); }
+        }
+    </style>
+</head>
+<body class="p-gutter-sm">
+<div class="ambient-blob top-[-100px] left-[-100px]"></div>
+<div class="ambient-blob bottom-[-100px] right-[-100px]" style="animation-delay: -10s;"></div>
+<main class="w-full max-w-[440px] relative">
+<!-- Logo / Brand Context -->
+<div class="text-center mb-8">
+<h1 class="font-headline-md text-headline-md text-primary-dark tracking-tight">MediAdmin</h1>
+<p class="font-body-sm text-body-sm text-text-secondary mt-1">Gestión Hospitalaria Centralizada</p>
+</div>
+<section class="glass-card rounded-xl p-8 relative overflow-hidden">
+<!-- Back Arrow -->
+<a class="absolute top-6 left-6 text-primary-container hover:opacity-70 transition-opacity flex items-center justify-center w-8 h-8 rounded-full hover:bg-surface-container-low" href="#" title="Regresar">
+<span class="material-symbols-outlined">arrow_back</span>
+</a>
+<!-- Header Content -->
+<div class="flex flex-col items-center text-center mt-4">
+<div class="w-16 h-16 bg-[#FEF3C7] rounded-full flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-[32px]" style="color: #E9A319;">lock_reset</span>
+</div>
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg text-text-primary mb-3">
+                    Recuperar Contraseña
+                </h2>
+<p class="font-body-sm text-body-sm text-text-secondary max-w-[320px]">
+                    Ingresa tu correo electrónico y te enviaremos un enlace para restablecer tu contraseña.
+                </p>
+</div>
+<!-- Form -->
+<form class="mt-8 space-y-6" id="recoveryForm">
+<div class="space-y-2">
+<label class="font-label-md text-label-md text-on-surface-variant block" for="email">
+                        Correo Electrónico
+                    </label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-muted text-[20px]">
+                            mail
+                        </span>
+<input class="w-full pl-10 pr-4 py-3 bg-white border border-border rounded-lg font-body-md text-body-md text-text-primary placeholder:text-text-muted input-glow transition-all" id="email" name="email" placeholder="Correo Electrónico registrado" required="" type="email"/>
+</div>
+</div>
+<button class="w-full bg-primary-container text-white font-label-md text-label-md py-4 rounded-lg shadow-sm hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center gap-2" type="submit">
+                    Enviar enlace de recuperación
+                    <span class="material-symbols-outlined text-[18px]">send</span>
+</button>
+</form>
+<!-- Footer Link -->
+<div class="mt-8 text-center">
+<a class="font-caption text-caption text-primary-container font-medium hover:underline flex items-center justify-center gap-1 group" href="#">
+<span class="material-symbols-outlined text-[16px] group-hover:-translate-x-0.5 transition-transform">login</span>
+                    Volver al inicio de sesión
+                </a>
+</div>
+</section>
+<!-- Trust Badge -->
+<div class="mt-8 flex items-center justify-center gap-4 opacity-60 grayscale hover:grayscale-0 transition-all duration-500">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[20px] text-primary">verified_user</span>
+<span class="text-caption font-label-md text-text-secondary uppercase tracking-widest">Secure Access</span>
+</div>
+<div class="h-4 w-[1px] bg-outline-variant"></div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[20px] text-primary">medical_services</span>
+<span class="text-caption font-label-md text-text-secondary uppercase tracking-widest">Health Standards</span>
+</div>
+</div>
+</main>
+<script>
+        document.getElementById('recoveryForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            const originalContent = btn.innerHTML;
+            
+            // UX Feedback
+            btn.disabled = true;
+            btn.innerHTML = `<span class="material-symbols-outlined animate-spin">progress_activity</span> Enviando...`;
+            
+            setTimeout(() => {
+                btn.innerHTML = `<span class="material-symbols-outlined">check_circle</span> ¡Enlace enviado!`;
+                btn.classList.remove('bg-primary-container');
+                btn.classList.add('bg-secondary');
+                
+                // Reset after 3 seconds for demo purposes
+                setTimeout(() => {
+                    btn.disabled = false;
+                    btn.innerHTML = originalContent;
+                    btn.classList.add('bg-primary-container');
+                    btn.classList.remove('bg-secondary');
+                }, 3000);
+            }, 1500);
+        });
+
+        // Simple parallax effect for blobs
+        document.addEventListener('mousemove', (e) => {
+            const blobs = document.querySelectorAll('.ambient-blob');
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+            
+            blobs.forEach((blob, index) => {
+                const speed = (index + 1) * 20;
+                blob.style.transform = `translate(${x * speed}px, ${y * speed}px)`;
+            });
+        });
+    </script>
+</body></html>

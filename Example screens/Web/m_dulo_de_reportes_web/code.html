@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f9fc;
+            margin: 0;
+            color: #191c1e;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .sidebar-active {
+            border-left: 4px solid #B5E8D5; /* secondary-light */
+            background-color: rgba(27, 107, 147, 0.2); /* primary-container/20 */
+            color: #ffffff;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #c0c7cf;
+            border-radius: 10px;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+        @media (max-width: 768px) {
+            .sidebar-hidden { transform: translateX(-100%); }
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "tertiary-fixed-dim": "#ffba42",
+                      "surface-container-highest": "#e0e3e6",
+                      "secondary-fixed-dim": "#6fd8c8",
+                      "on-primary-fixed": "#001e2e",
+                      "outline-variant": "#c0c7cf",
+                      "tertiary-fixed": "#ffddaf",
+                      "surface-container-low": "#f2f4f7",
+                      "border": "#E2E8F0",
+                      "on-primary": "#ffffff",
+                      "surface-container-high": "#e6e8eb",
+                      "text-primary": "#1A1A2E",
+                      "on-error": "#ffffff",
+                      "text-secondary": "#4A5568",
+                      "inverse-primary": "#8bcefb",
+                      "primary-container": "#1b6b93",
+                      "on-secondary": "#ffffff",
+                      "primary-fixed-dim": "#8bcefb",
+                      "background": "#f7f9fc",
+                      "on-surface-variant": "#40484e",
+                      "text-muted": "#A0AEC0",
+                      "surface-tint": "#0e658c",
+                      "secondary-fixed": "#8cf5e4",
+                      "secondary": "#006a60",
+                      "inverse-on-surface": "#eff1f4",
+                      "surface-container": "#eceef1",
+                      "secondary-container": "#8cf5e4",
+                      "primary-light": "#A8D5E2",
+                      "on-primary-container": "#c7e7ff",
+                      "on-secondary-fixed": "#00201c",
+                      "on-primary-fixed-variant": "#004c6c",
+                      "outline": "#70787f",
+                      "danger": "#E76F51",
+                      "on-tertiary": "#ffffff",
+                      "danger-light": "#FADED4",
+                      "surface-variant": "#e0e3e6",
+                      "surface-container-lowest": "#ffffff",
+                      "on-tertiary-container": "#ffdeaf",
+                      "tertiary": "#684600",
+                      "surface-dim": "#d8dadd",
+                      "on-surface": "#191c1e",
+                      "primary-dark": "#0F4C6B",
+                      "primary": "#005275",
+                      "on-tertiary-fixed": "#281800",
+                      "on-secondary-fixed-variant": "#005048",
+                      "error-container": "#ffdad6",
+                      "on-tertiary-fixed-variant": "#614000",
+                      "on-background": "#191c1e",
+                      "inverse-surface": "#2d3133",
+                      "surface": "#FFFFFF",
+                      "primary-fixed": "#c7e7ff",
+                      "secondary-light": "#B5E8D5",
+                      "surface-bright": "#f7f9fc",
+                      "on-error-container": "#93000a",
+                      "tertiary-container": "#885c00",
+                      "on-secondary-container": "#007166",
+                      "error": "#ba1a1a"
+              },
+              "spacing": {
+                      "unit": "4px",
+                      "sidebar-width": "260px",
+                      "gutter-md": "24px",
+                      "gutter-sm": "16px",
+                      "margin-edge": "24px",
+                      "header-height": "64px"
+              }
+            },
+          }
+        }
+      </script>
+</head>
+<body class="bg-background">
+<!-- Side Navigation Bar -->
+<aside class="bg-primary-dark dark:bg-inverse-surface w-sidebar-width h-screen fixed left-0 top-0 shadow-md flex flex-col py-6 transition-transform z-40" id="side-nav">
+<div class="px-6 mb-10">
+<h1 class="font-headline-sm text-headline-sm text-on-primary tracking-tight font-extrabold">MediAdmin</h1>
+<p class="text-primary-light/60 text-xs mt-1">Hospital Central</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center px-6 py-3 text-primary-light/70 hover:text-on-primary hover:bg-primary/50 transition-colors cursor-pointer active:scale-95 font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined mr-3">dashboard</span>
+                Dashboard
+            </a>
+<a class="flex items-center px-6 py-3 text-primary-light/70 hover:text-on-primary hover:bg-primary/50 transition-colors cursor-pointer active:scale-95 font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined mr-3">calendar_today</span>
+                Citas
+            </a>
+<a class="flex items-center px-6 py-3 text-primary-light/70 hover:text-on-primary hover:bg-primary/50 transition-colors cursor-pointer active:scale-95 font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined mr-3">medical_services</span>
+                Doctores
+            </a>
+<a class="sidebar-active flex items-center px-6 py-3 transition-colors cursor-pointer active:scale-95 font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined mr-3">history</span>
+                Historial
+            </a>
+<a class="flex items-center px-6 py-3 text-primary-light/70 hover:text-on-primary hover:bg-primary/50 transition-colors cursor-pointer active:scale-95 font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined mr-3">settings</span>
+                Ajustes
+            </a>
+</nav>
+<div class="px-6 mt-auto">
+<button class="w-full py-3 px-4 bg-secondary-container text-on-secondary-container rounded-lg font-bold text-sm hover:brightness-110 transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined">add</span>
+                Nueva Cita
+            </button>
+</div>
+</aside>
+<!-- Top App Bar -->
+<header class="h-header-height fixed top-0 right-0 w-[calc(100%-260px)] bg-surface dark:bg-surface-dim border-b border-outline-variant flex items-center justify-between px-gutter-md ml-sidebar-width z-30 shadow-sm">
+<div class="flex items-center gap-4">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="pl-10 pr-4 py-2 bg-surface-container-low rounded-full border-none focus:ring-2 focus:ring-primary-container w-64 text-sm" placeholder="Buscar paciente o doctor..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-low rounded-full transition-all">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-low rounded-full transition-all">
+<span class="material-symbols-outlined">help_outline</span>
+</button>
+<div class="h-8 w-[1px] bg-outline-variant mx-1"></div>
+<div class="flex items-center gap-3">
+<div class="text-right hidden sm:block">
+<p class="text-sm font-bold text-primary">Dr. Alberto Ruiz</p>
+<p class="text-[10px] text-text-muted">Administrador Senior</p>
+</div>
+<img class="w-10 h-10 rounded-full border-2 border-primary-light" data-alt="A professional headshot of a middle-aged male hospital administrator wearing a crisp white medical coat and a stethoscope, set against a soft-focus hospital interior background. The lighting is clean and bright, emphasizing a corporate medical aesthetic with a high-key professional finish and professional calm mood." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD4aM2SOytODQ3mXfP-FEuemK6x-gD7LpiWbAyAArLld6oHrSTSIgtMCXIxMWqlmOQdAscjIjnjwE3qU9uFvEfD1jUb8r6PeU96Hj-oogvWgbOxC0gRy5qE2_cM2QkKRgfkigQy8r2671YTL5ZcSQfKSlzs0imKwnteCLlHO471vbKXBhczPKt_N3VE6UbcEu7CxkJRZBrmxs6pJF3Ge76GF2XZ4wqhOxLVgscPcBNqZabPP79LhoBaX6Ae11uForiIBf3HcIHwoag"/>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-[260px] pt-[64px] min-h-screen p-gutter-md">
+<!-- Header & Breadcrumb -->
+<div class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-primary-dark tracking-tight">Reportes y Analíticas</h2>
+<p class="text-text-secondary text-body-sm">Monitoreo de rendimiento hospitalario y gestión de citas.</p>
+</div>
+<div class="flex items-center gap-2">
+<button class="flex items-center gap-2 px-4 py-2 border border-primary-container text-primary-container rounded-lg font-bold text-sm hover:bg-primary/5 transition-all">
+<span class="material-symbols-outlined text-sm">picture_as_pdf</span> PDF
+                </button>
+<button class="flex items-center gap-2 px-4 py-2 border border-primary-container text-primary-container rounded-lg font-bold text-sm hover:bg-primary/5 transition-all">
+<span class="material-symbols-outlined text-sm">table_view</span> Excel
+                </button>
+</div>
+</div>
+<!-- Filter Bar -->
+<section class="bg-surface rounded-xl shadow-sm p-4 mb-8 border border-outline-variant flex flex-wrap items-end gap-4">
+<div class="flex flex-col gap-1 flex-1 min-w-[200px]">
+<label class="text-xs font-bold text-text-secondary uppercase tracking-wider">Rango de Fecha</label>
+<div class="flex items-center bg-surface-container-low px-3 py-2 rounded-lg border border-outline-variant">
+<span class="material-symbols-outlined text-on-surface-variant mr-2 text-sm">calendar_month</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm w-full font-medium text-primary-dark" type="text" value="01/07/2026 - 21/07/2026"/>
+</div>
+</div>
+<div class="flex flex-col gap-1 flex-1 min-w-[150px]">
+<label class="text-xs font-bold text-text-secondary uppercase tracking-wider">Doctor</label>
+<select class="bg-surface-container-low px-3 py-2 rounded-lg border border-outline-variant text-sm font-medium text-primary-dark focus:ring-primary-container">
+<option>Todos los Doctores</option>
+<option>Dra. Elena Martínez</option>
+<option>Dr. Jorge Silva</option>
+</select>
+</div>
+<div class="flex flex-col gap-1 flex-1 min-w-[150px]">
+<label class="text-xs font-bold text-text-secondary uppercase tracking-wider">Especialidad</label>
+<select class="bg-surface-container-low px-3 py-2 rounded-lg border border-outline-variant text-sm font-medium text-primary-dark focus:ring-primary-container">
+<option>Todas las Especialidades</option>
+<option>Cardiología</option>
+<option>Pediatría</option>
+<option>Dermatología</option>
+</select>
+</div>
+<button class="bg-primary-container text-on-primary px-6 py-2.5 rounded-lg font-bold text-sm hover:brightness-110 shadow-md transition-all active:scale-95 h-fit">
+                Generar Reporte
+            </button>
+</section>
+<!-- ROW 1: Key Stats -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+<!-- Stat 1 -->
+<div class="bg-surface rounded-xl p-5 shadow-sm border-l-4 border-primary relative overflow-hidden group hover:shadow-md transition-all">
+<div class="absolute -right-4 -bottom-4 text-primary/5 group-hover:text-primary/10 transition-colors">
+<span class="material-symbols-outlined text-8xl" style="font-variation-settings: 'FILL' 1;">event</span>
+</div>
+<div class="flex items-center justify-between mb-2">
+<span class="text-text-secondary font-bold text-xs uppercase">Total Agendadas</span>
+<span class="bg-primary-light/20 text-primary p-1.5 rounded-lg">
+<span class="material-symbols-outlined text-xl">calendar_today</span>
+</span>
+</div>
+<h3 class="text-3xl font-extrabold text-primary-dark">156</h3>
+<p class="text-xs text-secondary mt-1 flex items-center font-medium">
+<span class="material-symbols-outlined text-sm mr-1">trending_up</span> +12% vs mes anterior
+                </p>
+</div>
+<!-- Stat 2 -->
+<div class="bg-surface rounded-xl p-5 shadow-sm border-l-4 border-secondary relative overflow-hidden group hover:shadow-md transition-all">
+<div class="absolute -right-4 -bottom-4 text-secondary/5 group-hover:text-secondary/10 transition-colors">
+<span class="material-symbols-outlined text-8xl" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div class="flex items-center justify-between mb-2">
+<span class="text-text-secondary font-bold text-xs uppercase">Completadas</span>
+<span class="bg-secondary-light/20 text-secondary p-1.5 rounded-lg">
+<span class="material-symbols-outlined text-xl">verified</span>
+</span>
+</div>
+<h3 class="text-3xl font-extrabold text-primary-dark">128</h3>
+<p class="text-xs text-secondary mt-1 flex items-center font-medium">
+<span class="material-symbols-outlined text-sm mr-1">trending_up</span> +5% vs mes anterior
+                </p>
+</div>
+<!-- Stat 3 -->
+<div class="bg-surface rounded-xl p-5 shadow-sm border-l-4 border-danger relative overflow-hidden group hover:shadow-md transition-all">
+<div class="absolute -right-4 -bottom-4 text-danger/5 group-hover:text-danger/10 transition-colors">
+<span class="material-symbols-outlined text-8xl" style="font-variation-settings: 'FILL' 1;">cancel</span>
+</div>
+<div class="flex items-center justify-between mb-2">
+<span class="text-text-secondary font-bold text-xs uppercase">Canceladas</span>
+<span class="bg-danger-light/20 text-danger p-1.5 rounded-lg">
+<span class="material-symbols-outlined text-xl">block</span>
+</span>
+</div>
+<h3 class="text-3xl font-extrabold text-primary-dark">18</h3>
+<p class="text-xs text-danger mt-1 flex items-center font-medium">
+<span class="material-symbols-outlined text-sm mr-1">trending_down</span> -2% vs mes anterior
+                </p>
+</div>
+<!-- Stat 4 -->
+<div class="bg-surface rounded-xl p-5 shadow-sm border-l-4 border-tertiary relative overflow-hidden group hover:shadow-md transition-all">
+<div class="absolute -right-4 -bottom-4 text-tertiary/5 group-hover:text-tertiary/10 transition-colors">
+<span class="material-symbols-outlined text-8xl" style="font-variation-settings: 'FILL' 1;">analytics</span>
+</div>
+<div class="flex items-center justify-between mb-2">
+<span class="text-text-secondary font-bold text-xs uppercase">Tasa de Asistencia</span>
+<span class="bg-tertiary-fixed/20 text-tertiary p-1.5 rounded-lg">
+<span class="material-symbols-outlined text-xl">group</span>
+</span>
+</div>
+<h3 class="text-3xl font-extrabold text-primary-dark">82%</h3>
+<div class="w-full bg-surface-container-low h-1.5 rounded-full mt-2">
+<div class="bg-tertiary h-1.5 rounded-full" style="width: 82%"></div>
+</div>
+</div>
+</div>
+<!-- ROW 2: Charts -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+<!-- Bar Chart Representation -->
+<div class="lg:col-span-2 bg-surface rounded-xl p-6 shadow-sm border border-outline-variant">
+<div class="flex items-center justify-between mb-8">
+<h4 class="font-headline-sm text-headline-sm text-primary-dark font-bold">Citas por Período (Julio)</h4>
+<div class="flex gap-4 text-xs">
+<div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm bg-primary"></span> Agendadas</div>
+<div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm bg-secondary"></span> Completadas</div>
+</div>
+</div>
+<div class="h-64 flex items-end justify-around gap-4 px-2">
+<!-- Week 1 -->
+<div class="flex-1 flex flex-col items-center gap-2">
+<div class="w-full flex items-end justify-center gap-1 h-full">
+<div class="w-1/3 bg-primary rounded-t-sm" style="height: 60%"></div>
+<div class="w-1/3 bg-secondary rounded-t-sm" style="height: 50%"></div>
+</div>
+<span class="text-[10px] font-bold text-text-secondary">Semana 1</span>
+</div>
+<!-- Week 2 -->
+<div class="flex-1 flex flex-col items-center gap-2">
+<div class="w-full flex items-end justify-center gap-1 h-full">
+<div class="w-1/3 bg-primary rounded-t-sm" style="height: 85%"></div>
+<div class="w-1/3 bg-secondary rounded-t-sm" style="height: 75%"></div>
+</div>
+<span class="text-[10px] font-bold text-text-secondary">Semana 2</span>
+</div>
+<!-- Week 3 -->
+<div class="flex-1 flex flex-col items-center gap-2">
+<div class="w-full flex items-end justify-center gap-1 h-full">
+<div class="w-1/3 bg-primary rounded-t-sm" style="height: 70%"></div>
+<div class="w-1/3 bg-secondary rounded-t-sm" style="height: 65%"></div>
+</div>
+<span class="text-[10px] font-bold text-text-secondary">Semana 3</span>
+</div>
+<!-- Week 4 -->
+<div class="flex-1 flex flex-col items-center gap-2">
+<div class="w-full flex items-end justify-center gap-1 h-full">
+<div class="w-1/3 bg-primary rounded-t-sm" style="height: 95%"></div>
+<div class="w-1/3 bg-secondary rounded-t-sm" style="height: 85%"></div>
+</div>
+<span class="text-[10px] font-bold text-text-secondary">Semana 4</span>
+</div>
+</div>
+</div>
+<!-- Donut Chart Representation -->
+<div class="bg-surface rounded-xl p-6 shadow-sm border border-outline-variant">
+<h4 class="font-headline-sm text-headline-sm text-primary-dark font-bold mb-8">Especialidades más demandadas</h4>
+<div class="relative w-48 h-48 mx-auto flex items-center justify-center">
+<!-- Fake SVG Donut -->
+<svg class="w-full h-full transform -rotate-90" viewbox="0 0 36 36">
+<circle cx="18" cy="18" fill="transparent" r="15.9" stroke="#e0e3e6" stroke-width="4"></circle>
+<circle cx="18" cy="18" fill="transparent" r="15.9" stroke="#1b6b93" stroke-dasharray="40 100" stroke-width="4"></circle>
+<circle cx="18" cy="18" fill="transparent" r="15.9" stroke="#006a60" stroke-dasharray="25 100" stroke-dashoffset="-40" stroke-width="4"></circle>
+<circle cx="18" cy="18" fill="transparent" r="15.9" stroke="#ffba42" stroke-dasharray="20 100" stroke-dashoffset="-65" stroke-width="4"></circle>
+<circle cx="18" cy="18" fill="transparent" r="15.9" stroke="#e76f51" stroke-dasharray="15 100" stroke-dashoffset="-85" stroke-width="4"></circle>
+</svg>
+<div class="absolute text-center">
+<p class="text-2xl font-extrabold text-primary-dark">4</p>
+<p class="text-[10px] text-text-secondary uppercase font-bold">Top Áreas</p>
+</div>
+</div>
+<div class="mt-6 space-y-2">
+<div class="flex items-center justify-between text-xs font-medium">
+<div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-primary"></span> Cardiología</div>
+<span class="text-text-secondary">40%</span>
+</div>
+<div class="flex items-center justify-between text-xs font-medium">
+<div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-secondary"></span> Pediatría</div>
+<span class="text-text-secondary">25%</span>
+</div>
+<div class="flex items-center justify-between text-xs font-medium">
+<div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-tertiary-fixed-dim"></span> Dermatología</div>
+<span class="text-text-secondary">20%</span>
+</div>
+<div class="flex items-center justify-between text-xs font-medium">
+<div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-danger"></span> Otros</div>
+<span class="text-text-secondary">15%</span>
+</div>
+</div>
+</div>
+</div>
+<!-- ROW 3: Data Table -->
+<section class="bg-surface rounded-xl shadow-sm border border-outline-variant overflow-hidden">
+<div class="px-6 py-5 border-b border-outline-variant flex items-center justify-between">
+<h4 class="font-headline-sm text-headline-sm text-primary-dark font-bold">Doctores con Mayor Actividad</h4>
+<button class="text-primary text-xs font-bold hover:underline">Ver Reporte Completo</button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead>
+<tr class="bg-surface-container-low text-text-secondary text-[10px] font-bold uppercase tracking-widest border-b border-outline-variant">
+<th class="px-6 py-3 w-16">Pos</th>
+<th class="px-6 py-3">Doctor</th>
+<th class="px-6 py-3">Especialidad</th>
+<th class="px-6 py-3">Consultas Realizadas</th>
+<th class="px-6 py-3">Completion Rate</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-lowest transition-colors">
+<td class="px-6 py-4">
+<span class="bg-primary-light/20 text-primary-dark w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs">1</span>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-primary-light flex items-center justify-center text-primary-dark font-bold text-[10px]">EM</div>
+<span class="text-sm font-bold text-primary-dark">Dra. Elena Martínez</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="text-xs font-medium bg-secondary-container/30 text-on-secondary-container px-2 py-1 rounded-md">Cardiología</span>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<span class="text-sm font-bold text-primary-dark">48</span>
+<div class="flex-1 min-w-[80px] bg-surface-container-low h-1.5 rounded-full overflow-hidden">
+<div class="bg-primary h-full rounded-full" style="width: 90%"></div>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="text-sm font-bold text-secondary">96%</span>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container-lowest transition-colors">
+<td class="px-6 py-4">
+<span class="bg-surface-container-high text-primary-dark w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs">2</span>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-secondary-light flex items-center justify-center text-secondary font-bold text-[10px]">JS</div>
+<span class="text-sm font-bold text-primary-dark">Dr. Jorge Silva</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="text-xs font-medium bg-secondary-container/30 text-on-secondary-container px-2 py-1 rounded-md">Pediatría</span>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<span class="text-sm font-bold text-primary-dark">35</span>
+<div class="flex-1 min-w-[80px] bg-surface-container-low h-1.5 rounded-full overflow-hidden">
+<div class="bg-primary h-full rounded-full" style="width: 65%"></div>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="text-sm font-bold text-secondary">88%</span>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container-lowest transition-colors">
+<td class="px-6 py-4">
+<span class="bg-surface-container-high text-primary-dark w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs">3</span>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-tertiary-fixed-dim flex items-center justify-center text-tertiary font-bold text-[10px]">RB</div>
+<span class="text-sm font-bold text-primary-dark">Dr. Roberto Blanco</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="text-xs font-medium bg-secondary-container/30 text-on-secondary-container px-2 py-1 rounded-md">Dermatología</span>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<span class="text-sm font-bold text-primary-dark">29</span>
+<div class="flex-1 min-w-[80px] bg-surface-container-low h-1.5 rounded-full overflow-hidden">
+<div class="bg-primary h-full rounded-full" style="width: 50%"></div>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="text-sm font-bold text-secondary">82%</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</main>
+<!-- Mobile Navigation Bar (Bottom) -->
+<div class="md:hidden">
+<nav class="fixed bottom-0 w-full rounded-t-xl z-50 shadow-lg bg-surface dark:bg-inverse-surface flex justify-around items-center px-4 py-2 border-t border-outline-variant font-label-md text-label-md">
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-transform active:scale-90" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="text-[10px]">Inicio</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-transform active:scale-90" href="#">
+<span class="material-symbols-outlined">event</span>
+<span class="text-[10px]">Citas</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-4 py-1 transition-transform active:scale-90" href="#">
+<span class="material-symbols-outlined">receipt_long</span>
+<span class="text-[10px]">Historial</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-transform active:scale-90" href="#">
+<span class="material-symbols-outlined">stethoscope</span>
+<span class="text-[10px]">Doctores</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-transform active:scale-90" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="text-[10px]">Perfil</span>
+</a>
+</nav>
+</div>
+<script>
+        // Micro-interactions for hovering over stats
+        document.querySelectorAll('.group').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.classList.add('scale-[1.02]');
+            });
+            card.addEventListener('mouseleave', () => {
+                card.classList.remove('scale-[1.02]');
+            });
+        });
+    </script>
+</body></html>

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Agenda Médica - Splash Screen</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "outline": "#70787f",
+                    "inverse-primary": "#8bcefb",
+                    "on-surface": "#191c1e",
+                    "primary": "#005275",
+                    "surface-variant": "#e0e3e6",
+                    "on-tertiary": "#ffffff",
+                    "surface": "#FFFFFF",
+                    "on-primary": "#ffffff",
+                    "danger-light": "#FADED4",
+                    "tertiary-fixed-dim": "#ffba42",
+                    "tertiary-container": "#885c00",
+                    "secondary": "#006a60",
+                    "on-tertiary-fixed": "#281800",
+                    "error-container": "#ffdad6",
+                    "error": "#ba1a1a",
+                    "secondary-light": "#B5E8D5",
+                    "on-tertiary-fixed-variant": "#614000",
+                    "primary-fixed": "#c7e7ff",
+                    "primary-light": "#A8D5E2",
+                    "primary-fixed-dim": "#8bcefb",
+                    "text-primary": "#1A1A2E",
+                    "on-secondary-fixed": "#00201c",
+                    "danger": "#E76F51",
+                    "surface-dim": "#d8dadd",
+                    "secondary-container": "#8cf5e4",
+                    "secondary-fixed-dim": "#6fd8c8",
+                    "text-muted": "#A0AEC0",
+                    "tertiary-fixed": "#ffddaf",
+                    "surface-container-low": "#f2f4f7",
+                    "inverse-surface": "#2d3133",
+                    "border": "#E2E8F0",
+                    "surface-container-highest": "#e0e3e6",
+                    "surface-container": "#eceef1",
+                    "on-surface-variant": "#40484e",
+                    "on-secondary-container": "#007166",
+                    "surface-container-high": "#e6e8eb",
+                    "primary-dark": "#0F4C6B",
+                    "on-primary-fixed": "#001e2e",
+                    "background": "#f7f9fc",
+                    "tertiary": "#684600",
+                    "surface-tint": "#0e658c",
+                    "on-primary-container": "#c7e7ff",
+                    "primary-container": "#1b6b93",
+                    "secondary-fixed": "#8cf5e4",
+                    "on-primary-fixed-variant": "#004c6c",
+                    "on-background": "#191c1e",
+                    "on-tertiary-container": "#ffdeaf",
+                    "text-secondary": "#4A5568",
+                    "surface-container-lowest": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "on-secondary": "#ffffff",
+                    "outline-variant": "#c0c7cf",
+                    "on-secondary-fixed-variant": "#005048",
+                    "on-error": "#ffffff",
+                    "inverse-on-surface": "#eff1f4",
+                    "surface-bright": "#f7f9fc"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "unit": "4px",
+                    "margin-edge": "24px",
+                    "gutter-md": "24px",
+                    "gutter-sm": "16px",
+                    "header-height": "64px",
+                    "sidebar-width": "260px"
+            },
+            "fontFamily": {
+                    "caption": ["Inter"],
+                    "headline-sm": ["Inter"],
+                    "label-md": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "body-md": ["Inter"],
+                    "body-sm": ["Inter"]
+            },
+            "fontSize": {
+                    "caption": ["11px", {"lineHeight": "16px", "fontWeight": "400"}],
+                    "label-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "label-md": ["15px", {"lineHeight": "20px", "fontWeight": "600"}],
+                    "headline-sm": ["18px", {"lineHeight": "24px", "fontWeight": "500"}],
+                    "headline-md": ["22px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "headline-lg": ["28px", {"lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 48;
+        }
+        
+        .glow-effect {
+            filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.4));
+        }
+
+        @keyframes medical-pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.9; }
+        }
+
+        .animate-pulse-slow {
+            animation: medical-pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        .loading-spinner {
+            border: 3px solid rgba(168, 213, 226, 0.3);
+            border-top: 3px solid #ffffff;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .bg-medical-gradient {
+            background: linear-gradient(180deg, #1B6B93 0%, #0F4C6B 100%);
+        }
+
+        /* Ambient subtle background texture */
+        .medical-pattern {
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="h-full w-full overflow-hidden flex flex-col items-center justify-between bg-medical-gradient relative">
+<!-- Atmospheric background layer -->
+<div class="absolute inset-0 medical-pattern pointer-events-none"></div>
+<!-- Dynamic Light Overlay -->
+<div class="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-primary-light/10 blur-[120px] rounded-full pointer-events-none"></div>
+<!-- Main Content Container (Centered) -->
+<main class="flex-grow flex flex-col items-center justify-center z-10 px-gutter-md text-center">
+<!-- Icon Wrapper with Glow -->
+<div class="mb-6 animate-pulse-slow">
+<div class="glow-effect flex items-center justify-center">
+<span class="material-symbols-outlined text-[80px] text-on-primary" data-icon="monitor_heart" data-weight="fill" style="font-variation-settings: 'FILL' 1;">
+                    monitor_heart
+                </span>
+</div>
+</div>
+<!-- App Name -->
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-on-primary tracking-tight mb-2">
+            Agenda Médica
+        </h1>
+<!-- Tagline -->
+<p class="font-body-sm text-label-sm text-primary-light max-w-[280px]">
+            Tu salud, a un toque de distancia
+        </p>
+</main>
+<!-- Bottom Action/Status Area -->
+<footer class="w-full flex flex-col items-center pb-12 z-10">
+<!-- Loading Spinner -->
+<div class="mb-10">
+<div class="loading-spinner"></div>
+</div>
+<!-- Versioning Text -->
+<span class="font-caption text-caption text-primary-light/60 tracking-wider">
+            v1.0
+        </span>
+</footer>
+<!-- Transitions/Micro-interactions Script -->
+<script>
+        // Simulate a smooth entry for the elements
+        document.addEventListener('DOMContentLoaded', () => {
+            const elements = document.querySelectorAll('main > *, footer > *');
+            elements.forEach((el, index) => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(10px)';
+                el.style.transition = `all 0.8s cubic-bezier(0.16, 1, 0.3, 1) ${index * 0.15}s`;
+                
+                setTimeout(() => {
+                    el.style.opacity = '1';
+                    el.style.transform = 'translateY(0)';
+                }, 100);
+            });
+        });
+    </script>
+</body></html>

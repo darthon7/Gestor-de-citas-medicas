@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Gestión de Pacientes | MediAdmin</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-lowest": "#ffffff",
+                    "on-primary-fixed-variant": "#004c6c",
+                    "surface-bright": "#f7f9fc",
+                    "on-secondary": "#ffffff",
+                    "danger-light": "#FADED4",
+                    "tertiary-fixed": "#ffddaf",
+                    "on-error-container": "#93000a",
+                    "surface-dim": "#d8dadd",
+                    "primary": "#005275",
+                    "border": "#E2E8F0",
+                    "surface-tint": "#0e658c",
+                    "surface-container-highest": "#e0e3e6",
+                    "on-surface-variant": "#40484e",
+                    "tertiary": "#684600",
+                    "surface-container": "#eceef1",
+                    "text-secondary": "#4A5568",
+                    "on-tertiary-fixed": "#281800",
+                    "inverse-surface": "#2d3133",
+                    "on-background": "#191c1e",
+                    "primary-dark": "#0F4C6B",
+                    "on-tertiary-container": "#ffdeaf",
+                    "tertiary-fixed-dim": "#ffba42",
+                    "primary-container": "#1b6b93",
+                    "inverse-on-surface": "#eff1f4",
+                    "secondary": "#006a60",
+                    "surface-container-low": "#f2f4f7",
+                    "on-tertiary-fixed-variant": "#614000",
+                    "on-tertiary": "#ffffff",
+                    "on-secondary-fixed-variant": "#005048",
+                    "on-primary-fixed": "#001e2e",
+                    "outline": "#70787f",
+                    "primary-fixed-dim": "#8bcefb",
+                    "secondary-fixed": "#8cf5e4",
+                    "primary-fixed": "#c7e7ff",
+                    "danger": "#E76F51",
+                    "surface-variant": "#e0e3e6",
+                    "secondary-light": "#B5E8D5",
+                    "on-secondary-container": "#007166",
+                    "outline-variant": "#c0c7cf",
+                    "secondary-fixed-dim": "#6fd8c8",
+                    "secondary-container": "#8cf5e4",
+                    "inverse-primary": "#8bcefb",
+                    "surface-container-high": "#e6e8eb",
+                    "on-primary-container": "#c7e7ff",
+                    "on-secondary-fixed": "#00201c",
+                    "text-muted": "#A0AEC0",
+                    "background": "#f7f9fc",
+                    "surface": "#FFFFFF",
+                    "error": "#ba1a1a",
+                    "on-error": "#ffffff",
+                    "tertiary-container": "#885c00",
+                    "text-primary": "#1A1A2E",
+                    "primary-light": "#A8D5E2",
+                    "on-surface": "#191c1e",
+                    "on-primary": "#ffffff",
+                    "error-container": "#ffdad6"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "sidebar-width": "260px",
+                    "gutter-md": "24px",
+                    "header-height": "64px",
+                    "gutter-sm": "16px",
+                    "unit": "4px",
+                    "margin-edge": "24px"
+            },
+            "fontFamily": {
+                    "body-sm": ["Inter"],
+                    "label-md": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "body-md": ["Inter"],
+                    "headline-sm": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "caption": ["Inter"],
+                    "headline-lg-mobile": ["Inter"]
+            },
+            "fontSize": {
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "label-md": ["15px", {"lineHeight": "20px", "fontWeight": "600"}],
+                    "headline-lg": ["28px", {"lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-sm": ["18px", {"lineHeight": "24px", "fontWeight": "500"}],
+                    "headline-md": ["22px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "caption": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .active-nav-border {
+            border-left: 4px solid #2A9D8F;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #E2E8F0;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="bg-background font-body-md text-text-primary custom-scrollbar">
+<!-- Sidebar (Desktop Anchor) -->
+<aside class="w-sidebar-width h-screen fixed left-0 top-0 bg-primary-dark shadow-md z-40 hidden md:flex flex-col py-6">
+<div class="px-6 mb-10">
+<h1 class="font-headline-sm text-headline-sm text-on-primary tracking-tight">MediAdmin</h1>
+<p class="text-primary-light/70 text-caption">Hospital Central</p>
+</div>
+<nav class="flex-1 space-y-1">
+<!-- Dashboard (Generic) -->
+<a class="flex items-center px-6 py-3 text-primary-light/70 hover:text-on-primary hover:bg-primary/50 transition-colors cursor-pointer group" href="#">
+<span class="material-symbols-outlined mr-3">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<!-- Pacientes (Active per request) -->
+<a class="flex items-center px-6 py-3 text-on-primary bg-primary-container/20 active-nav-border cursor-pointer group" href="#">
+<span class="material-symbols-outlined mr-3" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="font-label-md text-label-md">Pacientes</span>
+</a>
+<!-- Citas -->
+<a class="flex items-center px-6 py-3 text-primary-light/70 hover:text-on-primary hover:bg-primary/50 transition-colors cursor-pointer group" href="#">
+<span class="material-symbols-outlined mr-3">calendar_today</span>
+<span class="font-label-md text-label-md">Citas</span>
+</a>
+<!-- Doctores -->
+<a class="flex items-center px-6 py-3 text-primary-light/70 hover:text-on-primary hover:bg-primary/50 transition-colors cursor-pointer group" href="#">
+<span class="material-symbols-outlined mr-3">medical_services</span>
+<span class="font-label-md text-label-md">Doctores</span>
+</a>
+<!-- Historial -->
+<a class="flex items-center px-6 py-3 text-primary-light/70 hover:text-on-primary hover:bg-primary/50 transition-colors cursor-pointer group" href="#">
+<span class="material-symbols-outlined mr-3">history</span>
+<span class="font-label-md text-label-md">Historial</span>
+</a>
+</nav>
+<div class="px-6 mt-auto">
+<a class="flex items-center px-0 py-3 text-primary-light/70 hover:text-on-primary transition-colors cursor-pointer" href="#">
+<span class="material-symbols-outlined mr-3">settings</span>
+<span class="font-label-md text-label-md">Ajustes</span>
+</a>
+</div>
+</aside>
+<!-- Header / Top Bar -->
+<header class="h-header-height fixed top-0 right-0 w-full md:w-[calc(100%-260px)] bg-surface border-b border-outline-variant flex items-center justify-between px-gutter-md z-30 shadow-sm transition-all duration-200">
+<div class="flex items-center gap-4">
+<button class="md:hidden text-primary">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<div class="hidden md:block">
+<span class="font-body-md text-body-md text-text-muted">Administración / <span class="text-primary font-semibold">Pacientes</span></span>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex items-center space-x-4">
+<span class="material-symbols-outlined text-on-surface-variant hover:bg-surface-container-low p-2 rounded-full cursor-pointer transition-all">notifications</span>
+<span class="material-symbols-outlined text-on-surface-variant hover:bg-surface-container-low p-2 rounded-full cursor-pointer transition-all">help_outline</span>
+</div>
+<div class="flex items-center gap-3 pl-4 border-l border-outline-variant">
+<div class="text-right hidden sm:block">
+<p class="font-label-md text-label-md text-text-primary">Admin Central</p>
+<p class="text-[12px] text-text-muted">Recepcionista</p>
+</div>
+<div class="w-10 h-10 rounded-full bg-primary-fixed overflow-hidden border-2 border-surface shadow-sm">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a female medical receptionist in a clean, brightly lit modern hospital environment. She is smiling warmly, wearing a professional navy blue blazer over a medical scrubs top. The background shows a soft-focus clinical setting with light blue and white tones, reflecting a clean and modern healthcare atmosphere." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCP8WPj1wCNZnK8zr4qDkbSjlgPaPngYrZ-A5ZAqgf5k0Agi0WXAGwhwx2TIF1ehlUfgzeyDJiNQBvAXR7pHPf6C279OK_UFuWhQgTE-XmAFronvTzXWVKywtAib2LcKscTdYh86zwD0bXKG0o-V8MaFYYEZvwlSkTYE9pyXNI93nhBe75dUGIOyiqAJB9v7muzlc6ogZifiHuVZno5foLN4Y7D0aJjXmPLmNbAuGoG31Ng9XDm9LRUJJ7hLUbWpcwuAkrSHb7Fu7I"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="pt-[calc(64px+24px)] pb-24 md:ml-sidebar-width px-gutter-md min-h-screen transition-all">
+<!-- Action Row -->
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-8">
+<h2 class="font-headline-md text-headline-md text-text-primary">Gestión de Pacientes</h2>
+<div class="flex flex-col sm:flex-row items-center gap-4">
+<!-- Search Bar -->
+<div class="relative w-full sm:w-[400px]">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-muted">search</span>
+<input class="w-full h-[44px] pl-10 pr-4 bg-surface border border-border rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all font-body-sm text-body-sm" placeholder="Buscar por nombre, CURP o expediente..." type="text"/>
+</div>
+<!-- Action Button -->
+<button class="w-full sm:w-auto h-[44px] px-6 bg-primary-container text-white rounded-lg font-label-md text-label-md flex items-center justify-center gap-2 shadow-md hover:bg-primary-dark active:scale-95 transition-all">
+<span class="material-symbols-outlined">add</span>
+                    Nuevo Paciente
+                </button>
+</div>
+</div>
+<!-- Data Table Card -->
+<div class="bg-surface rounded-xl shadow-sm border border-border overflow-hidden">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-bright border-b border-border">
+<th class="px-6 py-4 font-label-md text-[13px] uppercase tracking-wider text-text-secondary"># Expediente</th>
+<th class="px-6 py-4 font-label-md text-[13px] uppercase tracking-wider text-text-secondary">Nombre Completo</th>
+<th class="px-6 py-4 font-label-md text-[13px] uppercase tracking-wider text-text-secondary">CURP</th>
+<th class="px-6 py-4 font-label-md text-[13px] uppercase tracking-wider text-text-secondary">Teléfono</th>
+<th class="px-6 py-4 font-label-md text-[13px] uppercase tracking-wider text-text-secondary">Correo</th>
+<th class="px-6 py-4 font-label-md text-[13px] uppercase tracking-wider text-text-secondary">Estado</th>
+<th class="px-6 py-4 font-label-md text-[13px] uppercase tracking-wider text-text-secondary text-right">Acciones</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-border">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-6 py-4 font-body-sm text-text-secondary">H-00824</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-secondary-fixed-dim text-on-secondary-fixed-variant flex items-center justify-center font-bold text-[12px]">AM</div>
+<span class="font-label-md text-text-primary">Alejandra Mendoza</span>
+</div>
+</td>
+<td class="px-6 py-4 font-body-sm text-text-secondary">MENA851212HDF</td>
+<td class="px-6 py-4 font-body-sm text-text-secondary">55 1234 5678</td>
+<td class="px-6 py-4 font-body-sm text-text-secondary">a.mendoza@email.com</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-3 py-1 rounded-full bg-secondary-light/30 text-on-secondary-container text-[12px] font-semibold">
+<span class="w-2 h-2 rounded-full bg-secondary mr-2 animate-pulse"></span>
+                                    Activo
+                                </span>
+</td>
+<td class="px-6 py-4 text-right">
+<div class="flex items-center justify-end gap-1">
+<button class="p-2 text-primary hover:bg-primary-light/20 rounded-full transition-all" title="Ver Detalle"><span class="material-symbols-outlined text-[20px]">visibility</span></button>
+<button class="p-2 text-[#E9A319] hover:bg-orange-50 rounded-full transition-all" title="Editar"><span class="material-symbols-outlined text-[20px]">edit</span></button>
+<button class="p-2 text-danger hover:bg-danger-light rounded-full transition-all" title="Desactivar"><span class="material-symbols-outlined text-[20px]">toggle_on</span></button>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-6 py-4 font-body-sm text-text-secondary">H-00825</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-primary-fixed-dim text-on-primary-fixed flex items-center justify-center font-bold text-[12px]">RR</div>
+<span class="font-label-md text-text-primary">Ricardo Ramirez</span>
+</div>
+</td>
+<td class="px-6 py-4 font-body-sm text-text-secondary">RAMR720504HDF</td>
+<td class="px-6 py-4 font-body-sm text-text-secondary">55 9876 5432</td>
+<td class="px-6 py-4 font-body-sm text-text-secondary">r.ramirez@email.com</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-3 py-1 rounded-full bg-secondary-light/30 text-on-secondary-container text-[12px] font-semibold">
+<span class="w-2 h-2 rounded-full bg-secondary mr-2 animate-pulse"></span>
+                                    Activo
+                                </span>
+</td>
+<td class="px-6 py-4 text-right">
+<div class="flex items-center justify-end gap-1">
+<button class="p-2 text-primary hover:bg-primary-light/20 rounded-full transition-all"><span class="material-symbols-outlined text-[20px]">visibility</span></button>
+<button class="p-2 text-[#E9A319] hover:bg-orange-50 rounded-full transition-all"><span class="material-symbols-outlined text-[20px]">edit</span></button>
+<button class="p-2 text-danger hover:bg-danger-light rounded-full transition-all"><span class="material-symbols-outlined text-[20px]">toggle_on</span></button>
+</div>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-6 py-4 font-body-sm text-text-secondary">H-00826</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-tertiary-fixed text-on-tertiary-fixed flex items-center justify-center font-bold text-[12px]">EG</div>
+<span class="font-label-md text-text-primary">Elena Garcia</span>
+</div>
+</td>
+<td class="px-6 py-4 font-body-sm text-text-secondary">GARE900820HDF</td>
+<td class="px-6 py-4 font-body-sm text-text-secondary">55 2244 6688</td>
+<td class="px-6 py-4 font-body-sm text-text-secondary">e.garcia@email.com</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-3 py-1 rounded-full bg-outline-variant/30 text-on-surface-variant text-[12px] font-semibold">
+<span class="w-2 h-2 rounded-full bg-outline-variant mr-2"></span>
+                                    Inactivo
+                                </span>
+</td>
+<td class="px-6 py-4 text-right">
+<div class="flex items-center justify-end gap-1">
+<button class="p-2 text-primary hover:bg-primary-light/20 rounded-full transition-all"><span class="material-symbols-outlined text-[20px]">visibility</span></button>
+<button class="p-2 text-[#E9A319] hover:bg-orange-50 rounded-full transition-all"><span class="material-symbols-outlined text-[20px]">edit</span></button>
+<button class="p-2 text-text-muted hover:bg-surface-container-highest rounded-full transition-all"><span class="material-symbols-outlined text-[20px]">toggle_off</span></button>
+</div>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-6 py-4 font-body-sm text-text-secondary">H-00827</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center font-bold text-[12px]">JS</div>
+<span class="font-label-md text-text-primary">Jorge Solis</span>
+</div>
+</td>
+<td class="px-6 py-4 font-body-sm text-text-secondary">SOLJ881030HDF</td>
+<td class="px-6 py-4 font-body-sm text-text-secondary">55 3355 7799</td>
+<td class="px-6 py-4 font-body-sm text-text-secondary">j.solis@email.com</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-3 py-1 rounded-full bg-secondary-light/30 text-on-secondary-container text-[12px] font-semibold">
+<span class="w-2 h-2 rounded-full bg-secondary mr-2 animate-pulse"></span>
+                                    Activo
+                                </span>
+</td>
+<td class="px-6 py-4 text-right">
+<div class="flex items-center justify-end gap-1">
+<button class="p-2 text-primary hover:bg-primary-light/20 rounded-full transition-all"><span class="material-symbols-outlined text-[20px]">visibility</span></button>
+<button class="p-2 text-[#E9A319] hover:bg-orange-50 rounded-full transition-all"><span class="material-symbols-outlined text-[20px]">edit</span></button>
+<button class="p-2 text-danger hover:bg-danger-light rounded-full transition-all"><span class="material-symbols-outlined text-[20px]">toggle_on</span></button>
+</div>
+</td>
+</tr>
+<!-- Row 5 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-6 py-4 font-body-sm text-text-secondary">H-00828</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-primary-fixed text-on-primary-fixed flex items-center justify-center font-bold text-[12px]">MC</div>
+<span class="font-label-md text-text-primary">Monica Cruz</span>
+</div>
+</td>
+<td class="px-6 py-4 font-body-sm text-text-secondary">CRUM950214HDF</td>
+<td class="px-6 py-4 font-body-sm text-text-secondary">55 4466 8800</td>
+<td class="px-6 py-4 font-body-sm text-text-secondary">m.cruz@email.com</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-3 py-1 rounded-full bg-secondary-light/30 text-on-secondary-container text-[12px] font-semibold">
+<span class="w-2 h-2 rounded-full bg-secondary mr-2 animate-pulse"></span>
+                                    Activo
+                                </span>
+</td>
+<td class="px-6 py-4 text-right">
+<div class="flex items-center justify-end gap-1">
+<button class="p-2 text-primary hover:bg-primary-light/20 rounded-full transition-all"><span class="material-symbols-outlined text-[20px]">visibility</span></button>
+<button class="p-2 text-[#E9A319] hover:bg-orange-50 rounded-full transition-all"><span class="material-symbols-outlined text-[20px]">edit</span></button>
+<button class="p-2 text-danger hover:bg-danger-light rounded-full transition-all"><span class="material-symbols-outlined text-[20px]">toggle_on</span></button>
+</div>
+</td>
+</tr>
+<!-- Row 6 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-6 py-4 font-body-sm text-text-secondary">H-00829</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-secondary-fixed text-on-secondary-fixed flex items-center justify-center font-bold text-[12px]">VT</div>
+<span class="font-label-md text-text-primary">Victor Torres</span>
+</div>
+</td>
+<td class="px-6 py-4 font-body-sm text-text-secondary">TORV801125HDF</td>
+<td class="px-6 py-4 font-body-sm text-text-secondary">55 5577 9911</td>
+<td class="px-6 py-4 font-body-sm text-text-secondary">v.torres@email.com</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-3 py-1 rounded-full bg-outline-variant/30 text-on-surface-variant text-[12px] font-semibold">
+<span class="w-2 h-2 rounded-full bg-outline-variant mr-2"></span>
+                                    Inactivo
+                                </span>
+</td>
+<td class="px-6 py-4 text-right">
+<div class="flex items-center justify-end gap-1">
+<button class="p-2 text-primary hover:bg-primary-light/20 rounded-full transition-all"><span class="material-symbols-outlined text-[20px]">visibility</span></button>
+<button class="p-2 text-[#E9A319] hover:bg-orange-50 rounded-full transition-all"><span class="material-symbols-outlined text-[20px]">edit</span></button>
+<button class="p-2 text-text-muted hover:bg-surface-container-highest rounded-full transition-all"><span class="material-symbols-outlined text-[20px]">toggle_off</span></button>
+</div>
+</td>
+</tr>
+<!-- Row 7 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-6 py-4 font-body-sm text-text-secondary">H-00830</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-inverse-primary text-primary flex items-center justify-center font-bold text-[12px]">SB</div>
+<span class="font-label-md text-text-primary">Sofia Bernal</span>
+</div>
+</td>
+<td class="px-6 py-4 font-body-sm text-text-secondary">BERS920612HDF</td>
+<td class="px-6 py-4 font-body-sm text-text-secondary">55 6688 0022</td>
+<td class="px-6 py-4 font-body-sm text-text-secondary">s.bernal@email.com</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-3 py-1 rounded-full bg-secondary-light/30 text-on-secondary-container text-[12px] font-semibold">
+<span class="w-2 h-2 rounded-full bg-secondary mr-2 animate-pulse"></span>
+                                    Activo
+                                </span>
+</td>
+<td class="px-6 py-4 text-right">
+<div class="flex items-center justify-end gap-1">
+<button class="p-2 text-primary hover:bg-primary-light/20 rounded-full transition-all"><span class="material-symbols-outlined text-[20px]">visibility</span></button>
+<button class="p-2 text-[#E9A319] hover:bg-orange-50 rounded-full transition-all"><span class="material-symbols-outlined text-[20px]">edit</span></button>
+<button class="p-2 text-danger hover:bg-danger-light rounded-full transition-all"><span class="material-symbols-outlined text-[20px]">toggle_on</span></button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Table Footer / Pagination -->
+<div class="px-6 py-4 border-t border-border bg-surface flex items-center justify-between">
+<span class="text-caption text-text-secondary">Mostrando 7 de 47 pacientes</span>
+<div class="flex items-center gap-2">
+<button class="p-2 text-primary hover:bg-primary-light/20 rounded-lg disabled:opacity-40 transition-all">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<div class="flex items-center gap-1">
+<button class="w-8 h-8 flex items-center justify-center rounded-lg bg-primary text-white font-label-md text-label-md">1</button>
+<button class="w-8 h-8 flex items-center justify-center rounded-lg text-primary hover:bg-primary-light/20 font-label-md text-label-md">2</button>
+<button class="w-8 h-8 flex items-center justify-center rounded-lg text-primary hover:bg-primary-light/20 font-label-md text-label-md">3</button>
+<span class="px-2 text-text-muted">...</span>
+<button class="w-8 h-8 flex items-center justify-center rounded-lg text-primary hover:bg-primary-light/20 font-label-md text-label-md">7</button>
+</div>
+<button class="p-2 text-primary hover:bg-primary-light/20 rounded-lg transition-all">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Floating Info Box -->
+<div class="fixed bottom-8 right-8 bg-surface border border-border px-4 py-3 rounded-full shadow-lg flex items-center gap-3 animate-bounce-subtle z-50">
+<span class="w-3 h-3 rounded-full bg-secondary"></span>
+<p class="font-label-md text-label-md text-text-secondary">
+<span class="text-primary font-bold">47</span> pacientes registrados
+            </p>
+</div>
+</main>
+<!-- Bottom Nav (Mobile Only Filter) -->
+<nav class="md:hidden fixed bottom-0 w-full bg-surface border-t border-outline-variant flex justify-around items-center px-4 py-2 z-50 shadow-lg">
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-high p-2 rounded-xl transition-all" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-md text-[10px]">Inicio</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-4 py-1 transition-all active:scale-90" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="font-label-md text-[10px]">Pacientes</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-high p-2 rounded-xl transition-all" href="#">
+<span class="material-symbols-outlined">event</span>
+<span class="font-label-md text-[10px]">Citas</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-high p-2 rounded-xl transition-all" href="#">
+<span class="material-symbols-outlined">history</span>
+<span class="font-label-md text-[10px]">Historial</span>
+</a>
+</nav>
+<script>
+        // Simple micro-interactions for the search bar and icons
+        const searchInput = document.querySelector('input[type="text"]');
+        searchInput.addEventListener('focus', () => {
+            searchInput.parentElement.classList.add('scale-[1.02]');
+        });
+        searchInput.addEventListener('blur', () => {
+            searchInput.parentElement.classList.remove('scale-[1.02]');
+        });
+
+        // Toggle state simulation for active/inactive rows
+        document.querySelectorAll('button[title="Desactivar"]').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const icon = this.querySelector('.material-symbols-outlined');
+                if (icon.innerText === 'toggle_on') {
+                    icon.innerText = 'toggle_off';
+                    this.classList.remove('text-danger');
+                    this.classList.add('text-text-muted');
+                } else {
+                    icon.innerText = 'toggle_on';
+                    this.classList.remove('text-text-muted');
+                    this.classList.add('text-danger');
+                }
+            });
+        });
+    </script>
+</body></html>

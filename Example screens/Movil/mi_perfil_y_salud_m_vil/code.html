@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+
+<html lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Perfil del Paciente - MediAdmin</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary-fixed-dim": "#ffba42",
+                    "surface-container-highest": "#e0e3e6",
+                    "secondary-fixed-dim": "#6fd8c8",
+                    "on-primary-fixed": "#001e2e",
+                    "outline-variant": "#c0c7cf",
+                    "tertiary-fixed": "#ffddaf",
+                    "surface-container-low": "#f2f4f7",
+                    "border": "#E2E8F0",
+                    "on-primary": "#ffffff",
+                    "surface-container-high": "#e6e8eb",
+                    "text-primary": "#1A1A2E",
+                    "on-error": "#ffffff",
+                    "text-secondary": "#4A5568",
+                    "inverse-primary": "#8bcefb",
+                    "primary-container": "#1b6b93",
+                    "on-secondary": "#ffffff",
+                    "primary-fixed-dim": "#8bcefb",
+                    "background": "#f7f9fc",
+                    "on-surface-variant": "#40484e",
+                    "text-muted": "#A0AEC0",
+                    "surface-tint": "#0e658c",
+                    "secondary-fixed": "#8cf5e4",
+                    "secondary": "#006a60",
+                    "inverse-on-surface": "#eff1f4",
+                    "surface-container": "#eceef1",
+                    "secondary-container": "#8cf5e4",
+                    "primary-light": "#A8D5E2",
+                    "on-primary-container": "#c7e7ff",
+                    "on-secondary-fixed": "#00201c",
+                    "on-primary-fixed-variant": "#004c6c",
+                    "outline": "#70787f",
+                    "danger": "#E76F51",
+                    "on-tertiary": "#ffffff",
+                    "danger-light": "#FADED4",
+                    "surface-variant": "#e0e3e6",
+                    "surface-container-lowest": "#ffffff",
+                    "on-tertiary-container": "#ffdeaf",
+                    "tertiary": "#684600",
+                    "surface-dim": "#d8dadd",
+                    "on-surface": "#191c1e",
+                    "primary-dark": "#0F4C6B",
+                    "primary": "#005275",
+                    "on-tertiary-fixed": "#281800",
+                    "on-secondary-fixed-variant": "#005048",
+                    "error-container": "#ffdad6",
+                    "on-tertiary-fixed-variant": "#614000",
+                    "on-background": "#191c1e",
+                    "inverse-surface": "#2d3133",
+                    "surface": "#FFFFFF",
+                    "primary-fixed": "#c7e7ff",
+                    "secondary-light": "#B5E8D5",
+                    "surface-bright": "#f7f9fc",
+                    "on-error-container": "#93000a",
+                    "tertiary-container": "#885c00",
+                    "on-secondary-container": "#007166",
+                    "error": "#ba1a1a"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "unit": "4px",
+                    "sidebar-width": "260px",
+                    "gutter-md": "24px",
+                    "gutter-sm": "16px",
+                    "margin-edge": "24px",
+                    "header-height": "64px"
+            },
+            "fontFamily": {
+                    "headline-lg-mobile": ["Inter"],
+                    "caption": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "label-md": ["Inter"],
+                    "headline-sm": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "body-md": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .hero-gradient {
+            background: linear-gradient(180deg, #1B6B93 0%, #0F4C6B 100%);
+        }
+        .clinical-card {
+            box-shadow: 0 2px 12px rgba(27,107,147,0.08);
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background font-body-md text-on-background min-h-screen pb-24">
+<!-- Hero Header -->
+<header class="hero-gradient pt-12 pb-24 px-6 relative rounded-b-[40px]">
+<div class="flex flex-col items-center text-center">
+<div class="w-24 h-24 rounded-full bg-primary-fixed border-4 border-white/20 flex items-center justify-center text-primary-dark font-headline-lg-mobile mb-4 shadow-lg">
+                JG
+            </div>
+<h1 class="text-on-primary font-headline-lg-mobile tracking-tight">Juan Gabriel Pérez</h1>
+<p class="text-primary-light font-body-sm opacity-90 mt-1">Miembro desde: Enero 2022</p>
+</div>
+</header>
+<!-- Stats Overlap Card -->
+<div class="px-6 -mt-16 mb-8">
+<div class="bg-surface rounded-xl p-5 flex clinical-card items-center justify-between">
+<div class="flex-1 text-center border-r border-outline-variant">
+<span class="block text-primary font-headline-md">12</span>
+<span class="text-text-secondary font-caption uppercase tracking-wider">Citas realizadas</span>
+</div>
+<div class="flex-1 text-center pl-4">
+<span class="block text-secondary font-headline-sm">24 Oct</span>
+<span class="text-text-secondary font-caption uppercase tracking-wider">Próxima cita</span>
+</div>
+</div>
+</div>
+<main class="px-6 space-y-8">
+<!-- Personal Information Section -->
+<section>
+<div class="flex items-center justify-between mb-4">
+<h2 class="font-headline-sm text-primary-dark">Información Personal</h2>
+<button class="text-primary font-label-md flex items-center gap-1 active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+                    Editar
+                </button>
+</div>
+<div class="bg-surface rounded-xl overflow-hidden clinical-card">
+<!-- Editable Rows -->
+<div class="p-4 flex items-center gap-4 border-b border-outline-variant">
+<div class="w-10 h-10 rounded-lg bg-primary-fixed-dim/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">mail</span>
+</div>
+<div class="flex-1">
+<label class="block text-text-muted font-caption">Correo Electrónico</label>
+<span class="font-body-md text-text-primary">juan.perez@email.com</span>
+</div>
+</div>
+<div class="p-4 flex items-center gap-4 border-b border-outline-variant">
+<div class="w-10 h-10 rounded-lg bg-primary-fixed-dim/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">call</span>
+</div>
+<div class="flex-1">
+<label class="block text-text-muted font-caption">Teléfono</label>
+<span class="font-body-md text-text-primary">+52 55 1234 5678</span>
+</div>
+</div>
+<!-- Read-only Rows (Locked) -->
+<div class="p-4 flex items-center gap-4 border-b border-outline-variant bg-surface-container-lowest/50">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center text-text-muted">
+<span class="material-symbols-outlined">badge</span>
+</div>
+<div class="flex-1">
+<label class="block text-text-muted font-caption flex items-center gap-1">CURP <span class="material-symbols-outlined text-[12px]">lock</span></label>
+<span class="font-body-md text-text-secondary">PEJG900101HDFRRM09</span>
+</div>
+</div>
+<div class="p-4 flex items-center gap-4 bg-surface-container-lowest/50">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center text-text-muted">
+<span class="material-symbols-outlined">cake</span>
+</div>
+<div class="flex-1">
+<label class="block text-text-muted font-caption flex items-center gap-1">Fecha de Nacimiento <span class="material-symbols-outlined text-[12px]">lock</span></label>
+<span class="font-body-md text-text-secondary">01 de Enero de 1990</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Medical History Preview -->
+<section>
+<div class="flex items-center justify-between mb-4">
+<h2 class="font-headline-sm text-primary-dark">Historial Médico</h2>
+<button class="text-primary font-label-md active:scale-95 transition-transform">Ver todo</button>
+</div>
+<div class="space-y-4">
+<div class="bg-surface rounded-xl p-4 clinical-card border-l-4 border-secondary">
+<div class="flex justify-between items-start mb-2">
+<div>
+<h3 class="font-label-md text-text-primary">Consulta General</h3>
+<p class="text-text-muted font-caption">15 Sep 2023 • Dr. Arriaga</p>
+</div>
+<span class="bg-secondary-container text-on-secondary-container text-[11px] font-bold px-2 py-1 rounded-full uppercase">Completada</span>
+</div>
+<div class="mt-3 bg-surface-container-low rounded-lg p-3">
+<p class="text-body-sm text-text-secondary"><strong class="text-text-primary">Diagnóstico:</strong> Faringitis aguda viral. Reposo sugerido.</p>
+<p class="text-body-sm text-text-secondary mt-1"><strong class="text-text-primary">Tratamiento:</strong> Paracetamol 500mg c/8h por 3 días.</p>
+</div>
+</div>
+<div class="bg-surface rounded-xl p-4 clinical-card border-l-4 border-primary">
+<div class="flex justify-between items-start mb-2">
+<div>
+<h3 class="font-label-md text-text-primary">Revisión Oftalmológica</h3>
+<p class="text-text-muted font-caption">02 Ago 2023 • Dra. Méndez</p>
+</div>
+<span class="bg-primary-fixed text-on-primary-fixed-variant text-[11px] font-bold px-2 py-1 rounded-full uppercase">Completada</span>
+</div>
+<div class="mt-3 bg-surface-container-low rounded-lg p-3">
+<p class="text-body-sm text-text-secondary"><strong class="text-text-primary">Diagnóstico:</strong> Astigmatismo leve (OD: -0.50, OI: -0.75).</p>
+<p class="text-body-sm text-text-secondary mt-1"><strong class="text-text-primary">Tratamiento:</strong> Renovación de graduación en lentes.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Action List -->
+<section>
+<h2 class="font-headline-sm text-primary-dark mb-4">Ajustes de Cuenta</h2>
+<div class="bg-surface rounded-xl overflow-hidden clinical-card">
+<button class="w-full p-4 flex items-center justify-between hover:bg-surface-container-low transition-colors active:bg-surface-container-high">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary">add_a_photo</span>
+<span class="font-body-md text-text-primary">Cambiar foto</span>
+</div>
+<span class="material-symbols-outlined text-outline">chevron_right</span>
+</button>
+<button class="w-full p-4 flex items-center justify-between border-t border-outline-variant hover:bg-surface-container-low transition-colors active:bg-surface-container-high">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary">lock_reset</span>
+<span class="font-body-md text-text-primary">Cambiar contraseña</span>
+</div>
+<span class="material-symbols-outlined text-outline">chevron_right</span>
+</button>
+<button class="w-full p-4 flex items-center justify-between border-t border-outline-variant hover:bg-surface-container-low transition-colors active:bg-surface-container-high">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary">info</span>
+<span class="font-body-md text-text-primary">Acerca de</span>
+</div>
+<span class="material-symbols-outlined text-outline">chevron_right</span>
+</button>
+<button class="w-full p-4 flex items-center justify-between border-t border-outline-variant hover:bg-danger-light/20 transition-colors active:bg-danger-light/40">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-danger">logout</span>
+<span class="font-body-md text-danger font-bold">Cerrar Sesión</span>
+</div>
+</button>
+</div>
+</section>
+<!-- Aesthetic Decoration -->
+<div class="flex justify-center py-4">
+<div class="w-16 h-1 rounded-full bg-outline-variant/30"></div>
+</div>
+</main>
+<!-- Bottom Navigation Bar (Mandatory Component) -->
+<nav class="fixed bottom-0 w-full rounded-t-xl z-50 shadow-lg bg-surface flex justify-around items-center px-4 py-2 border-t border-outline-variant">
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-high active:scale-90 transition-transform px-4 py-1" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-label-md text-label-md">Inicio</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-high active:scale-90 transition-transform px-4 py-1" href="#">
+<span class="material-symbols-outlined" data-icon="event">event</span>
+<span class="font-label-md text-label-md">Citas</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-high active:scale-90 transition-transform px-4 py-1" href="#">
+<span class="material-symbols-outlined" data-icon="stethoscope">stethoscope</span>
+<span class="font-label-md text-label-md">Doctores</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-high active:scale-90 transition-transform px-4 py-1" href="#">
+<span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+<span class="font-label-md text-label-md">Historial</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-4 py-1 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="person" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="font-label-md text-label-md">Perfil</span>
+</a>
+</nav>
+<script>
+        // Micro-interactions
+        document.querySelectorAll('button, a').forEach(el => {
+            el.addEventListener('click', (e) => {
+                // Haptic feedback simulation could go here
+                console.log('Interaction detected on:', el.textContent.trim());
+            });
+        });
+
+        // Add subtle animation to medical cards on scroll
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('translate-y-0', 'opacity-100');
+                    entry.target.classList.remove('translate-y-4', 'opacity-0');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.clinical-card').forEach(card => {
+            card.classList.add('transition-all', 'duration-500', 'translate-y-4', 'opacity-0');
+            observer.observe(card);
+        });
+    </script>
+</body></html>
