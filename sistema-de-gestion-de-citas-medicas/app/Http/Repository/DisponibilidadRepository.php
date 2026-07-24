@@ -36,9 +36,10 @@ class DisponibilidadRepository
 
             // Obtener citas ya agendadas ese día
             $citasOcupadas = Cita::where('perfil_doctor_id', $doctorId)
-                ->where('fecha_cita', $fecha)
+                ->whereDate('fecha_cita', $fecha)
                 ->whereIn('estado', ['agendada', 'confirmada', 'en_consulta'])
                 ->pluck('hora_cita')
+                ->map(fn($h) => substr($h, 0, 8)) // normalizar a H:i:s
                 ->toArray();
 
             // Generar slots

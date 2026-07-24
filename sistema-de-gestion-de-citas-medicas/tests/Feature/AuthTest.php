@@ -35,20 +35,61 @@ class AuthTest extends TestCase
                 'email'    => 'admin@citasmedicas.com',
                 'password' => 'WrongPassword',
             ]);
-            $response->assertStatus(200);
+            $response->assertStatus(401);
         }
 
-        // Intento 5: debe bloquear
+        // Intento 5: debe bloquear (403)
         $response5 = $this->postJson('/api/auth/login', [
             'email'    => 'admin@citasmedicas.com',
             'password' => 'WrongPassword',
         ]);
 
-        $response5->assertStatus(200)
+        $response5->assertStatus(403)
             ->assertJsonPath('mensaje', 'Cuenta bloqueada por 15 minutos tras 5 intentos fallidos.');
 
         $admin = Usuario::where('email', 'admin@citasmedicas.com')->first();
         $this->assertEquals('bloqueado', $admin->estado);
+    }
+
+    public function test_recuperacion_contrasena_flujo_completo(): void
+    {
+        // 1. Solicitar código
+        $resSolicitud = $this->postJson('/api/auth/solicitarRecuperacion', [
+            'email' => 'admin@citasmedicas.com',
+        ]);
+        $resSolicitud->assertStatus(200)
+            ->assertJsonPath('mensaje', 'Código de recuperación enviado a tu correo electrónico.');
+
+        $reset = \Illuminate\Support\Facades\DB::table('password_resets')
+            ->where('email', 'admin@citasmedicas.com')->first();
+        $this->assertNotNull($reset);
+        $codigo = $reset->codigo;
+
+        // 2. Verificar código
+        $resVerificar = $this->postJson('/api/auth/verificarCodigo', [
+            'email'  => 'admin@citasmedicas.com',
+            'codigo' => $codigo,
+        ]);
+        $resVerificar->assertStatus(200)
+            ->assertJsonPath('valido', true);
+
+        // 3. Restablecer contraseña
+        $resRestablecer = $this->postJson('/api/auth/restablecerPassword', [
+            'email'                 => 'admin@citasmedicas.com',
+            'codigo'                => $codigo,
+            'password'              => 'NuevaPassword123!',
+            'password_confirmation' => 'NuevaPassword123!',
+        ]);
+        $resRestablecer->assertStatus(200)
+            ->assertJsonPath('mensaje', 'Contraseña restablecida correctamente.');
+
+        // 4. Probar nuevo login con nueva contraseña
+        $resLogin = $this->postJson('/api/auth/login', [
+            'email'    => 'admin@citasmedicas.com',
+            'password' => 'NuevaPassword123!',
+        ]);
+        $resLogin->assertStatus(200)
+            ->assertJsonStructure(['token']);
     }
 
     public function test_registro_paciente_exitoso(): void

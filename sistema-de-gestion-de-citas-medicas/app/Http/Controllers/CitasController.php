@@ -125,7 +125,8 @@ class CitasController extends Controller
     public function miCita(Request $request, int $id)
     {
         try {
-            $resultado = $this->citasRepository->obtenerCita($id);
+            $pacienteId = $request->user()->perfilPaciente->id;
+            $resultado  = $this->citasRepository->obtenerCitaPaciente($id, $pacienteId);
             return response()->json($resultado, 200);
         } catch (\Exception $e) {
             return response()->json(['mensaje' => $e->getMessage()], 500);
@@ -136,7 +137,8 @@ class CitasController extends Controller
     {
         try {
             $pacienteId = $request->user()->perfilPaciente->id;
-            $resultado  = $this->citasRepository->cancelarCitaPaciente($id, $request->all(), $pacienteId);
+            $usuarioId  = $request->user()->id;
+            $resultado  = $this->citasRepository->cancelarCitaPaciente($id, $request->all(), $pacienteId, $usuarioId);
             return response()->json($resultado, 200);
         } catch (\Exception $e) {
             return response()->json(['mensaje' => $e->getMessage()], 500);

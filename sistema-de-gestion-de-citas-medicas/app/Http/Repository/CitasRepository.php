@@ -55,7 +55,18 @@ class CitasRepository
     public function registrarCita(array $data)
     {
         try {
-            // Verificar disponibilidad
+            // Verificar primero si el slot ya está ocupado
+            $ocupado = Cita::where('perfil_doctor_id', $data['perfil_doctor_id'])
+                ->whereDate('fecha_cita', $data['fecha_cita'])
+                ->where('hora_cita', $data['hora_cita'])
+                ->whereIn('estado', ['agendada', 'confirmada', 'en_consulta'])
+                ->exists();
+
+            if ($ocupado) {
+                return ['mensaje' => 'Ya existe una cita agendada para este doctor en ese horario.'];
+            }
+
+            // Verificar disponibilidad (horario del doctor y bloqueos)
             $disponible = $this->disponibilidadRepo->verificarDisponibilidad(
                 $data['perfil_doctor_id'],
                 $data['fecha_cita'],
@@ -64,17 +75,6 @@ class CitasRepository
 
             if (!$disponible) {
                 return ['mensaje' => 'El horario seleccionado no está disponible para este doctor.'];
-            }
-
-            // Verificar slot ya ocupado
-            $ocupado = Cita::where('perfil_doctor_id', $data['perfil_doctor_id'])
-                ->where('fecha_cita', $data['fecha_cita'])
-                ->where('hora_cita', $data['hora_cita'])
-                ->whereIn('estado', ['agendada', 'confirmada', 'en_consulta'])
-                ->exists();
-
-            if ($ocupado) {
-                return ['mensaje' => 'Ya existe una cita agendada para este doctor en ese horario.'];
             }
 
             $codigoReferencia = 'CITA-' . strtoupper(substr(uniqid(), -6));
@@ -99,6 +99,7 @@ class CitasRepository
         }
     }
 
+
     public function obtenerCita(int $id)
     {
         try {
@@ -114,6 +115,27 @@ class CitasRepository
             return ['mensaje' => $e->getMessage()];
         }
     }
+
+    public function obtenerCitaPaciente(int $id, int $pacienteId)
+    {
+        try {
+            $cita = Cita::with(['perfilPaciente.usuario', 'perfilDoctor.usuario', 'especialidad', 'notaConsulta'])
+                ->where('id', $id)
+                ->where('perfil_paciente_id', $pacienteId)
+                ->first();
+
+            if (!$cita) {
+                return ['mensaje' => 'Cita no encontrada'];
+            }
+            return [
+                'mensaje' => 'Cita obtenida correctamente',
+                'data'    => $cita,
+            ];
+        } catch (Exception $e) {
+            return ['mensaje' => $e->getMessage()];
+        }
+    }
+
 
     public function reprogramarCita(int $id, array $data)
     {
@@ -138,7 +160,7 @@ class CitasRepository
             }
 
             $ocupado = Cita::where('perfil_doctor_id', $cita->perfil_doctor_id)
-                ->where('fecha_cita', $data['fecha_cita'])
+                ->whereDate('fecha_cita', $data['fecha_cita'])
                 ->where('hora_cita', $data['hora_cita'])
                 ->where('id', '!=', $id)
                 ->whereIn('estado', ['agendada', 'confirmada', 'en_consulta'])
@@ -271,7 +293,7 @@ class CitasRepository
             // Un paciente no puede tener más de una cita activa con el mismo doctor el mismo día
             $duplicada = Cita::where('perfil_paciente_id', $pacienteId)
                 ->where('perfil_doctor_id', $data['perfil_doctor_id'])
-                ->where('fecha_cita', $data['fecha_cita'])
+                ->whereDate('fecha_cita', $data['fecha_cita'])
                 ->whereIn('estado', ['agendada', 'confirmada', 'en_consulta'])
                 ->exists();
 
@@ -286,7 +308,7 @@ class CitasRepository
         }
     }
 
-    public function cancelarCitaPaciente(int $id, array $data, int $pacienteId)
+    public function cancelarCitaPaciente(int $id, array $data, int $pacienteId, int $usuarioId)
     {
         try {
             $cita = Cita::where('id', $id)
@@ -310,7 +332,7 @@ class CitasRepository
             $cita->update([
                 'estado'             => 'cancelada',
                 'motivo_cancelacion' => $data['motivo_cancelacion'] ?? 'Cancelada por el paciente',
-                'cancelado_por'      => $pacienteId,
+                'cancelado_por'      => $usuarioId, // usuario_id, consistente con cancelarCita() del admin
                 'cancelado_en'       => now(),
             ]);
 

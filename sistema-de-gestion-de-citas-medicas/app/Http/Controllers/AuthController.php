@@ -21,9 +21,39 @@ class AuthController extends Controller
     {
         try {
             $resultado = $this->authRepository->login($request->all(), $request->ip());
-            if(!isset($resultado['token'])){
-                return response()->json($resultado,401);
-            }
+            return response()->json($resultado, 200);
+        } catch (\App\Exceptions\AuthException $e) {
+            return response()->json(['mensaje' => $e->getMessage()], $e->getHttpCode());
+        } catch (\Exception $e) {
+            return response()->json(['mensaje' => $e->getMessage()], 500);
+        }
+    }
+
+    public function solicitarRecuperacion(\App\Http\Requests\StoreRecuperacionRequest $request)
+    {
+        try {
+            $resultado = $this->authRepository->solicitarRecuperacion($request->all());
+            return response()->json($resultado, 200);
+        } catch (\Exception $e) {
+            return response()->json(['mensaje' => $e->getMessage()], 500);
+        }
+    }
+
+    public function verificarCodigo(\App\Http\Requests\StoreVerificarCodigoRequest $request)
+    {
+        try {
+            $resultado = $this->authRepository->verificarCodigo($request->all());
+            $status = (isset($resultado['valido']) && !$resultado['valido']) ? 400 : 200;
+            return response()->json($resultado, $status);
+        } catch (\Exception $e) {
+            return response()->json(['mensaje' => $e->getMessage()], 500);
+        }
+    }
+
+    public function restablecerPassword(\App\Http\Requests\StoreRestablecerPasswordRequest $request)
+    {
+        try {
+            $resultado = $this->authRepository->restablecerPassword($request->all());
             return response()->json($resultado, 200);
         } catch (\Exception $e) {
             return response()->json(['mensaje' => $e->getMessage()], 500);

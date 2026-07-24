@@ -24,6 +24,9 @@ Route::prefix('auth')->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/registrarPaciente', [AuthController::class, 'registrarPaciente']);
     Route::post('/registrarMedico', [AuthController::class, 'registrarMedico']);
+    Route::post('/solicitarRecuperacion', [AuthController::class, 'solicitarRecuperacion']);
+    Route::post('/verificarCodigo', [AuthController::class, 'verificarCodigo']);
+    Route::post('/restablecerPassword', [AuthController::class, 'restablecerPassword']);
 });
 
 // Especialidades (Público / Consulta general)
