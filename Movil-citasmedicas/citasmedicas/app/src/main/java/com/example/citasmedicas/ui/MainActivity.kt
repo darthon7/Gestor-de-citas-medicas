@@ -37,9 +37,9 @@ class MainActivity : AppCompatActivity() {
             Singleton.token_actual=token_guardado
             startActivity(Intent(this, BusquedaDoctores::class.java))
         }
-        else(
+        else {
             startActivity(Intent(this, LoginActivity::class.java))
-        )
+        }
             finish()
     }
 }

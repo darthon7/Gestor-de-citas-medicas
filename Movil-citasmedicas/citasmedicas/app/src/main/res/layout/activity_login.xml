@@ -90,7 +90,7 @@
                            android:hint="@string/coreeo"
                            android:inputType="text"
                            app:helperTextEnabled="true"
-                           app:helperText="@string/help_contra"
+                           app:helperText="@string/help_correo"
                            app:helperTextTextColor="@color/black"
                            app:endIconMode="clear_text"
                            app:startIconDrawable="@drawable/baseline_email_24"

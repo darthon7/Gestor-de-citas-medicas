@@ -48,7 +48,7 @@ class LoginActivity : AppCompatActivity() {
            login()
         }
         btn_registro.setOnClickListener {
-
+            startActivity(Intent(this, Registro::class.java))
         }
     }
     private fun login(){

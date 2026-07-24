@@ -11,4 +11,15 @@
     <string name="help_contra">Ingresa tu contraseña</string>
     <string name="Olvido_contra">¿Olvidaste tu contraseña?</string>
     <string name="crear_cuenta">Crear cuenta nueva</string>
+    <string name="siguiente">Siguiente</string>
+    <string name="Informacion">Informacion personal</string>
+    <string name="Paso1">Paso 1 de 3: Datos de identificacion basica</string>
+    <string name="Paso2"></string>
+    <string name="Paso3"></string>
+    <string name="nombre">Nombre completo</string>
+    <string name="Fecha">Fecha de nacimiento</string>
+    <string name="Sexo">Sexo</string>
+    <string name="Tel">Telefono</string>
+    <string name="direccion">Direccion</string>
+    <string name="direccion_hint">Calle, Numero, Colonia...</string>
 </resources>
