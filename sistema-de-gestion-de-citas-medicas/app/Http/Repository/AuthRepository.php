@@ -2,6 +2,8 @@
 
 namespace App\Http\Repository;
 
+use App\Exceptions\AuthException;
+use App\Mail\CodigoRecuperacionMail;
 use App\Models\IntentoLogin;
 use App\Models\PerfilDoctor;
 use App\Models\PerfilPaciente;
@@ -9,7 +11,9 @@ use App\Models\PerfilRecepcionista;
 use App\Models\Usuario;
 use App\Models\VerificacionCedula;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Exception;
 
 class AuthRepository
@@ -27,12 +31,12 @@ class AuthRepository
             ]);
 
             if (!$usuario) {
-                return ['mensaje' => 'Las credenciales ingresadas son incorrectas'];
+                throw new AuthException('Las credenciales ingresadas son incorrectas', 401);
             }
 
             // Verificar si está bloqueado
             if ($usuario->estado === 'bloqueado' && $usuario->bloqueado_hasta && $usuario->bloqueado_hasta->isFuture()) {
-                return ['mensaje' => 'Cuenta bloqueada temporalmente. Intenta en ' . $usuario->bloqueado_hasta->diffForHumans()];
+                throw new AuthException('Cuenta bloqueada temporalmente. Intenta en ' . $usuario->bloqueado_hasta->diffForHumans(), 403);
             }
 
             // Si el bloqueo expiró, resetear
@@ -41,7 +45,7 @@ class AuthRepository
             }
 
             if ($usuario->estado === 'inactivo') {
-                return ['mensaje' => 'Tu cuenta está desactivada. Contacta al administrador.'];
+                throw new AuthException('Tu cuenta está desactivada. Contacta al administrador.', 403);
             }
 
             if (!Hash::check($credenciales['password'], $usuario->password)) {
@@ -53,11 +57,11 @@ class AuthRepository
                         'estado'            => 'bloqueado',
                         'bloqueado_hasta'   => Carbon::now()->addMinutes(15),
                     ]);
-                    return ['mensaje' => 'Cuenta bloqueada por 15 minutos tras 5 intentos fallidos.'];
+                    throw new AuthException('Cuenta bloqueada por 15 minutos tras 5 intentos fallidos.', 403);
                 }
 
                 $usuario->update(['intentos_fallidos' => $intentos]);
-                return ['mensaje' => 'Las credenciales ingresadas son incorrectas. Intentos restantes: ' . (5 - $intentos)];
+                throw new AuthException('Las credenciales ingresadas son incorrectas. Intentos restantes: ' . (5 - $intentos), 401);
             }
 
             // Login exitoso: resetear intentos
@@ -68,7 +72,7 @@ class AuthRepository
             if ($usuario->rol === 'doctor') {
                 $perfil = PerfilDoctor::where('usuario_id', $usuario->id)->first();
                 if ($perfil && $perfil->estado_validacion !== 'validado') {
-                    return ['mensaje' => 'Tu cuenta de médico está pendiente de validación por el administrador.'];
+                    throw new AuthException('Tu cuenta de médico está pendiente de validación por el administrador.', 403);
                 }
             }
 
@@ -79,6 +83,80 @@ class AuthRepository
                 'usuario'  => $usuario,
                 'rol'      => $usuario->rol,
                 'token'    => $token,
+            ];
+        } catch (AuthException $e) {
+            throw $e;
+        } catch (Exception $e) {
+            return ['mensaje' => $e->getMessage()];
+        }
+    }
+
+    public function solicitarRecuperacion(array $data)
+    {
+        try {
+            $email = $data['email'];
+            $codigo = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+
+            DB::table('password_resets')->where('email', $email)->delete();
+            DB::table('password_resets')->insert([
+                'email'      => $email,
+                'codigo'     => $codigo,
+                'created_at' => Carbon::now(),
+            ]);
+
+            Mail::to($email)->send(new CodigoRecuperacionMail($codigo));
+
+            return [
+                'mensaje' => 'Código de recuperación enviado a tu correo electrónico.',
+            ];
+        } catch (Exception $e) {
+            return ['mensaje' => $e->getMessage()];
+        }
+    }
+
+    public function verificarCodigo(array $data)
+    {
+        try {
+            $reset = DB::table('password_resets')
+                ->where('email', $data['email'])
+                ->where('codigo', $data['codigo'])
+                ->first();
+
+            if (!$reset) {
+                return ['valido' => false, 'mensaje' => 'El código de verificación es incorrecto.'];
+            }
+
+            if (Carbon::parse($reset->created_at)->addMinutes(30)->isPast()) {
+                return ['valido' => false, 'mensaje' => 'El código de verificación ha expirado. Solicita uno nuevo.'];
+            }
+
+            return ['valido' => true, 'mensaje' => 'Código verificado correctamente.'];
+        } catch (Exception $e) {
+            return ['mensaje' => $e->getMessage()];
+        }
+    }
+
+    public function restablecerPassword(array $data)
+    {
+        try {
+            $verificacion = $this->verificarCodigo($data);
+            if (isset($verificacion['valido']) && !$verificacion['valido']) {
+                return ['mensaje' => $verificacion['mensaje']];
+            }
+
+            $usuario = Usuario::where('email', $data['email'])->first();
+            if (!$usuario) {
+                return ['mensaje' => 'Usuario no encontrado.'];
+            }
+
+            $usuario->update([
+                'password' => Hash::make($data['password']),
+            ]);
+
+            DB::table('password_resets')->where('email', $data['email'])->delete();
+
+            return [
+                'mensaje' => 'Contraseña restablecida correctamente.',
             ];
         } catch (Exception $e) {
             return ['mensaje' => $e->getMessage()];

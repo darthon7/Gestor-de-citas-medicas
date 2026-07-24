@@ -91,7 +91,7 @@ class LoginActivity : AppCompatActivity() {
             },
             { error ->
                 val statusCode = error.networkResponse?.statusCode
-                val mensaje = if(statusCode==401||statusCode==422) {
+                val mensaje = if(statusCode == 401 || statusCode == 403 || statusCode == 422) {
                     try {
                         val body=String(error.networkResponse.data)
                         val json= JSONObject(body)

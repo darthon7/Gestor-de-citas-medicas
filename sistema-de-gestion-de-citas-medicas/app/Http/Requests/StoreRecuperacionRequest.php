@@ -6,24 +6,26 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class StoreLoginRequest extends FormRequest
+class StoreRecuperacionRequest extends FormRequest
 {
-    public function authorize(): bool { return true; }
+    public function authorize(): bool
+    {
+        return true;
+    }
 
     public function rules(): array
     {
         return [
-            'email'    => 'required|email',
-            'password' => 'required|string',
+            'email' => 'required|email|exists:usuarios,email',
         ];
     }
 
     public function messages(): array
     {
         return [
-            'email.required'    => 'El correo electrónico es requerido.',
-            'email.email'       => 'El formato del correo electrónico no es válido.',
-            'password.required' => 'La contraseña es requerida.',
+            'email.required' => 'El correo electrónico es requerido.',
+            'email.email'    => 'Ingresa un correo electrónico válido.',
+            'email.exists'   => 'El correo electrónico no se encuentra registrado en el sistema.',
         ];
     }
 
@@ -31,7 +33,7 @@ class StoreLoginRequest extends FormRequest
     {
         throw new HttpResponseException(response()->json([
             'mensaje' => $validator->errors()->first(),
-            'errors'  => $validator->errors(),
+            'errors'  => $validator->errors()
         ], 422));
     }
 }
