@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Predeterminados-->
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!-- Colores Principales -->
+    <color name="primary">#1B6B93</color>
+    <color name="primary_dark">#0F4C6B</color>
+    <color name="primary_light">#A8D5E2</color>
+
+    <!-- Secundario -->
+    <color name="secondary">#2A9D8F</color>
+    <color name="secondary_light">#B5E8D5</color>
+
+    <!-- Acentos -->
+    <color name="accent">#E9A319</color>
+    <color name="accent_warm">#F4A261</color>
+
+    <!-- Peligro / Error -->
+    <color name="danger">#E76F51</color>
+    <color name="danger_light">#FADED4</color>
+
+    <!-- Fondos -->
+    <color name="background">#F7F9FC</color>
+    <color name="background2">#EBF1F5</color>
+    <color name="surface">#FFFFFF</color>
+    <color name="transparent">#26FFFFFF</color>
+
+    <!-- Texto -->
+    <color name="text_primary">#1A1A2E</color>
+    <color name="text_secondary">#4A5568</color>
+    <color name="text_muted">#A0AEC0</color>
+
+    <!-- Bordes -->
+    <color name="border">#E2E8F0</color>
+</resources>

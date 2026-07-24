@@ -21,6 +21,9 @@ class AuthController extends Controller
     {
         try {
             $resultado = $this->authRepository->login($request->all(), $request->ip());
+            if(!isset($resultado['token'])){
+                return response()->json($resultado,401);
+            }
             return response()->json($resultado, 200);
         } catch (\Exception $e) {
             return response()->json(['mensaje' => $e->getMessage()], 500);

@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">citasmedicas</string>
+    <string name="titulo_inicio">Agenda medica</string>
+    <string name="sub_inicio">Tu salud, a un toque de distancia</string>
+    <string name="bienvenida">Bienvenido</string>
+    <string name="texto_sesion">Inicia sesion para continuar</string>
+    <string name="ingreso">Ingresar</string>
+    <string name="coreeo">Correo electronico</string>
+    <string name="help_correo">Ingresa tu correo electronico</string>
+    <string name="Contra">Contraseña</string>
+    <string name="help_contra">Ingresa tu contraseña</string>
+    <string name="Olvido_contra">¿Olvidaste tu contraseña?</string>
+    <string name="crear_cuenta">Crear cuenta nueva</string>
+</resources>

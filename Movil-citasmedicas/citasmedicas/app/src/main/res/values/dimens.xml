@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Tipografía (tamaños móvil, en sp según la tabla) -->
+    <dimen name="text_h1">24dp</dimen>      <!-- Títulos principales -->
+    <dimen name="text_h2">20dp</dimen>      <!-- Subtítulos -->
+    <dimen name="text_h3">16dp</dimen>      <!-- Encabezados de sección -->
+    <dimen name="text_body">14dp</dimen>    <!-- Cuerpo de texto -->
+    <dimen name="text_caption">12dp</dimen> <!-- Texto pequeño / captions -->
+    <dimen name="text_button">14dp</dimen>  <!-- Botones -->
+
+    <!-- Espaciados generales (no venían en el documento, valores estándar de Material Design) -->
+    <dimen name="spacing_xs">4dp</dimen>
+    <dimen name="spacing_small">8dp</dimen>
+    <dimen name="spacing_medium">16dp</dimen>
+    <dimen name="spacing_large">24dp</dimen>
+    <dimen name="spacing_xl">32dp</dimen>
+
+    <!-- Radios de esquina y elevación para tarjetas/botones -->
+    <dimen name="corner_radius">12dp</dimen>
+    <dimen name="corner_radius_small">8dp</dimen>
+    <dimen name="card_elevation">2dp</dimen>
+
+</resources>
