@@ -1,5 +1,6 @@
 package com.example.citasmedicas.model
 
+
 data class usuario(
     val id: Int,
     val nombre: String,
@@ -10,5 +11,6 @@ data class usuario(
     val estado: String,
     val foto_perfil: String?,
     val intentos: Int,
-    val bloqueo: String?
+    val bloqueo: String?,
+    val perfilpaciente: perfilpaciente?=null
 )

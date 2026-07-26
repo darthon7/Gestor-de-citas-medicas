@@ -21,6 +21,7 @@
     <color name="danger">#E76F51</color>
     <color name="danger_light">#FADED4</color>
     <color name="desactivado">#E5E7EB</color>
+    <color name="inputs">#6C757D</color>
 
     <!-- Fondos -->
     <color name="background">#F7F9FC</color>

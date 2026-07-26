@@ -87,18 +87,22 @@
                            android:id="@+id/login_usuario1"
                            android:layout_width="250dp"
                            android:layout_height="wrap_content"
-                           android:hint="@string/coreeo"
+                           android:hint="@string/correo"
+                           android:textColorHint="@color/inputs"
                            android:inputType="text"
                            app:helperTextEnabled="true"
                            app:helperText="@string/help_correo"
-                           app:helperTextTextColor="@color/black"
+                           app:helperTextTextColor="@color/inputs"
                            app:endIconMode="clear_text"
+                           app:endIconTint="@color/inputs"
                            app:startIconDrawable="@drawable/baseline_email_24"
+                           app:startIconTint="@color/inputs"
                            android:paddingBottom="10dp">
                            <com.google.android.material.textfield.TextInputEditText
                                android:id="@+id/login_usuario"
                                android:layout_width="match_parent"
-                               android:layout_height="match_parent">
+                               android:layout_height="match_parent"
+                               android:textColor="@color/black">
                            </com.google.android.material.textfield.TextInputEditText>
                        </com.google.android.material.textfield.TextInputLayout>
                        <com.google.android.material.textfield.TextInputLayout
@@ -106,16 +110,20 @@
                            android:layout_width="250dp"
                            android:layout_height="wrap_content"
                            android:hint="@string/Contra"
+                           android:textColorHint="@color/inputs"
                            app:helperTextEnabled="true"
                            app:helperText="@string/help_contra"
-                           app:helperTextTextColor="@color/black"
+                           app:helperTextTextColor="@color/inputs"
                            app:endIconMode="password_toggle"
+                           app:endIconTint="@color/inputs"
+                           app:startIconTint="@color/inputs"
                            app:startIconDrawable="@drawable/baseline_lock_24">
                            <com.google.android.material.textfield.TextInputEditText
                                android:id="@+id/login_usuariocontra"
                                android:layout_width="match_parent"
                                android:layout_height="match_parent"
-                               android:inputType="textPassword">
+                               android:inputType="textPassword"
+                               android:textColor="@color/inputs">
                            </com.google.android.material.textfield.TextInputEditText>
                        </com.google.android.material.textfield.TextInputLayout>
                        <TextView
