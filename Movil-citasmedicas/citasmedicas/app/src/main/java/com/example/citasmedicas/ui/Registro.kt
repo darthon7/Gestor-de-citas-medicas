@@ -149,7 +149,7 @@ class Registro : AppCompatActivity() {
             return false
         }
         if (contra!=verificar){
-            Toast.makeText(this, "Las contraseñas no coinciden", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, Singleton.arraylist_mensajes[4], Toast.LENGTH_SHORT).show()
             return false
         }
         return true

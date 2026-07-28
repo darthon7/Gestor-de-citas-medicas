@@ -23,6 +23,7 @@ object Singleton {
         arraylist_mensajes.add(1,"El correo electronico no tiene un formato valido")
         arraylist_mensajes.add(2,"La contraseña debe tener al menos 8 caracteres")
         arraylist_mensajes.add(3,"La curp no tiene un formato valido (18 caracteres)")
+        arraylist_mensajes.add(4,"Las contraseñas no coinciden")
 
     }
 }

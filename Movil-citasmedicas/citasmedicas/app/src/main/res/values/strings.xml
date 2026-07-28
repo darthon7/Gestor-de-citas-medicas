@@ -31,4 +31,14 @@
     <string name="help_curp">Ingresa tu Curp</string>
     <string name="NSS">NSS (opcional)</string>
     <string name="help_NSS">Ingresa tu NSS (opcional)</string>
+    <string name="recuperar_contra">Recuperar Contraseña</string>
+    <string name="recuperar_contra2">Verificar codigo</string>
+    <string name="recuperar_contra3">Nueva contraseña</string>
+    <string name="Paso1_recuperar">Paso 1 de 3: Ingrese su correo registrado</string>
+    <string name="Paso2_recuperar">Paso 2 de 3: Revise el correo, se envio un codigo de 6 digitos</string>
+    <string name="Paso3_recuperar">Paso 3 de 3: Ingrese su nueva contraseña</string>
+    <string name="help_recuperar">Ingrese el codigo de 6 digitos</string>
+    <string name="recuperar">Codigo</string>
+    <string name="nueva_contra">Nueva contraseña</string>
+    <string name="help_nuevacontra">Ingrese su nueva contraseña</string>
 </resources>
