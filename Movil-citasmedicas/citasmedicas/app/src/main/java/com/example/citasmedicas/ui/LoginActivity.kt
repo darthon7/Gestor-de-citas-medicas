@@ -42,13 +42,13 @@ class LoginActivity : AppCompatActivity() {
         btn_registro=findViewById(R.id.btn_registro)
 
         btn_olvido.setOnClickListener {
-        Toast.makeText(this,"funcion proximamente disponible",Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, Recuperar::class.java))
         }
         btn_login.setOnClickListener {
            login()
         }
         btn_registro.setOnClickListener {
-
+            startActivity(Intent(this, Registro::class.java))
         }
     }
     private fun login(){
