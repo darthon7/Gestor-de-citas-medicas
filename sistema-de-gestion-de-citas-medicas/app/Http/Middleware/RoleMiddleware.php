@@ -17,13 +17,19 @@ class RoleMiddleware
         $usuario = $request->user();
 
         if (!$usuario) {
-            return response()->json(['mensaje' => 'No autenticado.'], 401);
+            if ($request->expectsJson() || $request->is('api/*')) {
+                return response()->json(['mensaje' => 'No autenticado.'], 401);
+            }
+            return redirect()->route('login');
         }
 
         if (!in_array($usuario->rol, $roles)) {
-            return response()->json([
-                'mensaje' => 'No tienes permisos para realizar esta acción. Rol requerido: ' . implode(' o ', $roles) . '.',
-            ], 403);
+            if ($request->expectsJson() || $request->is('api/*')) {
+                return response()->json([
+                    'mensaje' => 'No tienes permisos para realizar esta acción. Rol requerido: ' . implode(' o ', $roles) . '.',
+                ], 403);
+            }
+            abort(403, 'No tienes permisos para realizar esta acción.');
         }
 
         return $next($request);
