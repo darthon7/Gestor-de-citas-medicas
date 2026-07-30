@@ -86,7 +86,7 @@ class LoginActivity : AppCompatActivity() {
                     .apply()
 
                 Toast.makeText(this, "Bienvenido $nombre", Toast.LENGTH_SHORT).show()
-                startActivity(Intent(this, BusquedaDoctores::class.java))
+                startActivity(Intent(this, Home::class.java))
                 finish()
             },
             { error ->
