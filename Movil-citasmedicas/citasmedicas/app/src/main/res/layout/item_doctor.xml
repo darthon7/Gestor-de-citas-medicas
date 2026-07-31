@@ -3,17 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:padding="15dp">
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical">
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/card_doctor"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="20dp"
             app:cardCornerRadius="30dp"
             app:strokeWidth="3dp"
             app:strokeColor="@color/secondary"
@@ -36,7 +35,6 @@
                             android:id="@+id/img_doctor"
                             android:layout_width="50dp"
                             android:layout_height="50dp">
-
                         </com.android.volley.toolbox.NetworkImageView>
                     </com.google.android.material.card.MaterialCardView>
                     <LinearLayout
@@ -48,17 +46,23 @@
                             android:id="@+id/txt_nombre_doctor"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Nombre doctor"></TextView>
+                            android:text="Nombre doctor"
+                            android:textColor="@color/black"
+                            android:textStyle="bold"
+                            android:textSize="18dp"></TextView>
                         <TextView
                             android:id="@+id/txt_especialidad"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="especialidad"></TextView>
+                            android:text="especialidad"
+                            android:textColor="@color/black"
+                            android:textSize="15dp"></TextView>
                         <TextView
                             android:id="@+id/txt_estado"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="estado"></TextView>
+                            android:text="estado"
+                            android:textColor="@color/black"></TextView>
                     </LinearLayout>
                 </LinearLayout>
                 <View
@@ -78,7 +82,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/Ver_perfil"
-                        android:textSize="18dp"></TextView>
+                        android:textSize="18dp"
+                        android:textColor="@color/black"
+                        android:textStyle="bold"></TextView>
                     <View
                         android:layout_width="0dp"
                         android:layout_height="0dp"

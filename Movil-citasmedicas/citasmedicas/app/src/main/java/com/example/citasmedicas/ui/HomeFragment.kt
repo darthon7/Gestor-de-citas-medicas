@@ -7,6 +7,8 @@ import androidx.fragment.app.Fragment
 import com.android.volley.toolbox.NetworkImageView
 import com.example.citasmedicas.R
 import com.example.citasmedicas.model.Singleton
+import com.example.citasmedicas.model.usuario
+import com.example.citasmedicas.network.VolleySingleton
 
 class HomeFragment : Fragment(R.layout.fragment_home) {
 
@@ -16,5 +18,8 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         val txtHola = view.findViewById<TextView>(R.id.txt_hola)
         txtHola.text = "${getString(R.string.hola)}, ${Singleton.usuario_actual}"
         val img_usuario=view.findViewById<NetworkImageView>(R.id.img_usuario)
+        val imageLoader= VolleySingleton.getInstance(requireContext()).imageLoader
+        img_usuario.setDefaultImageResId(R.drawable.baseline_person_outline_24)
+        img_usuario.setImageUrl(Singleton.foto_perfil,imageLoader)
     }
 }

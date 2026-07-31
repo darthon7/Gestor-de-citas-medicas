@@ -61,4 +61,10 @@
     <string name="card_sleep_desc">7-8 horas de sueño mejoran tu salud</string>
     <string name="search_doctores">Buscar doctor o especialidad</string>
     <string name="nodoctores">No se encontraron doctores</string>
+    <string name="nombre_txt">Nombre</string>
+    <string name="Especialidades_txt">Especialidades</string>
+    <string name="Cedula_txt">Cedula profesional</string>
+    <string name="Correo_txt">Correo Electronico</string>
+    <string name="Telefono_txt">Telefono</string>
+    <string name="info_doctor">Informacion del Medico</string>
 </resources>
