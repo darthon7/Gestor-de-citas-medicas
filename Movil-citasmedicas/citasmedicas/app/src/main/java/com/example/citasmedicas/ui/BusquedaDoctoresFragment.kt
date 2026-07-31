@@ -36,7 +36,10 @@ class BusquedaDoctoresFragment : Fragment(R.layout.fragment_busqueda_doctores) {
         nodoctores=view.findViewById(R.id.no_doctores)
         recycler_doctores.layoutManager= LinearLayoutManager(requireContext())
 
-        adapter= DoctorAdapter(listadoctores)
+        adapter= DoctorAdapter(listadoctores){doctorSeleccionado->
+            Singleton.doctor_seleccionado_id=doctorSeleccionado.id
+            (requireActivity()as Home).irACitas()
+        }
         recycler_doctores.adapter=adapter
         cargacardoctores()
         configurarbusqueda()

@@ -5,6 +5,8 @@ object Singleton {
     var token_actual: String?= null
     var rol_usuario: String=""
     var usuario_actual: String=""
+    var foto_perfil: String?=null
+    var doctor_seleccionado_id: Int? = null
     val arraylist_validaciones: ArrayList<String>
     val arraylist_mensajes: ArrayList<String>
     var list_sexo=listOf("Masculino","Femenino")
