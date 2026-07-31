@@ -15,13 +15,19 @@
         android:theme="@style/Theme.Citasmedicas"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".ui.DetalleDoctorActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.Home"
+            android:exported="false" />
+        <activity
             android:name=".ui.Recuperar"
             android:exported="false" />
         <activity
             android:name=".ui.Registro"
             android:exported="false" />
         <activity
-            android:name=".ui.BusquedaDoctores"
+            android:name=".ui.BusquedaDoctoresFragment"
             android:exported="false" />
         <activity
             android:name=".ui.LoginActivity"

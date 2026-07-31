@@ -209,7 +209,7 @@ class Registro : AppCompatActivity() {
                         .apply()
 
                     Toast.makeText(this, "Registro exitoso, bienvenido $nombre", Toast.LENGTH_SHORT).show()
-                    startActivity(Intent(this, BusquedaDoctores::class.java))
+                    startActivity(Intent(this, Home::class.java))
                     finish()
                 } else {
                     val mensaje = response.optString("mensaje", "No se pudo completar el registro")
