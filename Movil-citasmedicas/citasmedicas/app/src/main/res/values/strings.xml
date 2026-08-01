@@ -67,4 +67,13 @@
     <string name="Correo_txt">Correo Electronico</string>
     <string name="Telefono_txt">Telefono</string>
     <string name="info_doctor">Informacion del Medico</string>
+    <string name="ver_detalle">Ver detalle</string>
+    <string name="noconsultas">No hay consultas por mostrar</string>
+    <string name="search_consultas">Buscar por Doctor</string>
+    <string name="info_consulta">Informacion de su consulta</string>
+    <string name="txt_fecha">Fecha: </string>
+    <string name="txt_hora">Hora: </string>
+    <string name="txt_diagnostico">Diagnostico</string>
+    <string name="txt_tratamiento">Tratamiento</string>
+    <string name="txt_notas">Notas adicionales</string>
 </resources>

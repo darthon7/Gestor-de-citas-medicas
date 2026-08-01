@@ -3,4 +3,17 @@
    <style name="IndicadorPersonalizado" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
        <item name="android:color">@color/primary_transparent</item>
    </style>
+    <style name="text_titulo_principio">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">20dp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    <style name="text_titulo">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    <style name="text_texto">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textStyle">normal</item>
+    </style>
 </resources>
