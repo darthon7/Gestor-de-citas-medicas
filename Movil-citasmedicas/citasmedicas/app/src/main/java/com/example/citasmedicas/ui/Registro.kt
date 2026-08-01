@@ -222,7 +222,15 @@ class Registro : AppCompatActivity() {
                     val bodyStr = String(error.networkResponse.data)
                     Log.d("REGISTRO_ERROR", bodyStr)
                     val json = JSONObject(bodyStr)
-                    mensaje = json.optString("mensaje", json.optString("msj", mensaje))
+                    if (json.has("errors")){
+                        val errores=json.getJSONObject("errrors")
+                        val primercampo=errores.keys().next()
+                        val listamensajes=errores.getJSONArray(primercampo)
+                        mensaje=listamensajes.getString(0)
+                    }
+                    else{
+                        mensaje = json.optString("mensaje", json.optString("msj", mensaje))
+                    }
                 } catch (e: Exception) { }
                 Toast.makeText(this, mensaje, Toast.LENGTH_LONG).show()
             }
