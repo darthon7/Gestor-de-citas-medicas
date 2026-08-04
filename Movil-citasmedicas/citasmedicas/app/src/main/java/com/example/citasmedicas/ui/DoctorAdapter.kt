@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.toolbox.NetworkImageView
 import com.example.citasmedicas.R
 import com.example.citasmedicas.model.Doctor
+import com.example.citasmedicas.model.Singleton
 import com.example.citasmedicas.network.VolleySingleton
 import com.google.android.material.card.MaterialCardView
 
@@ -47,8 +48,9 @@ class DoctorAdapter(
         holder.txtNombre.text = doctor.usuario.nombre
             val imageLoader= VolleySingleton.getInstance(holder.itemView.context).imageLoader
             holder.imgDoctor.setDefaultImageResId(R.drawable.baseline_person_outline_24)
-            holder.imgDoctor.setImageUrl(doctor.usuario.foto_perfil,imageLoader)
-
+            holder.imgDoctor.setErrorImageResId(R.drawable.baseline_error_outline_24)
+            val urlfoto= Singleton.obtenerfoto(doctor.usuario.foto_perfil)
+            holder.imgDoctor.setImageUrl(urlfoto,imageLoader)
         if (doctor.especialidades.isNotEmpty()) {
             holder.txtEspecialidad.text = doctor.especialidades[0].nombre
         } else {

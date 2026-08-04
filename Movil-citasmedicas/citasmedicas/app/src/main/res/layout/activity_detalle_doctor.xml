@@ -50,11 +50,17 @@
                         android:textStyle="bold"
                         android:textSize="20dp"
                         android:paddingBottom="10dp"></TextView>
-                    <com.android.volley.toolbox.NetworkImageView
-                        android:id="@+id/img_doctor_perfil"
+                    <com.google.android.material.card.MaterialCardView
                         android:layout_width="100dp"
-                        android:layout_height="100dp">
-                    </com.android.volley.toolbox.NetworkImageView>
+                        android:layout_height="100dp"
+                        app:cardCornerRadius="50dp">
+                        <com.android.volley.toolbox.NetworkImageView
+                            android:id="@+id/img_doctor_perfil"
+                            android:layout_width="100dp"
+                            android:layout_height="100dp"
+                            android:scaleType="centerCrop">
+                        </com.android.volley.toolbox.NetworkImageView>
+                    </com.google.android.material.card.MaterialCardView>
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"

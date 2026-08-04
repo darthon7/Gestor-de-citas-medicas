@@ -196,16 +196,17 @@ class Registro : AppCompatActivity() {
                     val usuarioJson = response.getJSONObject("usuario")
                     val nombre = usuarioJson.getString("nombre")
                     val rol = usuarioJson.getString("rol")
-
+                    val foto=if (!usuarioJson.isNull("foto_perfil"))usuarioJson.optString("foto_perfil",null)else null
                     Singleton.token_actual = token
                     Singleton.usuario_actual = nombre
                     Singleton.rol_usuario = rol
-
+                    Singleton.foto_perfil=foto
                     val prefs = getSharedPreferences("sesion_citas", Context.MODE_PRIVATE)
                     prefs.edit()
                         .putString("token", token)
                         .putString("usuario", nombre)
                         .putString("rol", rol)
+                        .putString("foto_perfil",foto)
                         .apply()
 
                     Toast.makeText(this, "Registro exitoso, bienvenido $nombre", Toast.LENGTH_SHORT).show()

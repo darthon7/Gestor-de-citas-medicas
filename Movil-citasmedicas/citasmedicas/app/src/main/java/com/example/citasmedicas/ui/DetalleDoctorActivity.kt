@@ -70,8 +70,9 @@ class DetalleDoctorActivity : AppCompatActivity() {
                 val foto=if (usuarioJson.isNull("foto_perfil")) null else usuarioJson.getString("foto_perfil")
                     val imageLoader= VolleySingleton.getInstance(this).imageLoader
                     img_doctor.setDefaultImageResId(R.drawable.baseline_person_outline_24)
-                    img_doctor.setImageUrl(foto,imageLoader)
-
+                    img_doctor.setErrorImageResId(R.drawable.baseline_error_outline_24)
+                val urlcompleta= Singleton.obtenerfoto(foto)
+                    img_doctor.setImageUrl(urlcompleta,imageLoader)
                 val especialidadesArray = data.getJSONArray("especialidades")
                 if (especialidadesArray.length() > 0) {
                     val nombres = ArrayList<String>()

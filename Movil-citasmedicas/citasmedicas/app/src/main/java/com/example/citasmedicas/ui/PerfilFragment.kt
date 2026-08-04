@@ -92,7 +92,19 @@ class PerfilFragment : Fragment(R.layout.fragment_perfil) {
                 txtCurp.text = data.getString("curp")
                 txtCorreo.text = data.getString("email")
                 etTelefono.setText(data.optString("telefono", ""))
-
+                val fotorelativa=if (!data.isNull("foto_perfil"))data.optString("foto_perfil",null)else null
+                Singleton.foto_perfil=fotorelativa
+                val urlcompleta= Singleton.obtenerfoto(fotorelativa)
+                if (urlcompleta!=null){
+                    VolleySingleton.getInstance(requireContext()).imageLoader.get(
+                        urlcompleta,
+                        com.android.volley.toolbox.ImageLoader.getImageListener(
+                            imgFoto,
+                            R.drawable.baseline_person_outline_24,
+                            R.drawable.baseline_error_outline_24
+                        )
+                    )
+                }
                 if (data.has("perfil_paciente") && !data.isNull("perfil_paciente")) {
                     val perfilPaciente = data.getJSONObject("perfil_paciente")
                     val fechaCompleta = perfilPaciente.optString("fecha_nacimiento", "")
@@ -304,6 +316,7 @@ class PerfilFragment : Fragment(R.layout.fragment_perfil) {
         inputStream.close()
 
         val url = "${Singleton.BASE_URL}/actualizarFoto"
+        val boundary="boundary${System.currentTimeMillis()}"
         progressBar.visibility = View.VISIBLE
 
         val request = object : Request<NetworkResponseWrapper>(
@@ -323,13 +336,11 @@ class PerfilFragment : Fragment(R.layout.fragment_perfil) {
             }
 
             override fun getBodyContentType(): String {
-                val boundary = ""
-                return "multipart/form-data;boundary=$boundary"
+                return "multipart/form-data; boundary=$boundary"
             }
 
             override fun getBody(): ByteArray {
                 val output = ByteArrayOutputStream()
-                val boundary = ""
                 output.write("--$boundary\r\n".toByteArray())
                 output.write("Content-Disposition: form-data; name=\"foto\"; filename=\"foto.jpg\"\r\n".toByteArray())
                 output.write("Content-Type: image/jpeg\r\n\r\n".toByteArray())
@@ -339,17 +350,18 @@ class PerfilFragment : Fragment(R.layout.fragment_perfil) {
             }
 
             override fun parseNetworkResponse(response: com.android.volley.NetworkResponse): Response<NetworkResponseWrapper> {
-                progressBar.visibility = View.GONE
-                if (isAdded) {
-                    Toast.makeText(requireContext(), "Foto actualizada correctamente", Toast.LENGTH_SHORT).show()
-                }
                 return Response.success(NetworkResponseWrapper(), null)
             }
 
-            override fun deliverResponse(response: NetworkResponseWrapper) {}
+            override fun deliverResponse(response: NetworkResponseWrapper) {
+                progressBar.visibility = View.GONE
+                if (isAdded) {
+                    Toast.makeText(requireContext(), "Foto actualizada correctamente", Toast.LENGTH_SHORT).show()
+                    cargarPerfil()
+                }
+            }
         }
 
-        val boundary = "boundary${System.currentTimeMillis()}"
         VolleySingleton.getInstance(requireContext()).requestQueue.add(request)
     }
 

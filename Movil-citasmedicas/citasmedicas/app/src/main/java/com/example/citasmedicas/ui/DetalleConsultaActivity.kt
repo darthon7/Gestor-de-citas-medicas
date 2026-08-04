@@ -10,6 +10,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.android.volley.toolbox.NetworkImageView
 import com.example.citasmedicas.R
+import com.example.citasmedicas.model.Singleton
 import com.example.citasmedicas.network.VolleySingleton
 import com.google.android.material.card.MaterialCardView
 import java.text.SimpleDateFormat
@@ -55,9 +56,11 @@ class DetalleConsultaActivity : AppCompatActivity() {
         val tratamiento = intent.getStringExtra("tratamiento") ?: ""
         val notasAdicionales = intent.getStringExtra("notas_adicionales") ?: ""
         imgdoctor.setDefaultImageResId(R.drawable.baseline_person_outline_24)
+        imgdoctor.setErrorImageResId(R.drawable.baseline_error_outline_24)
         if (foto_perfil.isNotEmpty()){
             val imageLoader= VolleySingleton.getInstance(this).imageLoader
-            imgdoctor.setImageUrl(foto_perfil,imageLoader)
+            val urlcompleta= Singleton.obtenerfoto(foto_perfil)
+            imgdoctor.setImageUrl(urlcompleta,imageLoader)
         }
         txtDoctor.text=doctorNombre
         txtEspecialidades.text=especialidad

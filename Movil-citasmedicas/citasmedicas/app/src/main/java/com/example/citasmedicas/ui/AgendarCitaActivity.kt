@@ -176,7 +176,7 @@ class AgendarCitaActivity : AppCompatActivity() {
 
     private fun agregarBotonHora(hora: String, disponible: Boolean) {
         val boton = Button(this)
-        boton.text = hora.substring(0, 5) // HH:MM
+        boton.text = if (hora.length>=5) hora.substring(0, 5) else hora// HH:MM
         boton.isEnabled = disponible
         boton.alpha = if (disponible) 1f else 0.4f
         boton.setOnClickListener {
@@ -244,9 +244,14 @@ class AgendarCitaActivity : AppCompatActivity() {
             Request.Method.POST, url, body,
             { response ->
                 progressBar.visibility = View.GONE
-                val data = response.getJSONObject("data")
-                val codigoReferencia = data.getString("codigo_referencia")
-                mostrarConfirmacionExitosa(codigoReferencia)
+                if (response.has("data")){
+                    val data = response.getJSONObject("data")
+                    mostrarConfirmacionExitosa(data.getString("codigo_referencia"))
+                }
+                else{
+                    btnConfirmar.isEnabled=true
+                    Toast.makeText(this,response.optString("mensaje","No se pudo agendar la cita"),Toast.LENGTH_LONG).show()
+                }
             },
             { error ->
                 progressBar.visibility = View.GONE
