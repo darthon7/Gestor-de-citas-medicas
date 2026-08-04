@@ -1,0 +1,48 @@
+/* css/pages/reportes.css - Estilos del Módulo de Reportes y Gráficas */
+.filter-bar {
+  background-color: var(--color-surface);
+  border-radius: var(--radius-card);
+  padding: 18px 24px;
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-card);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.charts-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+@media (max-width: 1024px) {
+  .charts-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.chart-card {
+  background-color: var(--color-surface);
+  border-radius: var(--radius-card);
+  border: 1px solid var(--color-border);
+  padding: 24px;
+  box-shadow: var(--shadow-card);
+}
+
+.progress-bar-cell {
+  position: relative;
+  background-color: var(--color-bg);
+  border-radius: 4px;
+  height: 20px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  background-color: var(--color-primary-light);
+  height: 100%;
+  border-radius: 4px;
+}

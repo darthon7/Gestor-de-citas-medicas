@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agenda Médica - Panel Principal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/pages/dashboard.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar__brand">
+                <div class="sidebar__brand-logo">AM</div>
+                <span class="sidebar__brand-text">Agenda Médica</span>
+            </div>
+
+            <nav class="sidebar__nav">
+                <a href="dashboard.html" class="sidebar__link sidebar__link--active">
+                    <i data-lucide="home"></i>
+                    <span>Inicio</span>
+                </a>
+                <a href="pacientes.html" class="sidebar__link">
+                    <i data-lucide="users"></i>
+                    <span>Pacientes</span>
+                </a>
+                <a href="citas.html" class="sidebar__link">
+                    <i data-lucide="calendar"></i>
+                    <span>Citas</span>
+                </a>
+                <a href="doctores.html" class="sidebar__link nav-admin-only">
+                    <i data-lucide="user-cog"></i>
+                    <span>Doctores</span>
+                </a>
+                <a href="especialidades.html" class="sidebar__link nav-admin-only">
+                    <i data-lucide="stethoscope"></i>
+                    <span>Especialidades</span>
+                </a>
+                <a href="recepcionistas.html" class="sidebar__link nav-admin-only">
+                    <i data-lucide="user-check"></i>
+                    <span>Recepcionistas</span>
+                </a>
+                <a href="reportes.html" class="sidebar__link nav-admin-only">
+                    <i data-lucide="bar-chart-3"></i>
+                    <span>Reportes</span>
+                </a>
+            </nav>
+
+            <div class="sidebar__footer">
+                <div class="sidebar__user">
+                    <div id="lbl_user_avatar" class="sidebar__avatar">U</div>
+                    <div class="sidebar__user-info">
+                        <span id="lbl_user_name" class="sidebar__user-name">Usuario</span>
+                        <span id="lbl_user_role" class="sidebar__user-role">Rol</span>
+                    </div>
+                </div>
+                <button id="btn_logout" class="sidebar__btn-logout" title="Cerrar Sesión">
+                    <i data-lucide="log-out"></i>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Wrapper -->
+        <div class="main-wrapper">
+            <!-- Header -->
+            <header class="header">
+                <h1 class="header__title">Panel Principal</h1>
+                <div class="header__right">
+                    <span id="lbl_current_date" class="header__date">Cargando fecha...</span>
+                    <button class="header__notification-btn" title="Notificaciones">
+                        <i data-lucide="bell"></i>
+                        <span class="header__notif-badge"></span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Content Area -->
+            <main class="main-content">
+                <!-- Stats Grid -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-card__icon stat-card__icon--primary">
+                            <i data-lucide="calendar"></i>
+                        </div>
+                        <div class="stat-card__info">
+                            <span id="stat_total_dia" class="stat-card__number">0</span>
+                            <span class="stat-card__label">Citas del día</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-card__icon stat-card__icon--success">
+                            <i data-lucide="check-circle-2"></i>
+                        </div>
+                        <div class="stat-card__info">
+                            <span id="stat_completadas" class="stat-card__number">0</span>
+                            <span class="stat-card__label">Completadas hoy</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-card__icon stat-card__icon--warning">
+                            <i data-lucide="clock"></i>
+                        </div>
+                        <div class="stat-card__info">
+                            <span id="stat_pendientes" class="stat-card__number">0</span>
+                            <span class="stat-card__label">Pendientes</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-card__icon stat-card__icon--danger">
+                            <i data-lucide="x-circle"></i>
+                        </div>
+                        <div class="stat-card__info">
+                            <span id="stat_canceladas" class="stat-card__number">0</span>
+                            <span class="stat-card__label">Canceladas hoy</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dashboard 2-column layout -->
+                <div class="dashboard-layout">
+                    <!-- Left: Agenda del Día -->
+                    <div class="card dashboard-card">
+                        <div class="dashboard-card__header">
+                            <h3>Agenda del Día</h3>
+                            <a href="citas.html" class="btn btn-outline-primary" style="padding: 6px 12px; font-size: 13px;">Ver Calendario</a>
+                        </div>
+
+                        <div class="table-container">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Hora</th>
+                                        <th>Paciente</th>
+                                        <th>Doctor</th>
+                                        <th>Especialidad</th>
+                                        <th>Estado</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabla_agenda_body">
+                                    <tr>
+                                        <td colspan="5" style="text-align: center; color: var(--color-text-muted);">Cargando agenda del día...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Right: Próximas Citas -->
+                    <div class="card dashboard-card">
+                        <div class="dashboard-card__header">
+                            <h3>Próximas Citas</h3>
+                            <a href="agendar-cita.html" class="btn btn-primary" style="padding: 6px 12px; font-size: 13px;">+ Nueva Cita</a>
+                        </div>
+
+                        <div id="lista_proximas_citas" class="upcoming-list">
+                            <p style="color: var(--color-text-muted); font-size: 13px;">Cargando próximas citas...</p>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script type="module" src="js/ui/dashboard-view.js"></script>
+    <script>lucide.createIcons();</script>
+</body>
+</html>

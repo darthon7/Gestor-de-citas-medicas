@@ -1,0 +1,107 @@
+/* css/pages/login.css - Estilos para Login y Pantallas de Autenticación */
+body.auth-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #F7F9FC 0%, #A8D5E2 100%);
+  padding: 20px;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 440px;
+  background-color: var(--color-surface);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-modal);
+  padding: 40px 36px;
+  text-align: center;
+  border: 1px solid var(--color-border);
+}
+
+.auth-card__header {
+  margin-bottom: 32px;
+}
+
+.auth-card__icon {
+  width: 64px;
+  height: 64px;
+  background-color: rgba(27, 107, 147, 0.1);
+  color: var(--color-primary);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+  font-size: 28px;
+}
+
+.auth-card__title {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: 6px;
+}
+
+.auth-card__subtitle {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+
+.auth-card__form {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.auth-card__input-wrapper {
+  position: relative;
+}
+
+.auth-card__input-wrapper i.leading-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-text-muted);
+  font-size: 18px;
+}
+
+.auth-card__input-wrapper .form-input {
+  padding-left: 44px;
+}
+
+.auth-card__input-wrapper .toggle-password {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-text-muted);
+  cursor: pointer;
+}
+
+.auth-card__forgot {
+  text-align: right;
+  margin-top: -6px;
+  margin-bottom: 24px;
+}
+
+.auth-card__forgot a {
+  font-size: 13px;
+}
+
+.auth-card__alert {
+  padding: 12px 14px;
+  border-radius: 8px;
+  background-color: var(--color-danger-light);
+  color: var(--color-danger);
+  font-size: 13px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.auth-card__footer {
+  margin-top: 24px;
+  font-size: 12px;
+  color: var(--color-text-muted);
+}

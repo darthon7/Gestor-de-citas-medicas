@@ -1,0 +1,80 @@
+/* css/pages/agenda-doctor.css - Estilos para la agenda diaria del Doctor */
+.doctor-welcome-card {
+  background-color: var(--color-surface);
+  border-radius: var(--radius-card);
+  padding: 24px 32px;
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-card);
+  margin-bottom: 24px;
+}
+
+.doctor-agenda-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.agenda-card {
+  background-color: var(--color-surface);
+  border-radius: var(--radius-card);
+  border: 1px solid var(--color-border);
+  border-left: 4px solid var(--color-primary);
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: var(--shadow-card);
+  transition: transform 0.2s ease;
+}
+
+.agenda-card:hover {
+  transform: translateY(-2px);
+}
+
+.agenda-card--confirmada { border-left-color: var(--color-secondary); }
+.agenda-card--en_consulta { border-left-color: var(--color-primary); }
+.agenda-card--pendiente { border-left-color: var(--color-accent); }
+.agenda-card--completada { border-left-color: var(--color-text-muted); opacity: 0.8; }
+
+.agenda-card__time {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-primary);
+  min-width: 100px;
+}
+
+.agenda-card__patient-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 0 16px;
+}
+
+.agenda-card__patient-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.agenda-card__reason {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+.pulsing-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--color-primary);
+  box-shadow: 0 0 0 rgba(27, 107, 147, 0.4);
+  animation: pulse 1.5s infinite;
+  margin-right: 6px;
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(27, 107, 147, 0.7); }
+  70% { box-shadow: 0 0 0 8px rgba(27, 107, 147, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(27, 107, 147, 0); }
+}

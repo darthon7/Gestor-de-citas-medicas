@@ -1,0 +1,168 @@
+/* css/pages/citas.css - Estilos del Calendario y Bloques de Citas */
+.calendar-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--color-surface);
+  border-radius: var(--radius-card);
+  padding: 16px 24px;
+  border: 1px solid var(--color-border);
+  margin-bottom: 24px;
+  box-shadow: var(--shadow-card);
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: 80px repeat(7, 1fr);
+  background-color: var(--color-surface);
+  border-radius: var(--radius-card);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-card);
+  overflow-x: auto;
+}
+
+.calendar-header-col {
+  padding: 14px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 13px;
+  border-bottom: 1px solid var(--color-border);
+  border-right: 1px solid var(--color-border);
+  background-color: var(--color-bg);
+}
+
+.calendar-time-col {
+  border-right: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+}
+
+.calendar-time-slot-label {
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: var(--color-text-muted);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.calendar-day-col {
+  border-right: 1px solid var(--color-border);
+  position: relative;
+  min-height: 600px;
+}
+
+.calendar-day-col:last-child {
+  border-right: none;
+}
+
+.appointment-block {
+  position: absolute;
+  left: 4px;
+  right: 4px;
+  border-radius: 6px;
+  padding: 6px 8px;
+  font-size: 11px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  border-left: 3px solid var(--color-primary);
+  background-color: rgba(27, 107, 147, 0.12);
+  color: var(--color-primary-dark);
+  cursor: pointer;
+  overflow: hidden;
+  transition: transform 0.15s;
+}
+
+.appointment-block:hover {
+  transform: scale(1.02);
+  z-index: 10;
+}
+
+.appointment-block--completada {
+  border-left-color: var(--color-secondary);
+  background-color: rgba(42, 157, 143, 0.12);
+  color: #1b685f;
+}
+
+.appointment-block--pendiente {
+  border-left-color: var(--color-accent);
+  background-color: #FEF3C7;
+  color: #B45309;
+}
+
+.appointment-block--cancelada {
+  border-left-color: var(--color-danger);
+  background-color: var(--color-danger-light);
+  color: var(--color-danger);
+  text-decoration: line-through;
+}
+
+/* Wizard Steps */
+.wizard-steps {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+  margin-bottom: 32px;
+}
+
+.wizard-step {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.wizard-step__circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+}
+
+.wizard-step--active {
+  color: var(--color-primary);
+}
+
+.wizard-step--active .wizard-step__circle {
+  background-color: var(--color-primary);
+  color: #FFFFFF;
+  border-color: var(--color-primary);
+}
+
+.time-slot-pill {
+  padding: 10px 16px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--color-primary);
+  color: var(--color-primary);
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s;
+}
+
+.time-slot-pill:hover {
+  background-color: rgba(27, 107, 147, 0.1);
+}
+
+.time-slot-pill--selected {
+  background-color: var(--color-primary);
+  color: #FFFFFF;
+}
+
+.time-slot-pill--disabled {
+  border-color: var(--color-border);
+  background-color: var(--color-bg);
+  color: var(--color-text-muted);
+  cursor: not-allowed;
+  text-decoration: line-through;
+}
