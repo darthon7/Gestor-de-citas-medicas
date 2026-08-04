@@ -27,9 +27,6 @@
             android:name=".ui.Registro"
             android:exported="false" />
         <activity
-            android:name=".ui.BusquedaDoctoresFragment"
-            android:exported="false" />
-        <activity
             android:name=".ui.LoginActivity"
             android:exported="false" />
         <activity
@@ -41,6 +38,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".ui.AgendarCitaActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
     </application>
 
 </manifest>
