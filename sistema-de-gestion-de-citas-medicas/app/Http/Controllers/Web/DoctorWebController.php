@@ -37,8 +37,8 @@ class DoctorWebController extends Controller
 
         $citas = Cita::with(['perfilPaciente.usuario', 'especialidad', 'notaConsulta'])
             ->where('perfil_doctor_id', $perfilDoctor->id)
-            ->whereDate('fecha_hora', $fecha)
-            ->orderBy('fecha_hora', 'asc')
+            ->whereDate('fecha_cita', $fecha)
+            ->orderBy('hora_cita', 'asc')
             ->get();
 
         return view('doctor.agenda', compact('citas', 'fecha', 'perfilDoctor'));

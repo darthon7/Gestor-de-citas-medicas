@@ -14,19 +14,20 @@ class DashboardWebController extends Controller
         $hoy = Carbon::today()->format('Y-m-d');
 
         $citasHoy = Cita::with(['perfilPaciente.usuario', 'perfilDoctor.usuario', 'especialidad'])
-            ->whereDate('fecha_hora', $hoy)
-            ->orderBy('fecha_hora', 'asc')
+            ->whereDate('fecha_cita', $hoy)
+            ->orderBy('hora_cita', 'asc')
             ->get();
 
         $statTotalDia = $citasHoy->count();
         $statCompletadas = $citasHoy->where('estado', 'completada')->count();
-        $statPendientes = $citasHoy->whereIn('estado', ['pendiente', 'confirmada'])->count();
+        $statPendientes = $citasHoy->whereIn('estado', ['agendada', 'confirmada'])->count();
         $statCanceladas = $citasHoy->where('estado', 'cancelada')->count();
 
         $proximasCitas = Cita::with(['perfilPaciente.usuario', 'perfilDoctor.usuario', 'especialidad'])
-            ->where('fecha_hora', '>=', Carbon::now())
-            ->whereIn('estado', ['pendiente', 'confirmada'])
-            ->orderBy('fecha_hora', 'asc')
+            ->where('fecha_cita', '>=', Carbon::today()->format('Y-m-d'))
+            ->whereIn('estado', ['agendada', 'confirmada'])
+            ->orderBy('fecha_cita', 'asc')
+            ->orderBy('hora_cita', 'asc')
             ->take(5)
             ->get();
 

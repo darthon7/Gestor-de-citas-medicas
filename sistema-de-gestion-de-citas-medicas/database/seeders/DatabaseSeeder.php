@@ -12,6 +12,7 @@ class DatabaseSeeder extends Seeder
             AdminUserSeeder::class,
             EspecialidadesSeeder::class,
             VerificacionesCedulaSeeder::class,
+            UsuariosPruebaSeeder::class,
         ]);
     }
 }

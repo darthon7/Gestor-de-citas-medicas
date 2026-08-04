@@ -53,6 +53,21 @@ class Cita extends Model
         return $this->hasOne(NotaConsulta::class, 'cita_id');
     }
 
+    /**
+     * Accesor virtual: combina fecha_cita + hora_cita en un objeto Carbon.
+     * Permite que las vistas usen $cita->fecha_hora igual que si fuera
+     * una columna datetime real en la BD.
+     */
+    public function getFechaHoraAttribute(): ?\Carbon\Carbon
+    {
+        if (!$this->fecha_cita || !$this->hora_cita) {
+            return null;
+        }
+        return \Carbon\Carbon::parse(
+            $this->fecha_cita->format('Y-m-d') . ' ' . $this->hora_cita
+        );
+    }
+
     public function canceladoPor()
     {
         return $this->belongsTo(Usuario::class, 'cancelado_por');

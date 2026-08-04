@@ -54,7 +54,9 @@ class AuthWebController extends Controller
     public function logout(Request $request)
     {
         if (Auth::check()) {
+            // Revocar token Sanctum si existe (sesión API); no falla si no hay token
             $this->authRepository->cerrarSesion($request->user());
+
             Auth::logout();
             $request->session()->invalidate();
             $request->session()->regenerateToken();
