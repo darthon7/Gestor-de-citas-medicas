@@ -223,7 +223,7 @@ class Registro : AppCompatActivity() {
                     Log.d("REGISTRO_ERROR", bodyStr)
                     val json = JSONObject(bodyStr)
                     if (json.has("errors")){
-                        val errores=json.getJSONObject("errrors")
+                        val errores=json.getJSONObject("errors")
                         val primercampo=errores.keys().next()
                         val listamensajes=errores.getJSONArray(primercampo)
                         mensaje=listamensajes.getString(0)
