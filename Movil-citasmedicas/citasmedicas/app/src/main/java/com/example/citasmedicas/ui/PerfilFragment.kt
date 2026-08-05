@@ -1,6 +1,7 @@
 package com.example.citasmedicas.ui
 
 import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -71,8 +72,6 @@ class PerfilFragment : Fragment(R.layout.fragment_perfil) {
         btnCambiarPassword.setOnClickListener { mostrarDialogoPassword() }
         btnCerrarSesion.setOnClickListener { confirmarCerrarSesion() }
 
-        cargarPerfil()
-        cargarResumenActividad()
     }
 
     override fun onResume() {
@@ -157,7 +156,9 @@ class PerfilFragment : Fragment(R.layout.fragment_perfil) {
                         if (proximaFecha == null || fecha < proximaFecha!! || (fecha == proximaFecha && hora < proximaHora!!)) {
                             proximaFecha = fecha
                             proximaHora = hora
-                            proximaDoctor = citaJson.getJSONObject("perfil_doctor").getJSONObject("usuario").getString("nombre")
+                            val perfilDoctor = citaJson.optJSONObject("perfil_doctor")
+                            val usuarioDoctor = perfilDoctor?.optJSONObject("usuario")
+                            proximaDoctor =usuarioDoctor?.optString("nombre","Doctor")?:"Doctor"
                         }
                     }
                 }
@@ -244,31 +245,33 @@ class PerfilFragment : Fragment(R.layout.fragment_perfil) {
         layout.addView(inputNueva)
         layout.addView(inputConfirmar)
 
-        AlertDialog.Builder(requireContext())
+        val dialog= AlertDialog.Builder(requireContext())
             .setTitle("Cambiar contrasena")
             .setView(layout)
             .setNegativeButton("Cancelar", null)
-            .setPositiveButton("Guardar") { _, _ ->
+            .setPositiveButton("Guardar",null)
+            .create()
+        dialog.show()
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener{
                 val actual = inputActual.text.toString()
                 val nueva = inputNueva.text.toString()
                 val confirmar = inputConfirmar.text.toString()
 
                 if (actual.isEmpty() || nueva.isEmpty() || confirmar.isEmpty()) {
                     Toast.makeText(requireContext(), "Todos los campos son obligatorios", Toast.LENGTH_SHORT).show()
-                    return@setPositiveButton
+                    return@setOnClickListener
                 }
                 if (nueva != confirmar) {
                     Toast.makeText(requireContext(), "Las contrasenas nuevas no coinciden", Toast.LENGTH_SHORT).show()
-                    return@setPositiveButton
+                    return@setOnClickListener
                 }
                 if (nueva.length < 8) {
                     Toast.makeText(requireContext(), "La contrasena debe tener al menos 8 caracteres", Toast.LENGTH_SHORT).show()
-                    return@setPositiveButton
+                    return@setOnClickListener
                 }
-
-                cambiarPassword(actual, nueva, confirmar)
+                    cambiarPassword(actual, nueva, confirmar)
+                dialog.dismiss()
             }
-            .show()
     }
 
     private fun cambiarPassword(actual: String, nueva: String, confirmar: String) {
@@ -290,11 +293,14 @@ class PerfilFragment : Fragment(R.layout.fragment_perfil) {
             { error ->
                 progressBar.visibility = View.GONE
                 var mensaje = "No se pudo cambiar la contrasena"
-                try {
-                    val bodyStr = String(error.networkResponse.data)
-                    val json = JSONObject(bodyStr)
-                    mensaje = json.optString("mensaje", json.optString("msj", mensaje))
-                } catch (e: Exception) { }
+                val networkresponse=error.networkResponse
+                if (networkresponse!=null&&networkresponse.data!=null){
+                    try {
+                        val bodyStr = String(error.networkResponse.data)
+                        val json = JSONObject(bodyStr)
+                        mensaje = json.optString("mensaje", json.optString("msj", mensaje))
+                    } catch (e: Exception) { }
+                }
                 if (isAdded) {
                     Toast.makeText(requireContext(), mensaje, Toast.LENGTH_LONG).show()
                 }
@@ -400,6 +406,8 @@ class PerfilFragment : Fragment(R.layout.fragment_perfil) {
         Singleton.rol_usuario = ""
         Singleton.foto_perfil = null
         Singleton.doctor_seleccionado_id = null
+        val preferences=requireContext().getSharedPreferences("sesion_citas",Context.MODE_PRIVATE)
+        preferences.edit().clear().apply()
 
         val intent = Intent(requireContext(), LoginActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK

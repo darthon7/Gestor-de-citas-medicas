@@ -105,18 +105,23 @@ class AgendarCitaActivity : AppCompatActivity() {
         if (especialidadesDoctor.isEmpty()) {
             Toast.makeText(this, "Este doctor no tiene especialidades asignadas todavía", Toast.LENGTH_LONG).show()
             spnEspecialidad.isEnabled = false
+            especialidadSeleccionadaId=null
+            actualizarBotonConfirmar()
             return
         }
-
+        spnEspecialidad.isEnabled=true
         val nombres = especialidadesDoctor.map { it.nombre }
         val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, nombres)
         spnEspecialidad.setAdapter(adapter)
 
         spnEspecialidad.setText(nombres[0], false)
         especialidadSeleccionadaId = especialidadesDoctor[0].id
+        actualizarBotonConfirmar()
 
-        spnEspecialidad.setOnItemClickListener { _, _, position, _ ->
-            especialidadSeleccionadaId = especialidadesDoctor[position].id
+        spnEspecialidad.setOnItemClickListener { parent, _, position, _ ->
+            val nombreseleccionado=parent.getItemAtPosition(position).toString()
+            val especialidadencontrada=especialidadesDoctor.find { it.nombre==nombreseleccionado }
+            especialidadSeleccionadaId = especialidadencontrada?.id
             actualizarBotonConfirmar()
         }
     }
@@ -232,10 +237,15 @@ class AgendarCitaActivity : AppCompatActivity() {
 
     private fun confirmarCita() {
         val body = JSONObject()
+        val horaenviar= when{
+            horaSeleccionada==null->""
+            horaSeleccionada!!.length==5 -> "${horaSeleccionada}:00"
+            else->horaSeleccionada!!
+        }
         body.put("perfil_doctor_id", doctorId)
         body.put("especialidad_id", especialidadSeleccionadaId)
         body.put("fecha_cita", fechaSeleccionada)
-        body.put("hora_cita", horaSeleccionada)
+        body.put("hora_cita", horaenviar)
 
         btnConfirmar.isEnabled = false
         progressBar.visibility = View.VISIBLE
@@ -258,12 +268,13 @@ class AgendarCitaActivity : AppCompatActivity() {
                 progressBar.visibility = View.GONE
                 btnConfirmar.isEnabled = true
                 var mensaje = "No se pudo agendar la cita"
-                try {
-                    val bodyStr = String(error.networkResponse.data)
-                    Log.v("Error_agendar", bodyStr)
-                    val json = JSONObject(bodyStr)
-                    mensaje = json.optString("mensaje", json.optString("msj", mensaje))
-                } catch (e: Exception) { }
+                    try {
+                        val data=error.networkResponse?.data
+                        if (data!=null){
+                            val json= JSONObject(String(data))
+                            mensaje=json.optString("mensaje",json.optString("msj",mensaje))
+                        }
+                    } catch (e: Exception) { }
                 Toast.makeText(this, mensaje, Toast.LENGTH_LONG).show()
             }
         ) {

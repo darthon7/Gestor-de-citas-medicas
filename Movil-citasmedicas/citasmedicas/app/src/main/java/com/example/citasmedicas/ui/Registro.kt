@@ -128,8 +128,17 @@ class Registro : AppCompatActivity() {
     }
     private fun validacionpaso1(): Boolean{
         val nombre=registro_nombre.text.toString().trim()
-        if (nombre.isEmpty()){
+        val fecha=registro_fecha.text.toString().trim()
+        val direccion=registro_direccion.text.toString().trim()
+        val numero=registro_telefono.text.toString().trim()
+        val sexo=spn_sexo.text.toString().trim()
+
+        if (nombre.isEmpty()||fecha.isEmpty()||direccion.isEmpty()||numero.isEmpty()||sexo.isEmpty()){
             Toast.makeText(this, Singleton.arraylist_mensajes[0], Toast.LENGTH_SHORT).show()
+            return false
+        }
+        if (numero.length<10){
+            Toast.makeText(this, "El numero debe tener al menos 10 digitos", Toast.LENGTH_SHORT).show()
             return false
         }
         return true

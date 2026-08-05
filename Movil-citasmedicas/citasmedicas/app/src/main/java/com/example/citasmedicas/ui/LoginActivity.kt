@@ -73,22 +73,34 @@ class LoginActivity : AppCompatActivity() {
                 val usuarioJson = response.getJSONObject("usuario")
                 val nombre = usuarioJson.getString("nombre")
                 val rol = usuarioJson.getString("rol")
-                val foto=if (usuarioJson.isNull("foto_perfil")) null else usuarioJson.getString("foto_perfil")
-                Singleton.token_actual = token
-                Singleton.usuario_actual = nombre
-                Singleton.rol_usuario = rol
-                Singleton.foto_perfil=foto
-                val prefs = getSharedPreferences("sesion_citas", Context.MODE_PRIVATE)
-                prefs.edit()
-                    .putString("token", token)
-                    .putString("usuario", nombre)
-                    .putString("rol", rol)
-                    .putString("foto_perfil",foto)
-                    .apply()
+                if (rol.lowercase()!="paciente"){
+                    Singleton.token_actual=null
+                    Singleton.usuario_actual=""
+                    Singleton.rol_usuario=""
+                    Singleton.foto_perfil=null
+                    Singleton.doctor_seleccionado_id=null
+                    val prefs=getSharedPreferences("sesion_citas",Context.MODE_PRIVATE)
+                    prefs.edit().clear().apply()
+                    Toast.makeText(this, "Acceso denegado. Esta app es exclusiva para pacientes", Toast.LENGTH_SHORT).show()
+                }
+                else{
+                    val foto=if (usuarioJson.isNull("foto_perfil")) null else usuarioJson.getString("foto_perfil")
+                    Singleton.token_actual = token
+                    Singleton.usuario_actual = nombre
+                    Singleton.rol_usuario = rol
+                    Singleton.foto_perfil=foto
+                    val prefs = getSharedPreferences("sesion_citas", Context.MODE_PRIVATE)
+                    prefs.edit()
+                        .putString("token", token)
+                        .putString("usuario", nombre)
+                        .putString("rol", rol)
+                        .putString("foto_perfil",foto)
+                        .apply()
 
-                Toast.makeText(this, "Bienvenido $nombre", Toast.LENGTH_SHORT).show()
-                startActivity(Intent(this, Home::class.java))
-                finish()
+                    Toast.makeText(this, "Bienvenido $nombre", Toast.LENGTH_SHORT).show()
+                    startActivity(Intent(this, Home::class.java))
+                    finish()
+                }
             },
             { error ->
                 val statusCode = error.networkResponse?.statusCode

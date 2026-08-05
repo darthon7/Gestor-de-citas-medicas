@@ -1,5 +1,6 @@
 package com.example.citasmedicas.ui
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -38,7 +39,8 @@ class BusquedaDoctoresFragment : Fragment(R.layout.fragment_busqueda_doctores) {
 
         adapter= DoctorAdapter(listadoctores){doctorSeleccionado->
             Singleton.doctor_seleccionado_id=doctorSeleccionado.id
-            (requireActivity()as Home).irACitas()
+            val intent= Intent(requireContext(), AgendarCitaActivity::class.java)
+            startActivity(intent)
         }
         recycler_doctores.adapter=adapter
         cargacardoctores()
