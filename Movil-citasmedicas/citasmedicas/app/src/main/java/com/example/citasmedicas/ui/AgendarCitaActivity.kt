@@ -152,6 +152,10 @@ class AgendarCitaActivity : AppCompatActivity() {
         horaSeleccionada = null
         actualizarBotonConfirmar()
         progressBar.visibility = View.VISIBLE
+        val formatofechahoy= SimpleDateFormat("yyy-MM-dd", Locale.getDefault())
+        val fechahoystr=formatofechahoy.format(Calendar.getInstance().time)
+        val formatohoraactual= SimpleDateFormat("HH:mm", Locale.getDefault())
+        val horaactualstr=formatohoraactual.format(Calendar.getInstance().time)
 
         val url = "${Singleton.BASE_URL}/obtenerDisponibilidad/$doctorId?fecha=$fecha"
         val request = JsonObjectRequest(
@@ -164,11 +168,26 @@ class AgendarCitaActivity : AppCompatActivity() {
                     txtSinHorario.visibility = View.VISIBLE
                     return@JsonObjectRequest
                 }
+                var horasdisponiblescount=0
+
                 for (i in 0 until horasArray.length()) {
                     val horaJson = horasArray.getJSONObject(i)
                     val hora = horaJson.getString("hora")
-                    val disponible = horaJson.getBoolean("disponible")
+                    var disponible = horaJson.getBoolean("disponible")
+                    if (fecha==fechahoystr){
+                        val horaformateada=if (hora.length>=5)hora.substring(0,5)else hora
+                        if (horaformateada<=horaactualstr){
+                            disponible=false
+                        }
+                    }
+                    if (disponible){
+                        horasdisponiblescount++
+                    }
                     agregarBotonHora(hora, disponible)
+                }
+                if (horasdisponiblescount==0&&fecha==fechahoystr){
+                    txtSinHorario.text="Ya no quedan horarios disponibles por el dia de hoy"
+                    txtSinHorario.visibility=View.VISIBLE
                 }
             },
             { error ->
