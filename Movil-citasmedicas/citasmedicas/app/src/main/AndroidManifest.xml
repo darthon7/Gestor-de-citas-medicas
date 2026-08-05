@@ -15,6 +15,9 @@
         android:theme="@style/Theme.Citasmedicas"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".ui.DetalleConsultaActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.DetalleDoctorActivity"
             android:exported="false" />
         <activity

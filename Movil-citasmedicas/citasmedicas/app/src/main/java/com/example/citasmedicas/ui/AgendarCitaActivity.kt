@@ -25,7 +25,7 @@ class AgendarCitaActivity : AppCompatActivity() {
     private lateinit var txtDoctorNombre: TextView
     private lateinit var txtFecha: TextView
     private lateinit var btnElegirFecha: View
-    private lateinit var spnEspecialidad: Spinner
+    private lateinit var spnEspecialidad: AutoCompleteTextView
     private lateinit var contenedorHoras: LinearLayout
     private lateinit var txtSinHorario: TextView
     private lateinit var btnConfirmar: Button
@@ -100,23 +100,30 @@ class AgendarCitaActivity : AppCompatActivity() {
         VolleySingleton.getInstance(this).requestQueue.add(request)
     }
 
+
     private fun configurarSpinnerEspecialidad() {
         if (especialidadesDoctor.isEmpty()) {
             Toast.makeText(this, "Este doctor no tiene especialidades asignadas todavía", Toast.LENGTH_LONG).show()
             spnEspecialidad.isEnabled = false
+            especialidadSeleccionadaId=null
+            actualizarBotonConfirmar()
             return
         }
+        spnEspecialidad.isEnabled=true
         val nombres = especialidadesDoctor.map { it.nombre }
-        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, nombres)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spnEspecialidad.adapter = adapter
-        spnEspecialidad.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                especialidadSeleccionadaId = especialidadesDoctor[position].id
-            }
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
-        }
+        val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, nombres)
+        spnEspecialidad.setAdapter(adapter)
+
+        spnEspecialidad.setText(nombres[0], false)
         especialidadSeleccionadaId = especialidadesDoctor[0].id
+        actualizarBotonConfirmar()
+
+        spnEspecialidad.setOnItemClickListener { parent, _, position, _ ->
+            val nombreseleccionado=parent.getItemAtPosition(position).toString()
+            val especialidadencontrada=especialidadesDoctor.find { it.nombre==nombreseleccionado }
+            especialidadSeleccionadaId = especialidadencontrada?.id
+            actualizarBotonConfirmar()
+        }
     }
 
     private fun mostrarCalendario() {
@@ -135,7 +142,6 @@ class AgendarCitaActivity : AppCompatActivity() {
             calendario.get(Calendar.MONTH),
             calendario.get(Calendar.DAY_OF_MONTH)
         )
-        // No permitir fechas pasadas
         dialog.datePicker.minDate = System.currentTimeMillis() - 1000
         dialog.show()
     }
@@ -146,6 +152,10 @@ class AgendarCitaActivity : AppCompatActivity() {
         horaSeleccionada = null
         actualizarBotonConfirmar()
         progressBar.visibility = View.VISIBLE
+        val formatofechahoy= SimpleDateFormat("yyy-MM-dd", Locale.getDefault())
+        val fechahoystr=formatofechahoy.format(Calendar.getInstance().time)
+        val formatohoraactual= SimpleDateFormat("HH:mm", Locale.getDefault())
+        val horaactualstr=formatohoraactual.format(Calendar.getInstance().time)
 
         val url = "${Singleton.BASE_URL}/obtenerDisponibilidad/$doctorId?fecha=$fecha"
         val request = JsonObjectRequest(
@@ -158,11 +168,26 @@ class AgendarCitaActivity : AppCompatActivity() {
                     txtSinHorario.visibility = View.VISIBLE
                     return@JsonObjectRequest
                 }
+                var horasdisponiblescount=0
+
                 for (i in 0 until horasArray.length()) {
                     val horaJson = horasArray.getJSONObject(i)
                     val hora = horaJson.getString("hora")
-                    val disponible = horaJson.getBoolean("disponible")
+                    var disponible = horaJson.getBoolean("disponible")
+                    if (fecha==fechahoystr){
+                        val horaformateada=if (hora.length>=5)hora.substring(0,5)else hora
+                        if (horaformateada<=horaactualstr){
+                            disponible=false
+                        }
+                    }
+                    if (disponible){
+                        horasdisponiblescount++
+                    }
                     agregarBotonHora(hora, disponible)
+                }
+                if (horasdisponiblescount==0&&fecha==fechahoystr){
+                    txtSinHorario.text="Ya no quedan horarios disponibles por el dia de hoy"
+                    txtSinHorario.visibility=View.VISIBLE
                 }
             },
             { error ->
@@ -176,7 +201,7 @@ class AgendarCitaActivity : AppCompatActivity() {
 
     private fun agregarBotonHora(hora: String, disponible: Boolean) {
         val boton = Button(this)
-        boton.text = hora.substring(0, 5) // HH:MM
+        boton.text = if (hora.length>=5) hora.substring(0, 5) else hora// HH:MM
         boton.isEnabled = disponible
         boton.alpha = if (disponible) 1f else 0.4f
         boton.setOnClickListener {
@@ -231,10 +256,15 @@ class AgendarCitaActivity : AppCompatActivity() {
 
     private fun confirmarCita() {
         val body = JSONObject()
+        val horaenviar= when{
+            horaSeleccionada==null->""
+            horaSeleccionada!!.length==5 -> "${horaSeleccionada}:00"
+            else->horaSeleccionada!!
+        }
         body.put("perfil_doctor_id", doctorId)
         body.put("especialidad_id", especialidadSeleccionadaId)
         body.put("fecha_cita", fechaSeleccionada)
-        body.put("hora_cita", horaSeleccionada)
+        body.put("hora_cita", horaenviar)
 
         btnConfirmar.isEnabled = false
         progressBar.visibility = View.VISIBLE
@@ -244,20 +274,26 @@ class AgendarCitaActivity : AppCompatActivity() {
             Request.Method.POST, url, body,
             { response ->
                 progressBar.visibility = View.GONE
-                val data = response.getJSONObject("data")
-                val codigoReferencia = data.getString("codigo_referencia")
-                mostrarConfirmacionExitosa(codigoReferencia)
+                if (response.has("data")){
+                    val data = response.getJSONObject("data")
+                    mostrarConfirmacionExitosa(data.getString("codigo_referencia"))
+                }
+                else{
+                    btnConfirmar.isEnabled=true
+                    Toast.makeText(this,response.optString("mensaje","No se pudo agendar la cita"),Toast.LENGTH_LONG).show()
+                }
             },
             { error ->
                 progressBar.visibility = View.GONE
                 btnConfirmar.isEnabled = true
                 var mensaje = "No se pudo agendar la cita"
-                try {
-                    val bodyStr = String(error.networkResponse.data)
-                    Log.v("Error_agendar", bodyStr)
-                    val json = JSONObject(bodyStr)
-                    mensaje = json.optString("mensaje", json.optString("msj", mensaje))
-                } catch (e: Exception) { }
+                    try {
+                        val data=error.networkResponse?.data
+                        if (data!=null){
+                            val json= JSONObject(String(data))
+                            mensaje=json.optString("mensaje",json.optString("msj",mensaje))
+                        }
+                    } catch (e: Exception) { }
                 Toast.makeText(this, mensaje, Toast.LENGTH_LONG).show()
             }
         ) {

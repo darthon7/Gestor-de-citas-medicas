@@ -74,14 +74,18 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="20dp"
+                    app:helperText="Selecciona una especialidad"
+                    app:helperTextEnabled="true"
                     app:startIconDrawable="@drawable/baseline_medical_information_24"
-                    app:startIconTint="@color/inputs">
+                    app:startIconTint="@color/inputs"
+                    app:boxBackgroundColor="@color/white">
 
-                    <Spinner
+                    <AutoCompleteTextView
                         android:id="@+id/spn_especialidad_agendar"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="12dp" />
+                        android:inputType="none"
+                        android:textColor="@color/inputs" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <TextView

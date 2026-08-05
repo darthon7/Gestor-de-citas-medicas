@@ -27,4 +27,14 @@ object Singleton {
         arraylist_mensajes.add(4,"Las contraseñas no coinciden")
 
     }
+    //convertir ruta relativa a url absoluta
+    fun obtenerfoto(rutaRelativa: String?): String?{
+        if (rutaRelativa.isNullOrEmpty())return null
+        if (rutaRelativa.startsWith("http://")||rutaRelativa.startsWith("https://")){
+            return rutaRelativa
+        }
+        val baseurllimpia=BASE_URL.removeSuffix("/api").removeSuffix("/")
+        val rutalimpia=rutaRelativa.removePrefix("/")
+        return "$baseurllimpia/storage/$rutalimpia"
+    }
 }

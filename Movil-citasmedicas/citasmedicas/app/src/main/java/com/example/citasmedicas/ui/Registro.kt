@@ -100,6 +100,8 @@ class Registro : AppCompatActivity() {
                 }
                 2->{
                     if (validacionpaso3()){
+                        btn_siguiente.isEnabled = false
+                        txt_boton.text = "Registrando..."
                     registrarpaciente()
                     }
                 }
@@ -126,8 +128,17 @@ class Registro : AppCompatActivity() {
     }
     private fun validacionpaso1(): Boolean{
         val nombre=registro_nombre.text.toString().trim()
-        if (nombre.isEmpty()){
+        val fecha=registro_fecha.text.toString().trim()
+        val direccion=registro_direccion.text.toString().trim()
+        val numero=registro_telefono.text.toString().trim()
+        val sexo=spn_sexo.text.toString().trim()
+
+        if (nombre.isEmpty()||fecha.isEmpty()||direccion.isEmpty()||numero.isEmpty()||sexo.isEmpty()){
             Toast.makeText(this, Singleton.arraylist_mensajes[0], Toast.LENGTH_SHORT).show()
+            return false
+        }
+        if (numero.length<10){
+            Toast.makeText(this, "El numero debe tener al menos 10 digitos", Toast.LENGTH_SHORT).show()
             return false
         }
         return true
@@ -196,16 +207,17 @@ class Registro : AppCompatActivity() {
                     val usuarioJson = response.getJSONObject("usuario")
                     val nombre = usuarioJson.getString("nombre")
                     val rol = usuarioJson.getString("rol")
-
+                    val foto=if (!usuarioJson.isNull("foto_perfil"))usuarioJson.optString("foto_perfil",null)else null
                     Singleton.token_actual = token
                     Singleton.usuario_actual = nombre
                     Singleton.rol_usuario = rol
-
+                    Singleton.foto_perfil=foto
                     val prefs = getSharedPreferences("sesion_citas", Context.MODE_PRIVATE)
                     prefs.edit()
                         .putString("token", token)
                         .putString("usuario", nombre)
                         .putString("rol", rol)
+                        .putString("foto_perfil",foto)
                         .apply()
 
                     Toast.makeText(this, "Registro exitoso, bienvenido $nombre", Toast.LENGTH_SHORT).show()
@@ -217,12 +229,22 @@ class Registro : AppCompatActivity() {
                 }
             },
             { error ->
+                btn_siguiente.isEnabled = true
+                txt_boton.text = "Registrarme"
                 var mensaje = "Error de conexión con el servidor"
                 try {
                     val bodyStr = String(error.networkResponse.data)
                     Log.d("REGISTRO_ERROR", bodyStr)
                     val json = JSONObject(bodyStr)
-                    mensaje = json.optString("mensaje", json.optString("msj", mensaje))
+                    if (json.has("errors")){
+                        val errores=json.getJSONObject("errors")
+                        val primercampo=errores.keys().next()
+                        val listamensajes=errores.getJSONArray(primercampo)
+                        mensaje=listamensajes.getString(0)
+                    }
+                    else{
+                        mensaje = json.optString("mensaje", json.optString("msj", mensaje))
+                    }
                 } catch (e: Exception) { }
                 Toast.makeText(this, mensaje, Toast.LENGTH_LONG).show()
             }

@@ -89,7 +89,6 @@
                            android:layout_height="wrap_content"
                            android:hint="@string/correo"
                            android:textColorHint="@color/inputs"
-                           android:inputType="text"
                            app:helperTextEnabled="true"
                            app:helperText="@string/help_correo"
                            app:helperTextTextColor="@color/inputs"
@@ -102,7 +101,8 @@
                                android:id="@+id/login_usuario"
                                android:layout_width="match_parent"
                                android:layout_height="match_parent"
-                               android:textColor="@color/black">
+                               android:textColor="@color/black"
+                               android:inputType="textEmailAddress">
                            </com.google.android.material.textfield.TextInputEditText>
                        </com.google.android.material.textfield.TextInputLayout>
                        <com.google.android.material.textfield.TextInputLayout
