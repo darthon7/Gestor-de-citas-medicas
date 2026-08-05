@@ -82,7 +82,6 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/correo"
                     android:textColorHint="@color/inputs"
-                    android:inputType="text"
                     app:helperTextEnabled="true"
                     app:helperText="@string/help_correo"
                     app:helperTextTextColor="@color/inputs"
@@ -94,7 +93,8 @@
                         android:textColor="@color/inputs"
                         android:id="@+id/recuperar_correo"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                        android:layout_height="match_parent"
+                        android:inputType="textEmailAddress">
                     </com.google.android.material.textfield.TextInputEditText>
                 </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
@@ -158,7 +158,8 @@
                         android:id="@+id/registro_codigo"
                         android:inputType="number"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                        android:layout_height="match_parent"
+                        android:maxLength="6">
                     </com.google.android.material.textfield.TextInputEditText>
                 </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>

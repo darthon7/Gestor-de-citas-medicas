@@ -55,9 +55,6 @@ class Home : AppCompatActivity() {
             }
         }
     }
-    fun irACitas() {
-        findViewById<BottomNavigationView>(R.id.bottom_navigation).selectedItemId = R.id.nav_citas
-    }
     private fun cambiarFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, fragment)
