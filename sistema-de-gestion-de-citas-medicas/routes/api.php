@@ -48,7 +48,7 @@ Route::middleware(['auth:sanctum', 'check.status'])->group(function () {
     Route::post('/actualizarFoto', [PerfilController::class, 'actualizarFoto']);
 
     // Rutas para Paciente (Móvil)
-   Route::middleware(['role:paciente'])->group(function () {
+   Route::middleware(['auth:sanctum','role:paciente'])->group(function () {
         Route::get('/misCitas', [CitasController::class, 'misCitas']);
         Route::post('/agendarCita', [CitasController::class, 'agendarCita']);
         Route::get('/miCita/{id}', [CitasController::class, 'miCita']);
