@@ -100,6 +100,8 @@ class Registro : AppCompatActivity() {
                 }
                 2->{
                     if (validacionpaso3()){
+                        btn_siguiente.isEnabled = false
+                        txt_boton.text = "Registrando..."
                     registrarpaciente()
                     }
                 }
@@ -218,6 +220,8 @@ class Registro : AppCompatActivity() {
                 }
             },
             { error ->
+                btn_siguiente.isEnabled = true
+                txt_boton.text = "Registrarme"
                 var mensaje = "Error de conexión con el servidor"
                 try {
                     val bodyStr = String(error.networkResponse.data)
