@@ -25,7 +25,7 @@ class AgendarCitaActivity : AppCompatActivity() {
     private lateinit var txtDoctorNombre: TextView
     private lateinit var txtFecha: TextView
     private lateinit var btnElegirFecha: View
-    private lateinit var spnEspecialidad: Spinner
+    private lateinit var spnEspecialidad: AutoCompleteTextView
     private lateinit var contenedorHoras: LinearLayout
     private lateinit var txtSinHorario: TextView
     private lateinit var btnConfirmar: Button
@@ -100,23 +100,25 @@ class AgendarCitaActivity : AppCompatActivity() {
         VolleySingleton.getInstance(this).requestQueue.add(request)
     }
 
+
     private fun configurarSpinnerEspecialidad() {
         if (especialidadesDoctor.isEmpty()) {
             Toast.makeText(this, "Este doctor no tiene especialidades asignadas todavía", Toast.LENGTH_LONG).show()
             spnEspecialidad.isEnabled = false
             return
         }
+
         val nombres = especialidadesDoctor.map { it.nombre }
-        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, nombres)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spnEspecialidad.adapter = adapter
-        spnEspecialidad.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                especialidadSeleccionadaId = especialidadesDoctor[position].id
-            }
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
-        }
+        val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, nombres)
+        spnEspecialidad.setAdapter(adapter)
+
+        spnEspecialidad.setText(nombres[0], false)
         especialidadSeleccionadaId = especialidadesDoctor[0].id
+
+        spnEspecialidad.setOnItemClickListener { _, _, position, _ ->
+            especialidadSeleccionadaId = especialidadesDoctor[position].id
+            actualizarBotonConfirmar()
+        }
     }
 
     private fun mostrarCalendario() {
@@ -135,7 +137,6 @@ class AgendarCitaActivity : AppCompatActivity() {
             calendario.get(Calendar.MONTH),
             calendario.get(Calendar.DAY_OF_MONTH)
         )
-        // No permitir fechas pasadas
         dialog.datePicker.minDate = System.currentTimeMillis() - 1000
         dialog.show()
     }

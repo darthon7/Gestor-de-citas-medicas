@@ -41,7 +41,8 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical"
                     android:gravity="top"
-                    android:padding="20dp">
+                    android:paddingHorizontal="20dp"
+                    android:paddingTop="20dp">
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -129,7 +130,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         app:startIconDrawable="@drawable/baseline_wc_24"
-                        app:startIconTint="@color/inputs">
+                        app:startIconTint="@color/inputs"
+                        app:boxBackgroundColor="@color/white">
                         <AutoCompleteTextView
                             android:id="@+id/spn_sexo"
                             android:layout_width="match_parent"
