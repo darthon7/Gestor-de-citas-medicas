@@ -1,0 +1,99 @@
+/* resources/css/bootstrap-theme.css - Estilos globales y personalización de Bootstrap 5 */
+
+:root {
+    --bs-body-font-family: 'Inter', sans-serif;
+    --color-primary: #2a9d8f;
+    --color-secondary: #457b9d;
+    --color-dark: #1d3557;
+    --color-danger: #e63946;
+    --color-warning: #e9c46a;
+}
+
+body {
+    font-family: var(--bs-body-font-family);
+    background-color: #f8f9fa;
+}
+
+/* Auth Pages Background */
+body.auth-page-bg {
+    background: linear-gradient(135deg, #1d3557 0%, #457b9d 100%);
+    min-height: 100vh;
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: #2a9d8f;
+    border-color: #2a9d8f;
+}
+
+.btn-primary:hover, 
+.btn-primary:focus, 
+.btn-primary:active {
+    background-color: #238579 !important;
+    border-color: #238579 !important;
+}
+
+.btn-outline-primary {
+    color: #2a9d8f;
+    border-color: #2a9d8f;
+}
+
+.btn-outline-primary:hover {
+    background-color: #2a9d8f;
+    border-color: #2a9d8f;
+    color: #fff;
+}
+
+/* Custom Text and Background Helpers */
+.text-primary-custom {
+    color: #2a9d8f !important;
+}
+
+.bg-primary-custom {
+    background-color: #2a9d8f !important;
+}
+
+/* Sidebar Wrapper */
+.sidebar-wrapper {
+    width: 260px;
+    min-height: 100vh;
+    background-color: #1d3557;
+    color: #ffffff;
+}
+
+.main-content-wrapper {
+    flex: 1;
+    min-width: 0;
+}
+
+/* Profile Avatars */
+.profile-avatar-circle {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.25);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    font-weight: 700;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+}
+
+.profile-avatar-md {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #2a9d8f, #457b9d);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 18px;
+}
+
+.profile-hero-card {
+    background: linear-gradient(135deg, #1d3557 0%, #2a9d8f 100%);
+}

@@ -1,0 +1,101 @@
+/* resources/css/components.css - Componentes UI reutilizables */
+
+/* Botones */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: var(--radius-btn);
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+
+.btn-primary {
+  background-color: var(--color-primary);
+  color: #FFFFFF;
+}
+
+.btn-primary:hover {
+  background-color: var(--color-primary-dark);
+  box-shadow: 0 4px 12px rgba(27, 107, 147, 0.2);
+}
+
+.btn-secondary {
+  background-color: var(--color-secondary);
+  color: #FFFFFF;
+}
+
+.btn-secondary:hover {
+  background-color: #238478;
+}
+
+.btn-outline {
+  border-color: var(--color-border);
+  background-color: transparent;
+  color: var(--color-text-secondary);
+}
+
+.btn-outline:hover {
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
+}
+
+.btn-outline-primary {
+  border-color: var(--color-primary);
+  background-color: transparent;
+  color: var(--color-primary);
+}
+
+.btn-outline-primary:hover {
+  background-color: rgba(27, 107, 147, 0.08);
+}
+
+.btn-danger {
+  background-color: var(--color-danger);
+  color: #FFFFFF;
+}
+
+.btn-danger:hover {
+  background-color: #d85c3e;
+}
+
+.btn-outline-danger {
+  border-color: var(--color-danger);
+  background-color: transparent;
+  color: var(--color-danger);
+}
+
+.btn-outline-danger:hover {
+  background-color: var(--color-danger-light);
+}
+
+.btn-icon {
+  padding: 8px;
+  border-radius: 6px;
+  color: var(--color-text-secondary);
+}
+
+.btn-icon:hover {
+  background-color: var(--color-bg);
+  color: var(--color-primary);
+}
+
+/* Tarjetas (Cards) */
+.card {
+  background-color: var(--color-surface);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  padding: 24px;
+  border: 1px solid var(--color-border);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.card--hoverable:hover {
+  box-shadow: var(--shadow-card-hover);
+  transform: translateY(-2px);
+}
