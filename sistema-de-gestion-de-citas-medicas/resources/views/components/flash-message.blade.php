@@ -1,38 +1,34 @@
 @if (session('success'))
-    <div class="alert alert-success alert-dismissible fade show shadow-sm border-0 d-flex align-items-center mb-4" role="alert">
-        <i data-lucide="check-circle" class="me-2 flex-shrink-0"></i>
-        <div>{{ session('success') }}</div>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    <div class="mb-4 p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 flex items-center gap-3 shadow-sm">
+        <span class="material-symbols-outlined text-emerald-600">check_circle</span>
+        <div class="text-sm font-medium flex-1">{{ session('success') }}</div>
     </div>
 @endif
 
 @if (session('error'))
-    <div class="alert alert-danger alert-dismissible fade show shadow-sm border-0 d-flex align-items-center mb-4" role="alert">
-        <i data-lucide="alert-triangle" class="me-2 flex-shrink-0"></i>
-        <div>{{ session('error') }}</div>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    <div class="mb-4 p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 flex items-center gap-3 shadow-sm">
+        <span class="material-symbols-outlined text-rose-600">error</span>
+        <div class="text-sm font-medium flex-1">{{ session('error') }}</div>
     </div>
 @endif
 
 @if (session('warning'))
-    <div class="alert alert-warning alert-dismissible fade show shadow-sm border-0 d-flex align-items-center mb-4" role="alert">
-        <i data-lucide="alert-circle" class="me-2 flex-shrink-0"></i>
-        <div>{{ session('warning') }}</div>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    <div class="mb-4 p-4 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 flex items-center gap-3 shadow-sm">
+        <span class="material-symbols-outlined text-amber-600">warning</span>
+        <div class="text-sm font-medium flex-1">{{ session('warning') }}</div>
     </div>
 @endif
 
 @if ($errors->any())
-    <div class="alert alert-danger alert-dismissible fade show shadow-sm border-0 mb-4" role="alert">
-        <div class="d-flex align-items-center fw-bold mb-1">
-            <i data-lucide="alert-triangle" class="me-2 flex-shrink-0"></i>
+    <div class="mb-4 p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 shadow-sm space-y-2">
+        <div class="flex items-center gap-2 font-semibold text-sm text-rose-900">
+            <span class="material-symbols-outlined text-rose-600">warning</span>
             <span>Por favor corrige los siguientes errores:</span>
         </div>
-        <ul class="mb-0 ps-4 small">
+        <ul class="list-disc list-inside text-xs space-y-1 text-rose-700 pl-2">
             @foreach ($errors->all() as $error)
                 <li>{{ $error }}</li>
             @endforeach
         </ul>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 @endif

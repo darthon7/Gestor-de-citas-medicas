@@ -115,7 +115,7 @@ class CitasController extends Controller
     {
         try {
             $pacienteId = $request->user()->perfilPaciente->id;
-            $resultado  = $this->citasRepository->obtenerCitas(['paciente_id' => $pacienteId]);
+            $resultado  = $this->citasRepository->obtenerCitas(['perfil_paciente_id' => $pacienteId]);
             return response()->json($resultado, 200);
         } catch (\Exception $e) {
             return response()->json(['mensaje' => $e->getMessage()], 500);

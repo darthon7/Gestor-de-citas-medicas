@@ -2,40 +2,79 @@
 @section('titulo', 'Agendar Nueva Cita')
 
 @section('styles')
-<link rel="stylesheet" href="{{ asset('css/pages/citas.css') }}">
+<style>
+    .slot-chip {
+        padding: 6px 14px;
+        border-radius: 10px;
+        background-color: #f7f9fc;
+        border: 1px solid #E2E8F0;
+        font-size: 12px;
+        font-weight: 600;
+        color: #005275;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    .slot-chip:hover {
+        background-color: #e6f2f8;
+        border-color: #005275;
+    }
+    .slot-chip.active {
+        background-color: #005275;
+        color: #ffffff;
+        border-color: #005275;
+        box-shadow: 0 2px 8px rgba(0, 82, 117, 0.25);
+    }
+</style>
 @endsection
 
 @section('content')
-<div class="d-flex align-items-center gap-3 mb-4 pb-2 border-bottom">
-    <a href="{{ route('citas.index') }}" class="btn btn-outline-secondary btn-sm"><i data-lucide="arrow-left"></i></a>
-    <h1 class="h3 fw-bold mb-0">Agendar Nueva Cita</h1>
+<!-- Header Controls -->
+<div class="flex items-center gap-3 mb-6">
+    <a href="{{ route('citas.index') }}" class="p-2 bg-surface border border-border rounded-xl text-text-secondary hover:text-primary transition-all">
+        <span class="material-symbols-outlined text-xl">arrow_back</span>
+    </a>
+    <div>
+        <h1 class="text-2xl font-bold text-primary-dark">Agendar Nueva Cita</h1>
+        <p class="text-xs text-text-secondary mt-0.5">Selecciona el médico, la fecha y el horario de consulta</p>
+    </div>
 </div>
 
-<div class="mx-auto" style="max-width: 760px;">
-    <div class="card border-0 shadow-sm rounded-3 p-4">
-        <form method="POST" action="{{ route('citas.store') }}" id="form_agendar_cita">
+<div class="max-w-2xl mx-auto">
+    <div class="bg-surface rounded-2xl p-6 md:p-8 card-shadow border border-border">
+        <form method="POST" action="{{ route('citas.store') }}" id="form_agendar_cita" class="space-y-5">
             @csrf
-            
-            <h5 class="fw-bold mb-4 border-bottom pb-2">Información de la Cita</h5>
+
+            <h3 class="font-bold text-primary-dark text-base border-b border-border pb-3 flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary text-xl">event_available</span>
+                <span>Datos de la Cita Médica</span>
+            </h3>
 
             <!-- Paciente -->
-            <div class="mb-3">
-                <label for="sel_paciente_id" class="form-label fw-medium">Paciente *</label>
-                <select id="sel_paciente_id" name="perfil_paciente_id" class="form-select" required>
-                    <option value="">Seleccione Paciente...</option>
-                    @foreach($pacientes as $pac)
-                        <option value="{{ $pac->id }}" {{ old('perfil_paciente_id') == $pac->id ? 'selected' : '' }}>
-                            {{ $pac->usuario?->nombre }} ({{ $pac->numero_expediente ?? 'EXP-' . str_pad($pac->id, 4, '0', STR_PAD_LEFT) }}) - CURP: {{ $pac->usuario?->curp }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
+            @if(Auth::user()->rol === 'paciente')
+                <input type="hidden" name="perfil_paciente_id" value="{{ Auth::user()->perfilPaciente?->id }}">
+                <div class="space-y-1">
+                    <label class="text-xs font-semibold text-text-secondary block">Paciente</label>
+                    <input type="text" class="w-full px-4 py-2.5 bg-background border border-border rounded-xl text-sm font-semibold text-text-primary" value="{{ Auth::user()->nombre }} (Expediente: {{ Auth::user()->perfilPaciente?->numero_expediente ?? 'N/A' }})" readonly>
+                </div>
+            @else
+                <div class="space-y-1">
+                    <label for="sel_paciente_id" class="text-xs font-semibold text-text-secondary block">Paciente *</label>
+                    <select id="sel_paciente_id" name="perfil_paciente_id" required class="w-full px-4 py-2.5 bg-white border border-border rounded-xl text-sm text-text-primary focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all">
+                        <option value="">Seleccione Paciente...</option>
+                        @foreach($pacientes as $pac)
+                            <option value="{{ $pac->id }}" {{ old('perfil_paciente_id') == $pac->id ? 'selected' : '' }}>
+                                {{ $pac->usuario?->nombre }} ({{ $pac->numero_expediente ?? 'EXP-' . str_pad($pac->id, 4, '0', STR_PAD_LEFT) }}) - CURP: {{ $pac->usuario?->curp }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+            @endif
 
             <!-- Especialidad & Doctor -->
-            <div class="row g-3 mb-3">
-                <div class="col-md-6">
-                    <label for="sel_especialidad" class="form-label fw-medium">Especialidad *</label>
-                    <select id="sel_especialidad" name="especialidad_id" class="form-select" required onchange="filtrarDoctores()">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="space-y-1">
+                    <label for="sel_especialidad" class="text-xs font-semibold text-text-secondary block">Especialidad *</label>
+                    <select id="sel_especialidad" name="especialidad_id" required onchange="filtrarDoctores()" class="w-full px-4 py-2.5 bg-white border border-border rounded-xl text-sm text-text-primary focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all">
                         <option value="">Seleccione Especialidad...</option>
                         @foreach($especialidades as $esp)
                             <option value="{{ $esp['id'] }}">{{ $esp['nombre'] }}</option>
@@ -43,9 +82,9 @@
                     </select>
                 </div>
 
-                <div class="col-md-6">
-                    <label for="sel_doctor" class="form-label fw-medium">Doctor *</label>
-                    <select id="sel_doctor" name="perfil_doctor_id" class="form-select" required onchange="consultarDisponibilidad()">
+                <div class="space-y-1">
+                    <label for="sel_doctor" class="text-xs font-semibold text-text-secondary block">Doctor *</label>
+                    <select id="sel_doctor" name="perfil_doctor_id" required onchange="consultarDisponibilidad()" class="w-full px-4 py-2.5 bg-white border border-border rounded-xl text-sm text-text-primary focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all">
                         <option value="">Seleccione Doctor...</option>
                         @foreach($doctores as $doc)
                             <option value="{{ $doc['id'] }}" data-especialidad="{{ $doc['especialidad_id'] ?? '' }}">
@@ -57,35 +96,41 @@
             </div>
 
             <!-- Fecha y Hora -->
-            <div class="row g-3 mb-3">
-                <div class="col-md-6">
-                    <label for="inp_fecha" class="form-label fw-medium">Fecha de Cita *</label>
-                    <input type="date" id="inp_fecha" name="fecha" value="{{ old('fecha', date('Y-m-d')) }}" min="{{ date('Y-m-d') }}" class="form-control" required onchange="consultarDisponibilidad()">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="space-y-1">
+                    <label for="inp_fecha" class="text-xs font-semibold text-text-secondary block">Fecha de Cita *</label>
+                    <input type="date" id="inp_fecha" name="fecha_cita" value="{{ old('fecha_cita', date('Y-m-d')) }}" min="{{ date('Y-m-d') }}" required onchange="consultarDisponibilidad()" class="w-full px-4 py-2.5 bg-white border border-border rounded-xl text-sm text-text-primary focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all">
                 </div>
 
-                <div class="col-md-6">
-                    <label for="inp_hora" class="form-label fw-medium">Hora *</label>
-                    <input type="time" id="inp_hora" name="hora" value="{{ old('hora', '09:00') }}" class="form-control" required>
+                <div class="space-y-1">
+                    <label for="inp_hora" class="text-xs font-semibold text-text-secondary block">Hora de Consulta *</label>
+                    <input type="time" id="inp_hora" name="hora_cita" value="{{ old('hora_cita', '09:00') }}" required class="w-full px-4 py-2.5 bg-white border border-border rounded-xl text-sm font-semibold text-primary focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all">
                 </div>
             </div>
 
             <!-- Slots recomendados -->
-            <div class="mb-3">
-                <label class="form-label small fw-semibold text-secondary">Horarios Disponibles Consultados</label>
-                <div id="slots_container" class="d-flex gap-2 flex-wrap mt-1">
-                    <p class="text-muted small mb-0">Seleccione doctor y fecha para ver sugerencias.</p>
+            <div class="space-y-1">
+                <label class="text-xs font-semibold text-text-secondary block">Horarios Sugeridos Disponibles</label>
+                <div id="slots_container" class="flex flex-wrap gap-2 pt-1">
+                    <p class="text-xs text-text-muted">Seleccione doctor y fecha para consultar horarios disponibles.</p>
                 </div>
             </div>
 
             <!-- Motivo -->
-            <div class="mb-4">
-                <label for="txt_motivo" class="form-label fw-medium">Motivo de la Consulta *</label>
-                <textarea id="txt_motivo" name="motivo_consulta" class="form-control" rows="3" placeholder="Describa el motivo de la cita médica..." required>{{ old('motivo_consulta') }}</textarea>
+            <div class="space-y-1">
+                <label for="txt_motivo" class="text-xs font-semibold text-text-secondary block">Motivo de la Consulta *</label>
+                <textarea id="txt_motivo" name="motivo_consulta" rows="3" required placeholder="Describe brevemente el motivo o síntomas..." class="w-full p-4 bg-white border border-border rounded-xl text-sm text-text-primary focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all">{{ old('motivo_consulta') }}</textarea>
             </div>
 
-            <div class="d-flex justify-content-end gap-2">
-                <a href="{{ route('citas.index') }}" class="btn btn-secondary">Cancelar</a>
-                <button type="submit" class="btn btn-primary">Confirmar y Agendar Cita</button>
+            <!-- Buttons -->
+            <div class="pt-4 border-t border-border flex items-center justify-end gap-3">
+                <a href="{{ route('citas.index') }}" class="px-5 py-2.5 rounded-xl border border-border text-text-secondary text-xs font-semibold hover:bg-background transition-all">
+                    Cancelar
+                </a>
+                <button type="submit" class="px-6 py-2.5 rounded-xl bg-primary hover:bg-primary-dark text-white text-xs font-semibold shadow-md transition-all flex items-center gap-2">
+                    <span class="material-symbols-outlined text-lg">check_circle</span>
+                    <span>Confirmar Cita</span>
+                </button>
             </div>
         </form>
     </div>
@@ -117,7 +162,7 @@
         const container = document.getElementById('slots_container');
 
         if (!doctorId || !fecha) {
-            container.innerHTML = '<p class="text-muted small mb-0">Seleccione doctor y fecha para ver sugerencias.</p>';
+            container.innerHTML = '<p class="text-xs text-text-muted">Seleccione doctor y fecha para consultar horarios disponibles.</p>';
             return;
         }
 
@@ -127,21 +172,21 @@
             const slots = data.data || data || [];
 
             if (!Array.isArray(slots) || slots.length === 0) {
-                container.innerHTML = '<p class="text-warning small mb-0">No hay horarios disponibles para esta fecha.</p>';
+                container.innerHTML = '<p class="text-xs text-amber-700 font-medium">No hay horarios disponibles para esta fecha.</p>';
                 return;
             }
 
             container.innerHTML = slots.map(slot => `
-                <div class="slot-btn border" onclick="seleccionarHora('${slot}')">${slot}</div>
+                <button type="button" class="slot-chip" onclick="seleccionarHora('${slot}')">${slot}</button>
             `).join('');
         } catch (e) {
-            container.innerHTML = '<p class="text-muted small mb-0">Sin sugerencias automáticas.</p>';
+            container.innerHTML = '<p class="text-xs text-text-muted">Ingresa la hora manualmente arriba.</p>';
         }
     }
 
     function seleccionarHora(hora) {
         document.getElementById('inp_hora').value = hora;
-        document.querySelectorAll('.slot-btn').forEach(btn => {
+        document.querySelectorAll('.slot-chip').forEach(btn => {
             btn.classList.toggle('active', btn.textContent === hora);
         });
     }

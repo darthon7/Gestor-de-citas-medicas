@@ -13,9 +13,9 @@ class StoreHorarioRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'dia_semana'               => 'required|in:lunes,martes,miercoles,jueves,viernes,sabado,domingo',
-            'hora_inicio'              => 'required|date_format:H:i:s',
-            'hora_fin'                 => 'required|date_format:H:i:s|after:hora_inicio',
+            'dia_semana'                => 'required|in:lunes,martes,miercoles,jueves,viernes,sabado,domingo',
+            'hora_inicio'               => 'required|date_format:H:i:s',
+            'hora_fin'                  => 'required|date_format:H:i:s|after:hora_inicio',
             'duracion_consulta_minutos' => 'nullable|integer|min:10|max:120',
         ];
     }
@@ -31,11 +31,20 @@ class StoreHorarioRequest extends FormRequest
         ];
     }
 
+    protected function prepareForValidation()
+    {
+        foreach (['hora_inicio', 'hora_fin'] as $campo) {
+            if ($this->has($campo) && preg_match('/^\d{2}:\d{2}$/', (string) $this->input($campo))) {
+                $this->merge([$campo => $this->input($campo) . ':00']);
+            }
+        }
+    }
+
     protected function failedValidation(Validator $validator)
     {
-        throw new HttpResponseException(response()->json([
-            'msj'    => 'Error de validación',
-            'errors' => $validator->errors(),
-        ], 422));
+        $error = $validator->errors()->first();
+        throw new HttpResponseException(
+            redirect()->back()->withInput()->with('error', $error ?: 'Datos de horario no válidos.')
+        );
     }
 }

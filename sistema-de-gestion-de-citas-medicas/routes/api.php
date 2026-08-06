@@ -48,7 +48,7 @@ Route::middleware(['auth:sanctum', 'check.status'])->group(function () {
     Route::post('/actualizarFoto', [PerfilController::class, 'actualizarFoto']);
 
     // Rutas para Paciente (Móvil)
-   Route::middleware(['role:paciente'])->group(function () {
+    Route::middleware(['role:paciente'])->group(function () {
         Route::get('/misCitas', [CitasController::class, 'misCitas']);
         Route::post('/agendarCita', [CitasController::class, 'agendarCita']);
         Route::get('/miCita/{id}', [CitasController::class, 'miCita']);
@@ -56,7 +56,7 @@ Route::middleware(['auth:sanctum', 'check.status'])->group(function () {
         Route::get('/miHistorial', [PerfilController::class, 'miHistorial']);
         Route::get('/miConsulta/{id}', [PerfilController::class, 'miConsulta']);
     });
-       
+
     // Rutas para Médico
     Route::middleware(['role:doctor'])->group(function () {
         Route::post('/registrarNota/{citaId}', [NotasConsultaController::class, 'registrarNota']);

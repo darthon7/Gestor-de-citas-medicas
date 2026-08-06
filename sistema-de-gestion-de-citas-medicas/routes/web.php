@@ -49,7 +49,20 @@ Route::middleware(['auth', 'check.status'])->group(function () {
     Route::post('/cambiar-password', [PerfilWebController::class, 'cambiarPassword'])->name('perfil.password');
     Route::post('/actualizar-foto', [PerfilWebController::class, 'actualizarFoto'])->name('perfil.foto');
 
-    // Módulo de Pacientes & Citas (Admin y Recepcionista)
+    // Módulo de Consulta de Citas (Admin, Recepcionista, Doctor, Paciente)
+    Route::middleware(['role:admin,recepcionista,doctor,paciente'])->group(function () {
+        Route::get('/citas', [CitasWebController::class, 'index'])->name('citas.index');
+        Route::get('/citas/{id}', [CitasWebController::class, 'show'])->name('citas.show');
+    });
+
+    // Módulo de Agendamiento y Cancelación de Citas (Admin, Recepcionista, Paciente)
+    Route::middleware(['role:admin,recepcionista,paciente'])->group(function () {
+        Route::get('/citas/agendar', [CitasWebController::class, 'crear'])->name('citas.crear');
+        Route::post('/citas', [CitasWebController::class, 'store'])->name('citas.store');
+        Route::patch('/citas/{id}/cancelar', [CitasWebController::class, 'cancelar'])->name('citas.cancelar');
+    });
+
+    // Módulo de Pacientes & Gestión de Citas (Admin y Recepcionista)
     Route::middleware(['role:admin,recepcionista'])->group(function () {
         // Pacientes
         Route::get('/pacientes', [PacientesWebController::class, 'index'])->name('pacientes.index');
@@ -58,29 +71,28 @@ Route::middleware(['auth', 'check.status'])->group(function () {
         Route::put('/pacientes/{id}', [PacientesWebController::class, 'update'])->name('pacientes.update');
         Route::patch('/pacientes/{id}/desactivar', [PacientesWebController::class, 'desactivar'])->name('pacientes.desactivar');
 
-        // Citas
-        Route::get('/citas', [CitasWebController::class, 'index'])->name('citas.index');
-        Route::get('/citas/agendar', [CitasWebController::class, 'crear'])->name('citas.crear');
-        Route::post('/citas', [CitasWebController::class, 'store'])->name('citas.store');
-        Route::get('/citas/{id}', [CitasWebController::class, 'show'])->name('citas.show');
+        // Citas (Gestión avanzada)
         Route::put('/citas/{id}/reprogramar', [CitasWebController::class, 'reprogramar'])->name('citas.reprogramar');
-        Route::patch('/citas/{id}/cancelar', [CitasWebController::class, 'cancelar'])->name('citas.cancelar');
         Route::patch('/citas/{id}/checkin', [CitasWebController::class, 'checkIn'])->name('citas.checkin');
     });
 
-    // Rutas Exclusivas de Administrador
-    Route::middleware(['role:admin'])->group(function () {
-        // Doctores
+    // Módulo de Doctores: consulta (Admin y Recepcionista)
+    Route::middleware(['role:admin,recepcionista'])->group(function () {
         Route::get('/doctores', [DoctoresWebController::class, 'index'])->name('doctores.index');
-        Route::post('/doctores', [DoctoresWebController::class, 'store'])->name('doctores.store');
-        Route::put('/doctores/{id}', [DoctoresWebController::class, 'update'])->name('doctores.update');
-        Route::patch('/doctores/{id}/validar', [DoctoresWebController::class, 'validar'])->name('doctores.validar');
         Route::get('/doctores/{id}/horarios', [DoctoresWebController::class, 'horarios'])->name('doctores.horarios');
         Route::post('/doctores/{id}/horarios', [DoctoresWebController::class, 'storeHorario'])->name('horarios.store');
         Route::put('/horarios/{id}', [DoctoresWebController::class, 'updateHorario'])->name('horarios.update');
         Route::delete('/horarios/{id}', [DoctoresWebController::class, 'deleteHorario'])->name('horarios.destroy');
         Route::post('/doctores/{id}/bloqueos', [DoctoresWebController::class, 'storeBloqueo'])->name('bloqueos.store');
         Route::delete('/bloqueos/{id}', [DoctoresWebController::class, 'deleteBloqueo'])->name('bloqueos.destroy');
+    });
+
+    // Rutas Exclusivas de Administrador
+    Route::middleware(['role:admin'])->group(function () {
+        // Doctores (escritura)
+        Route::post('/doctores', [DoctoresWebController::class, 'store'])->name('doctores.store');
+        Route::put('/doctores/{id}', [DoctoresWebController::class, 'update'])->name('doctores.update');
+        Route::patch('/doctores/{id}/validar', [DoctoresWebController::class, 'validar'])->name('doctores.validar');
 
         // Especialidades
         Route::get('/especialidades', [EspecialidadesWebController::class, 'index'])->name('especialidades.index');

@@ -29,11 +29,20 @@ class StoreBloqueoRequest extends FormRequest
         ];
     }
 
+    protected function prepareForValidation()
+    {
+        foreach (['hora_inicio_bloqueo', 'hora_fin_bloqueo'] as $campo) {
+            if ($this->has($campo) && $this->input($campo) && preg_match('/^\d{2}:\d{2}$/', (string) $this->input($campo))) {
+                $this->merge([$campo => $this->input($campo) . ':00']);
+            }
+        }
+    }
+
     protected function failedValidation(Validator $validator)
     {
-        throw new HttpResponseException(response()->json([
-            'msj'    => 'Error de validación',
-            'errors' => $validator->errors(),
-        ], 422));
+        $error = $validator->errors()->first();
+        throw new HttpResponseException(
+            redirect()->back()->withInput()->with('error', $error ?: 'Datos de bloqueo no válidos.')
+        );
     }
 }

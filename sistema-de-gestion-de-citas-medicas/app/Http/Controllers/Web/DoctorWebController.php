@@ -50,7 +50,7 @@ class DoctorWebController extends Controller
         return view('doctor.diagnostico', compact('cita'));
     }
 
-    public function iniciarConsulta(int $id)
+    public function iniciarConsulta($id)
     {
         try {
             $this->citasRepository->iniciarConsulta($id);
@@ -60,7 +60,7 @@ class DoctorWebController extends Controller
         }
     }
 
-    public function completarCita(int $id)
+    public function completarCita($id)
     {
         try {
             $this->citasRepository->completarCita($id);

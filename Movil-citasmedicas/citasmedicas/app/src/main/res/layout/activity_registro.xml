@@ -41,8 +41,7 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical"
                     android:gravity="top"
-                    android:paddingHorizontal="20dp"
-                    android:paddingTop="20dp">
+                    android:padding="20dp">
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -130,8 +129,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         app:startIconDrawable="@drawable/baseline_wc_24"
-                        app:startIconTint="@color/inputs"
-                        app:boxBackgroundColor="@color/white">
+                        app:startIconTint="@color/inputs">
                         <AutoCompleteTextView
                             android:id="@+id/spn_sexo"
                             android:layout_width="match_parent"
@@ -144,9 +142,7 @@
                         android:layout_gravity="left"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:prefixText="+52 "
-                        app:prefixTextColor="@color/black"
-                        android:hint="Numero telefonico"
+                        android:hint="+52 000 000 0000"
                         android:textColorHint="@color/inputs"
                         app:helperTextEnabled="true"
                         app:helperText="@string/Tel"
@@ -160,8 +156,7 @@
                             android:inputType="phone"
                             android:textColor="@color/inputs"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:maxLength="10">
+                            android:layout_height="match_parent">
                         </com.google.android.material.textfield.TextInputEditText>
                     </com.google.android.material.textfield.TextInputLayout>
                     <com.google.android.material.textfield.TextInputLayout
@@ -229,11 +224,12 @@
                         android:paddingBottom="15dp"></TextView>
                     <com.google.android.material.textfield.TextInputLayout
                         android:paddingBottom="15dp"
-                        android:layout_gravity="start"
+                        android:layout_gravity="left"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/correo"
                         android:textColorHint="@color/inputs"
+                        android:inputType="text"
                         app:helperTextEnabled="true"
                         app:helperText="@string/help_correo"
                         app:helperTextTextColor="@color/inputs"
@@ -245,8 +241,7 @@
                             android:textColor="@color/inputs"
                             android:id="@+id/registro_correo"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:inputType="textEmailAddress">
+                            android:layout_height="match_parent">
                         </com.google.android.material.textfield.TextInputEditText>
                     </com.google.android.material.textfield.TextInputLayout>
                     <com.google.android.material.textfield.TextInputLayout
@@ -351,12 +346,10 @@
                         app:startIconDrawable="@drawable/baseline_badge_24">
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/registro_curp"
-                            android:inputType="textCapCharacters"
+                            android:inputType="text"
                             android:textColor="@color/inputs"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-                            android:maxLength="18">
+                            android:layout_height="match_parent">
                         </com.google.android.material.textfield.TextInputEditText>
                     </com.google.android.material.textfield.TextInputLayout>
                     <com.google.android.material.textfield.TextInputLayout
@@ -375,11 +368,10 @@
                         app:startIconDrawable="@drawable/baseline_medical_information_24">
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/registro_nss"
-                            android:inputType="number"
+                            android:inputType="text"
                             android:textColor="@color/inputs"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:maxLength="11">
+                            android:layout_height="match_parent">
                         </com.google.android.material.textfield.TextInputEditText>
                     </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>

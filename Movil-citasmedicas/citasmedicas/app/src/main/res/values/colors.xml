@@ -6,9 +6,8 @@
 
     <!-- Colores Principales -->
     <color name="primary">#1B6B93</color>
-    <color name="primary_transparent">#331B6B93</color>
     <color name="primary_dark">#0F4C6B</color>
-    <color name="primary_light">#00BCD4</color>
+    <color name="primary_light">#A8D5E2</color>
 
     <!-- Secundario -->
     <color name="secondary">#2A9D8F</color>

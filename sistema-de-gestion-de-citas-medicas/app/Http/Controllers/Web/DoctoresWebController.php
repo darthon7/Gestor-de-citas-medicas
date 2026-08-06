@@ -31,10 +31,14 @@ class DoctoresWebController extends Controller
         $this->bloqueosRepository = $bloqueosRepository;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $resDoctores = $this->doctoresRepository->obtenerDoctores();
-        $doctores = $resDoctores['data'] ?? [];
+        $resDoctores = $this->doctoresRepository->obtenerDoctores([
+            'buscar'            => $request->query('buscar'),
+            'especialidad_id'   => $request->query('especialidad_id'),
+            'estado_validacion' => $request->query('estado_validacion') ?: null,
+        ]);
+        $doctores = isset($resDoctores['data']) ? collect($resDoctores['data']->items()) : collect();
 
         $resEsp = $this->especialidadesRepository->obtenerEspecialidades();
         $especialidades = $resEsp['data'] ?? [];
@@ -52,7 +56,7 @@ class DoctoresWebController extends Controller
         }
     }
 
-    public function update(Request $request, int $id)
+    public function update(Request $request, $id)
     {
         try {
             $this->doctoresRepository->actualizarDoctor($id, $request->all());
@@ -62,7 +66,7 @@ class DoctoresWebController extends Controller
         }
     }
 
-    public function validar(Request $request, int $id)
+    public function validar(Request $request, $id)
     {
         try {
             $this->doctoresRepository->validarDoctor($id, $request->all(), $request->user()->id);
@@ -72,7 +76,7 @@ class DoctoresWebController extends Controller
         }
     }
 
-    public function horarios(int $doctorId)
+    public function horarios($doctorId)
     {
         try {
             $doctorRes = $this->doctoresRepository->obtenerDoctor($doctorId);
@@ -90,7 +94,7 @@ class DoctoresWebController extends Controller
         }
     }
 
-    public function storeHorario(StoreHorarioRequest $request, int $doctorId)
+    public function storeHorario(StoreHorarioRequest $request, $doctorId)
     {
         try {
             $this->horariosRepository->registrarHorario($doctorId, $request->all());
@@ -100,7 +104,7 @@ class DoctoresWebController extends Controller
         }
     }
 
-    public function updateHorario(Request $request, int $id)
+    public function updateHorario(Request $request, $id)
     {
         try {
             $this->horariosRepository->actualizarHorario($id, $request->all());
@@ -110,7 +114,7 @@ class DoctoresWebController extends Controller
         }
     }
 
-    public function deleteHorario(int $id)
+    public function deleteHorario($id)
     {
         try {
             $this->horariosRepository->eliminarHorario($id);
@@ -120,7 +124,7 @@ class DoctoresWebController extends Controller
         }
     }
 
-    public function storeBloqueo(StoreBloqueoRequest $request, int $doctorId)
+    public function storeBloqueo(StoreBloqueoRequest $request, $doctorId)
     {
         try {
             $this->bloqueosRepository->registrarBloqueo($doctorId, $request->all(), $request->user()->id);
@@ -130,7 +134,7 @@ class DoctoresWebController extends Controller
         }
     }
 
-    public function deleteBloqueo(int $id)
+    public function deleteBloqueo($id)
     {
         try {
             $this->bloqueosRepository->eliminarBloqueo($id);
