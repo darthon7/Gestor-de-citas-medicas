@@ -31,6 +31,14 @@ jobs:
         run: chmod +x gradlew
         working-directory: Movil-citasmedicas/citasmedicas
 
+      - name: Inject run number into build.gradle.kts
+        run: |
+          sed -i "s/versionCode = [0-9]*/versionCode = ${{ github.run_number }}/g" app/build.gradle.kts
+          sed -i "s/versionName = \".*\"/versionName = \"1.0.${{ github.run_number }}\"/g" app/build.gradle.kts
+          sed -i "s/buildConfigField(\"int\", \"GITHUB_RUN_NUMBER\", \"[0-9]*\")/buildConfigField(\"int\", \"GITHUB_RUN_NUMBER\", \"${{ github.run_number }}\")/g" app/build.gradle.kts
+          echo "Gradle versionCode actualizado a ${{ github.run_number }}"
+        working-directory: Movil-citasmedicas/citasmedicas
+
       - name: Build Debug APK
         run: ./gradlew assembleDebug --no-daemon
         working-directory: Movil-citasmedicas/citasmedicas
