@@ -13,6 +13,10 @@ RUN apt-get update && apt-get install -y \
     libsqlite3-dev \
     libpq-dev
 
+# Instalar Node.js 20.x para compilar assets del Frontend (Vite / Tailwind)
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
+    apt-get install -y nodejs
+
 RUN docker-php-ext-install pdo pdo_mysql pdo_pgsql pgsql pdo_sqlite mbstring exif pcntl bcmath gd
 
 # Copiar Composer desde la imagen oficial
@@ -23,8 +27,9 @@ WORKDIR /var/www
 # Copiar el código fuente del proyecto Laravel
 COPY . /var/www
 
-# Instalar dependencias de PHP con Composer
+# Instalar dependencias de PHP con Composer y compilar el Frontend con Vite
 RUN composer install --no-dev --optimize-autoloader
+RUN npm install && npm run build
 
 # Crear la base de datos SQLite si no existe
 RUN mkdir -p /var/www/database && touch /var/www/database/database.sqlite
