@@ -76,6 +76,7 @@
                     android:text="@string/Paso1_recuperar"
                     android:paddingBottom="15dp"></TextView>
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/input_correoregistrado"
                     android:paddingBottom="15dp"
                     android:layout_gravity="left"
                     android:layout_width="match_parent"
@@ -94,7 +95,9 @@
                         android:id="@+id/recuperar_correo"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:inputType="textEmailAddress">
+                        android:inputType="textEmailAddress"
+                        android:maxLength="100"
+                        android:maxLines="1">
                     </com.google.android.material.textfield.TextInputEditText>
                 </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
@@ -140,6 +143,7 @@
                     android:text="@string/Paso2_recuperar"
                     android:paddingBottom="15dp"></TextView>
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/input_codigo"
                     android:paddingBottom="15dp"
                     android:layout_gravity="left"
                     android:layout_width="match_parent"
@@ -159,7 +163,9 @@
                         android:inputType="number"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:maxLength="6">
+                        android:maxLength="6"
+                        android:digits="0123456789"
+                        android:maxLines="1">
                     </com.google.android.material.textfield.TextInputEditText>
                 </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
@@ -205,6 +211,7 @@
                     android:text="@string/Paso3_recuperar"
                     android:paddingBottom="15dp"></TextView>
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/input_nuevacontra"
                     android:paddingBottom="15dp"
                     android:layout_gravity="left"
                     android:layout_width="match_parent"
@@ -223,10 +230,13 @@
                         android:textColor="@color/inputs"
                         android:inputType="textPassword"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                        android:layout_height="match_parent"
+                        android:maxLength="80"
+                        android:maxLines="1">
                     </com.google.android.material.textfield.TextInputEditText>
                 </com.google.android.material.textfield.TextInputLayout>
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/input_confirmarnuevacontra"
                     android:paddingBottom="15dp"
                     android:layout_gravity="left"
                     android:layout_width="match_parent"
@@ -245,7 +255,9 @@
                         android:textColor="@color/inputs"
                         android:inputType="textPassword"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                        android:layout_height="match_parent"
+                        android:maxLength="80"
+                        android:maxLines="1">
                     </com.google.android.material.textfield.TextInputEditText>
                 </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>

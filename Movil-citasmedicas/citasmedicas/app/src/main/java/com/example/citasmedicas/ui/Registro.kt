@@ -27,6 +27,7 @@ import java.util.Calendar
 import java.util.Locale
 import com.android.volley.Request
 import com.example.citasmedicas.network.VolleySingleton
+import com.google.android.material.textfield.TextInputLayout
 
 class Registro : AppCompatActivity() {
     lateinit var btn_siguiente: CardView
@@ -43,6 +44,16 @@ class Registro : AppCompatActivity() {
     lateinit var registro_verificarcontra: TextInputEditText
     lateinit var registro_curp: TextInputEditText
     lateinit var registro_nss: TextInputEditText
+    lateinit var input_nombre: TextInputLayout
+    lateinit var input_telefono: TextInputLayout
+    lateinit var input_direccion: TextInputLayout
+    lateinit var input_fecha: TextInputLayout
+    lateinit var input_sexo: TextInputLayout
+    lateinit var input_correo: TextInputLayout
+    lateinit var input_contra: TextInputLayout
+    lateinit var input_verificarcontra: TextInputLayout
+    lateinit var input_curp: TextInputLayout
+    lateinit var input_nss: TextInputLayout
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -65,6 +76,16 @@ class Registro : AppCompatActivity() {
         registro_verificarcontra=findViewById(R.id.registro_verificarcontra)
         registro_curp=findViewById(R.id.registro_curp)
         registro_nss=findViewById(R.id.registro_nss)
+        input_nombre=findViewById(R.id.input_nombre)
+        input_telefono=findViewById(R.id.input_telefono)
+        input_direccion=findViewById(R.id.input_direccion)
+        input_fecha=findViewById(R.id.input_fecha)
+        input_sexo=findViewById(R.id.input_sexo)
+        input_correo = findViewById(R.id.input_correo)
+        input_contra = findViewById(R.id.input_contra)
+        input_verificarcontra = findViewById(R.id.input_confirmarcontra)
+        input_curp = findViewById(R.id.input_curp)
+        input_nss = findViewById(R.id.input_nss)
 
         registro_fecha=findViewById(R.id.registro_fecha)
 
@@ -132,50 +153,115 @@ class Registro : AppCompatActivity() {
         val direccion=registro_direccion.text.toString().trim()
         val numero=registro_telefono.text.toString().trim()
         val sexo=spn_sexo.text.toString().trim()
+        input_nombre.error=null
+        input_telefono.error=null
+        input_direccion.error=null
+        input_fecha.error=null
+        input_sexo.error=null
+        if (nombre.isEmpty()){
+            input_nombre.error= Singleton.arraylist_mensajes[0]
+            return false
+        }
+        else if (!nombre.matches(Regex(Singleton.arraylist_validaciones[3]))){
+            input_nombre.error= Singleton.arraylist_mensajes[8]
+        }
+        if (numero.isEmpty()){
+            input_telefono.error= Singleton.arraylist_mensajes[0]
+            return false
+        }
+        else if (numero.length<10){
+            input_telefono.error= Singleton.arraylist_mensajes[5]
+            return false
+        }
+        if (direccion.isEmpty()){
+            input_direccion.error= Singleton.arraylist_mensajes[0]
+            return false
+        }
+        else if (!direccion.matches(Regex(Singleton.arraylist_validaciones[4]))){
+            input_direccion.error= Singleton.arraylist_mensajes[9]
+            return false
+        }
+        if (fecha.isEmpty()){
+            input_fecha.error= Singleton.arraylist_mensajes[0]
+            return false
+        }
+        else {
+            val edad=calcularedad(fecha)
+            if (edad<18){
+                input_fecha.error= Singleton.arraylist_mensajes[6]
+                return false
+            }
+        }
 
-        if (nombre.isEmpty()||fecha.isEmpty()||direccion.isEmpty()||numero.isEmpty()||sexo.isEmpty()){
-            Toast.makeText(this, Singleton.arraylist_mensajes[0], Toast.LENGTH_SHORT).show()
+        if (sexo.isEmpty()){
+            input_sexo.error= Singleton.arraylist_mensajes[0]
             return false
         }
-        if (numero.length<10){
-            Toast.makeText(this, "El numero debe tener al menos 10 digitos", Toast.LENGTH_SHORT).show()
-            return false
-        }
+
         return true
     }
     private fun validacionpaso2(): Boolean{
         val correo=registro_correo.text.toString().trim()
         val contra=registro_contra.text.toString().trim()
         val verificar=registro_verificarcontra.text.toString().trim()
-        if (correo.isEmpty()||contra.isEmpty()||verificar.isEmpty()){
-            Toast.makeText(this, Singleton.arraylist_mensajes[0], Toast.LENGTH_SHORT).show()
+        input_correo.error=null
+        input_contra.error=null
+        input_verificarcontra.error=null
+
+        if (correo.isEmpty()){
+           input_correo.error= Singleton.arraylist_mensajes[0]
             return false
         }
-        if(!correo.matches(Regex(Singleton.arraylist_validaciones[0]))){
-            Toast.makeText(this, Singleton.arraylist_mensajes[1], Toast.LENGTH_SHORT).show()
+        else if(!correo.matches(Regex(Singleton.arraylist_validaciones[0]))){
+            input_correo.error= Singleton.arraylist_mensajes[1]
             return false
         }
-        if(!contra.matches(Regex(Singleton.arraylist_validaciones[1]))){
-            Toast.makeText(this, Singleton.arraylist_mensajes[2], Toast.LENGTH_SHORT).show()
+        if (contra.isEmpty()){
+            input_contra.error= Singleton.arraylist_mensajes[0]
             return false
         }
-        if (contra!=verificar){
-            Toast.makeText(this, Singleton.arraylist_mensajes[4], Toast.LENGTH_SHORT).show()
+        else if(!contra.matches(Regex(Singleton.arraylist_validaciones[1]))){
+           input_contra.error= Singleton.arraylist_mensajes[2]
+            return false
+        }
+        if (verificar.isEmpty()){
+            input_verificarcontra.error= Singleton.arraylist_mensajes[0]
+            return false
+        }
+        else if (contra!=verificar){
+            input_verificarcontra.error= Singleton.arraylist_mensajes[4]
             return false
         }
         return true
     }
     private fun validacionpaso3(): Boolean{
         val curp=registro_curp.text.toString().trim().uppercase()
+        input_curp.error=null
         if (curp.isEmpty()){
-            Toast.makeText(this, Singleton.arraylist_mensajes[0], Toast.LENGTH_SHORT).show()
+            input_curp.error= Singleton.arraylist_mensajes[0]
             return false
         }
-        if (!curp.matches(Regex(Singleton.arraylist_validaciones[2]))){
-            Toast.makeText(this, Singleton.arraylist_mensajes[3], Toast.LENGTH_SHORT).show()
+        else if (!curp.matches(Regex(Singleton.arraylist_validaciones[2]))){
+            input_curp.error= Singleton.arraylist_mensajes[3]
             return false
         }
         return true
+    }
+    private fun calcularedad(fechanacimiento: String): Int{
+        return try {
+            val formato= SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+            val fechanacimiento=formato.parse(fechanacimiento)?:return -1
+            val hoy= Calendar.getInstance()
+            val nacimiento= Calendar.getInstance()
+            nacimiento.time=fechanacimiento
+            var edad=hoy.get(Calendar.YEAR)-nacimiento.get(Calendar.YEAR)
+            if (hoy.get(Calendar.DAY_OF_YEAR)<nacimiento.get(Calendar.DAY_OF_YEAR)){
+                edad--
+            }
+            edad
+        }catch (e: Exception){
+            -1
+        }
     }
     private fun registrarpaciente(){
             val sexotexto=spn_sexo.text.toString()

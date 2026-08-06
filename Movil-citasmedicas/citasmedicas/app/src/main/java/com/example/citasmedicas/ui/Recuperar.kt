@@ -18,6 +18,7 @@ import com.example.citasmedicas.model.Singleton
 import com.example.citasmedicas.network.VolleySingleton
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import org.json.JSONObject
 
 class Recuperar : AppCompatActivity() {
@@ -29,6 +30,10 @@ class Recuperar : AppCompatActivity() {
     lateinit var registro_codigo: TextInputEditText
     lateinit var recuperar_contra: TextInputEditText
     lateinit var recuperar_contra2: TextInputEditText
+    lateinit var input_correo: TextInputLayout
+    lateinit var input_nuevacontra: TextInputLayout
+    lateinit var input_confirmarnuevacontra: TextInputLayout
+    lateinit var input_codigo: TextInputLayout
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -38,6 +43,10 @@ class Recuperar : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+        input_correo=findViewById(R.id.input_correoregistrado)
+        input_nuevacontra=findViewById(R.id.input_nuevacontra)
+        input_confirmarnuevacontra=findViewById(R.id.input_confirmarnuevacontra)
+        input_codigo=findViewById(R.id.input_codigo)
         btn_atras=findViewById(R.id.btn_atras)
         btn_siguiente=findViewById(R.id.btn_siguiente)
         viewflipper_recuperar=findViewById(R.id.viewflipper_recuperar)
@@ -65,8 +74,13 @@ class Recuperar : AppCompatActivity() {
     }
     private fun solicitarRecuperacion(){
         val correo=recuperar_correo.text.toString().trim()
-        if (correo.isEmpty()||!correo.matches(Regex(Singleton.arraylist_validaciones[0]))){
-            Toast.makeText(this, Singleton.arraylist_mensajes[1], Toast.LENGTH_SHORT).show()
+        input_correo.error=null
+        if (correo.isEmpty()){
+            input_correo.error= Singleton.arraylist_mensajes[0]
+            return
+        }
+        else if (!correo.matches(Regex(Singleton.arraylist_validaciones[0]))){
+            input_correo.error= Singleton.arraylist_mensajes[1]
             return
         }
         val url="${Singleton.BASE_URL}/auth/solicitarRecuperacion"
@@ -85,8 +99,9 @@ class Recuperar : AppCompatActivity() {
     }
     private fun verificarcodigo(){
         val codigo=registro_codigo.text.toString().trim()
+        input_codigo.error=null
         if (codigo.length!=6){
-            Toast.makeText(this,"El codigo debe tener 6 digitos",Toast.LENGTH_SHORT).show()
+            input_codigo.error= Singleton.arraylist_mensajes[7]
             return
         }
         val url="${Singleton.BASE_URL}/auth/verificarCodigo"
@@ -107,12 +122,14 @@ class Recuperar : AppCompatActivity() {
     private fun restablecerpassword(){
         val password1=recuperar_contra.text.toString().trim()
         val password2=recuperar_contra2.text.toString().trim()
+        input_nuevacontra.error=null
+        input_confirmarnuevacontra.error=null
         if (!password1.matches(Regex(Singleton.arraylist_validaciones[1]))){
-            Toast.makeText(this, Singleton.arraylist_mensajes[2], Toast.LENGTH_SHORT).show()
+           input_nuevacontra.error= Singleton.arraylist_mensajes[2]
             return
         }
         if (password1!=password2){
-            Toast.makeText(this, Singleton.arraylist_mensajes[4],Toast.LENGTH_SHORT).show()
+            input_confirmarnuevacontra.error= Singleton.arraylist_mensajes[4]
             return
         }
         val url="${Singleton.BASE_URL}/auth/restablecerPassword"

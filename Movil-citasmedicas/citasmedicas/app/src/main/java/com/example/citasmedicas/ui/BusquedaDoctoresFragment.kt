@@ -79,7 +79,7 @@ class BusquedaDoctoresFragment : Fragment(R.layout.fragment_busqueda_doctores) {
         adapter.actualizarlista(filtrados)
     }
     private fun cargacardoctores(){
-    val url="${Singleton.BASE_URL}/obtenerDoctores"
+    val url="${Singleton.BASE_URL}/obtenerDoctores?estado_validacion=validado"
         val request= JsonObjectRequest(
             Request.Method.GET,url,null,
             {response->

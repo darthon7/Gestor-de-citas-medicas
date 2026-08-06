@@ -102,7 +102,9 @@
                                android:layout_width="match_parent"
                                android:layout_height="match_parent"
                                android:textColor="@color/black"
-                               android:inputType="textEmailAddress">
+                               android:inputType="textEmailAddress"
+                               android:maxLength="100"
+                               android:maxLines="1">
                            </com.google.android.material.textfield.TextInputEditText>
                        </com.google.android.material.textfield.TextInputLayout>
                        <com.google.android.material.textfield.TextInputLayout
@@ -123,7 +125,9 @@
                                android:layout_width="match_parent"
                                android:layout_height="match_parent"
                                android:inputType="textPassword"
-                               android:textColor="@color/inputs">
+                               android:textColor="@color/inputs"
+                               android:maxLength="80"
+                               android:maxLines="1">
                            </com.google.android.material.textfield.TextInputEditText>
                        </com.google.android.material.textfield.TextInputLayout>
                        <TextView
