@@ -130,6 +130,11 @@ class LoginActivity : AppCompatActivity() {
                 Toast.makeText(this, mensaje, Toast.LENGTH_LONG).show()
             }
         )
+        request.retryPolicy = com.android.volley.DefaultRetryPolicy(
+            20000,
+            2,
+            com.android.volley.DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+        )
         VolleySingleton.getInstance(this).requestQueue.add(request)
     }
 }

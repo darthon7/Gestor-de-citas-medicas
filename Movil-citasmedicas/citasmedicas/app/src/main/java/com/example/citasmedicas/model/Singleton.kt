@@ -1,7 +1,7 @@
 package com.example.citasmedicas.model
 
 object Singleton {
-    const val BASE_URL: String = "http://127.0.0.1:8000/api"
+    const val BASE_URL: String = "https://gestor-de-citas-medicas.onrender.com/api"
     var token_actual: String?= null
     var rol_usuario: String=""
     var usuario_actual: String=""
