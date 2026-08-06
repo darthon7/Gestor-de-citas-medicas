@@ -1,0 +1,426 @@
+/* ============================================================
+   Landing Page — Agenda Médica
+   Sistema de diseño: paleta médica del proyecto (variables.css)
+   ============================================================ */
+
+/* ---------- Tokens ---------- */
+.landing-nav {
+    background: linear-gradient(135deg, #1B6B93 0%, #0F4C6B 100%);
+    box-shadow: 0 4px 20px rgba(15, 76, 107, 0.25);
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+}
+
+.landing-nav .navbar-nav .nav-link {
+    font-weight: 500;
+    font-size: 0.925rem;
+    transition: color 0.2s ease;
+}
+
+.landing-nav .navbar-nav .nav-link:hover {
+    color: #ffffff !important;
+}
+
+.text-landing-primary  { color: #1B6B93 !important; }
+.text-landing-secondary{ color: #2A9D8F !important; }
+.text-landing-accent   { color: #E9A319 !important; }
+.text-landing-danger   { color: #E76F51 !important; }
+.text-landing-light    { color: #A8D5E2 !important; }
+
+.bg-landing-primary   { background: #1B6B93 !important; }
+.bg-landing-secondary { background: #2A9D8F !important; }
+.bg-landing-accent    { background: #E9A319 !important; }
+.bg-landing-danger    { background: #E76F51 !important; }
+
+/* ---------- Botones ---------- */
+.btn-landing-primary {
+    background: #1B6B93;
+    border: 1px solid #1B6B93;
+    color: #ffffff;
+    font-weight: 600;
+    border-radius: 8px;
+    padding: 0.625rem 1.5rem;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 12px rgba(27, 107, 147, 0.25);
+}
+
+.btn-landing-primary:hover {
+    background: #0F4C6B;
+    border-color: #0F4C6B;
+    color: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(27, 107, 147, 0.35);
+}
+
+.btn-landing-secondary-outline {
+    background: transparent;
+    border: 2px solid #2A9D8F;
+    color: #2A9D8F;
+    font-weight: 600;
+    border-radius: 8px;
+    padding: 0.625rem 1.5rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
+}
+
+.btn-landing-secondary-outline:hover {
+    background: #2A9D8F;
+    color: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(42, 157, 143, 0.3);
+}
+
+.btn-landing-accent {
+    background: #E9A319;
+    border: 1px solid #E9A319;
+    color: #ffffff;
+    font-weight: 600;
+    border-radius: 8px;
+    padding: 0.625rem 1.5rem;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 12px rgba(233, 163, 25, 0.3);
+}
+
+.btn-landing-accent:hover {
+    background: #d6930e;
+    border-color: #d6930e;
+    color: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(233, 163, 25, 0.4);
+}
+
+.btn-landing-cta {
+    background: #ffffff;
+    color: #1B6B93;
+    font-weight: 600;
+    border-radius: 8px;
+    padding: 0.5rem 1.25rem;
+    transition: all 0.2s ease;
+}
+
+.btn-landing-cta:hover {
+    background: #E9A319;
+    color: #ffffff;
+    transform: translateY(-2px);
+}
+
+.btn-landing-outline {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    color: #ffffff;
+    font-weight: 600;
+    border-radius: 8px;
+    padding: 0.5rem 1.25rem;
+    transition: all 0.2s ease;
+}
+
+.btn-landing-outline:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: #ffffff;
+    color: #ffffff;
+}
+
+.btn-landing-ghost {
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    color: #ffffff;
+    font-weight: 600;
+    border-radius: 8px;
+    padding: 0.625rem 1.5rem;
+    transition: all 0.2s ease;
+}
+
+.btn-landing-ghost:hover {
+    background: #ffffff;
+    color: #1B6B93;
+    transform: translateY(-2px);
+}
+
+/* ---------- Hero ---------- */
+.landing-hero {
+    background: linear-gradient(160deg, #F7F9FC 0%, #DCEAF2 55%, #A8D5E2 100%);
+    min-height: 100vh;
+    padding-top: 88px;
+    overflow: hidden;
+}
+
+.landing-badge {
+    background: rgba(27, 107, 147, 0.1);
+    border: 1px solid rgba(27, 107, 147, 0.2);
+    color: #1B6B93;
+    font-weight: 600;
+    font-size: 0.85rem;
+    border-radius: 999px;
+    padding: 0.4rem 1rem;
+}
+
+.landing-hero-title {
+    font-weight: 800;
+    font-size: clamp(2.2rem, 4.5vw, 3.4rem);
+    color: #1A1A2E;
+    line-height: 1.15;
+}
+
+.landing-hero-subtitle {
+    color: #4A5568;
+    font-size: 1.1rem;
+    line-height: 1.7;
+}
+
+.landing-hero-note {
+    color: #4A5568;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.landing-hero-visual {
+    background: #FFFFFF;
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(26, 26, 46, 0.12);
+    border: 1px solid #E2E8F0;
+}
+
+.landing-mini-stat {
+    background: #F7F9FC;
+    border: 1px solid #E2E8F0;
+    border-radius: 12px;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    text-align: center;
+    transition: all 0.2s ease;
+}
+
+.landing-mini-stat:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 20px rgba(27, 107, 147, 0.14);
+}
+
+.landing-mini-stat strong {
+    color: #1A1A2E;
+    font-size: 0.9rem;
+}
+
+.landing-mini-stat span {
+    color: #A0AEC0;
+    font-size: 0.78rem;
+}
+
+/* ---------- Secciones generales ---------- */
+.landing-section {
+    padding: 5rem 0;
+}
+
+.landing-section-tinted {
+    background: #F7F9FC;
+}
+
+.landing-section-title {
+    font-weight: 700;
+    font-size: clamp(1.6rem, 3vw, 2.2rem);
+    color: #1A1A2E;
+}
+
+.landing-section-subtitle {
+    color: #4A5568;
+    max-width: 640px;
+    font-size: 1.02rem;
+    line-height: 1.7;
+}
+
+/* ---------- Tarjetas de perfil ---------- */
+.landing-card {
+    background: #FFFFFF;
+    border-radius: 16px;
+    box-shadow: 0 2px 12px rgba(27, 107, 147, 0.08);
+    border: 1px solid #E2E8F0;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.25s ease;
+}
+
+.landing-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 4px 20px rgba(27, 107, 147, 0.16);
+}
+
+.landing-card-patient {
+    border-top: 5px solid #2A9D8F;
+}
+
+.landing-card-staff {
+    border-top: 5px solid #1B6B93;
+}
+
+.landing-card-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.25rem;
+    color: #ffffff;
+}
+
+.landing-card-patient .landing-card-icon {
+    background: #2A9D8F;
+}
+
+.landing-card-staff .landing-card-icon {
+    background: #1B6B93;
+}
+
+.landing-card-title {
+    font-weight: 700;
+    color: #1A1A2E;
+    font-size: 1.35rem;
+}
+
+.landing-card-text {
+    color: #4A5568;
+    line-height: 1.7;
+}
+
+.landing-card-list {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0 1.5rem;
+}
+
+.landing-card-list li {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.45rem 0;
+    color: #1A1A2E;
+    font-size: 0.95rem;
+}
+
+.landing-chip {
+    font-size: 0.78rem;
+    font-weight: 600;
+    border-radius: 999px;
+    padding: 0.3rem 0.85rem;
+    width: fit-content;
+}
+
+.landing-chip-blue {
+    background: #A8D5E2;
+    color: #1B6B93;
+}
+
+.landing-download-note {
+    color: #A0AEC0;
+    font-size: 0.82rem;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+}
+
+/* ---------- Beneficios ---------- */
+.landing-benefit {
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(27, 107, 147, 0.08);
+    padding: 1.75rem;
+    height: 100%;
+    text-align: center;
+    transition: all 0.25s ease;
+}
+
+.landing-benefit:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 20px rgba(27, 107, 147, 0.16);
+}
+
+.landing-benefit-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    margin: 0 auto 1.1rem;
+}
+
+.landing-benefit h4 {
+    font-weight: 700;
+    color: #1A1A2E;
+    font-size: 1.05rem;
+    margin-bottom: 0.6rem;
+}
+
+.landing-benefit p {
+    color: #4A5568;
+    font-size: 0.92rem;
+    line-height: 1.65;
+    margin-bottom: 0;
+}
+
+/* ---------- CTA Final ---------- */
+.landing-cta-final {
+    background: linear-gradient(135deg, #1B6B93 0%, #0F4C6B 100%);
+    padding: 4rem 1.5rem;
+    box-shadow: 0 8px 32px rgba(15, 76, 107, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.landing-cta-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    color: #E9A319;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.landing-cta-text {
+    color: #A8D5E2;
+    max-width: 640px;
+    font-size: 1.02rem;
+    line-height: 1.7;
+}
+
+/* ---------- Footer ---------- */
+.landing-footer {
+    background: #0F4C6B;
+}
+
+.landing-footer a:hover {
+    color: #A8D5E2 !important;
+}
+
+.landing-logo {
+    border-radius: 6px;
+    background: #ffffff;
+    padding: 3px;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 991.98px) {
+    .landing-hero {
+        padding-top: 110px;
+    }
+
+    .landing-nav .navbar-nav {
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 12px;
+        padding: 0.75rem;
+        margin-top: 0.75rem;
+    }
+}

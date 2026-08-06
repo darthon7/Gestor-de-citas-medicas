@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Illuminate\Contracts\View\View as ViewContract;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -44,6 +45,10 @@ class CheckAccountStatus
             $usuario->update(['estado' => 'activo', 'intentos_fallidos' => 0, 'bloqueado_hasta' => null]);
         }
 
-        return $next($request);
+        $response = $next($request);
+
+        return $response instanceof ViewContract
+            ? $response->toResponse($request)
+            : $response;
     }
 }

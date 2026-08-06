@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Repository\ReportesRepository;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
-use Maatwebsite\Excel\Facades\Excel;
 
 class ReportesController extends Controller
 {

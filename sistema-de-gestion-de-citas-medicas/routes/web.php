@@ -6,6 +6,7 @@ use App\Http\Controllers\Web\DashboardWebController;
 use App\Http\Controllers\Web\DoctoresWebController;
 use App\Http\Controllers\Web\DoctorWebController;
 use App\Http\Controllers\Web\EspecialidadesWebController;
+use App\Http\Controllers\Web\LandingWebController;
 use App\Http\Controllers\Web\PacientesWebController;
 use App\Http\Controllers\Web\PerfilWebController;
 use App\Http\Controllers\Web\RecepcionistasWebController;
@@ -17,6 +18,12 @@ use Illuminate\Support\Facades\Route;
 | Rutas Web (Blade SSR) - Sistema de Gestión de Citas Médicas
 |--------------------------------------------------------------------------
 */
+
+// Landing Page Pública (no requiere autenticación)
+Route::get('/inicio', [LandingWebController::class, 'index'])->name('landing');
+
+// Ruta raíz: landing pública para visitantes / dashboard para usuarios autenticados
+Route::get('/', [LandingWebController::class, 'home'])->name('dashboard');
 
 // Rutas públicas de Autenticación (guest)
 Route::middleware('guest')->group(function () {
@@ -39,9 +46,6 @@ Route::middleware('guest')->group(function () {
 // Rutas Protegidas por Autenticación Web y Estado de Cuenta
 Route::middleware(['auth', 'check.status'])->group(function () {
     Route::post('/logout', [AuthWebController::class, 'logout'])->name('logout');
-
-    // Dashboard
-    Route::get('/', [DashboardWebController::class, 'index'])->name('dashboard');
 
     // Mi Perfil
     Route::get('/mi-perfil', [PerfilWebController::class, 'index'])->name('perfil');
