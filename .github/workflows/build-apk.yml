@@ -45,8 +45,8 @@ jobs:
         uses: softprops/action-gh-release@v2
         if: github.ref == 'refs/heads/master'
         with:
-          tag_name: v1.0.0-latest
-          name: '📱 App Móvil - Última Versión'
+          tag_name: v1.0.${{ github.run_number }}
+          name: '📱 App Móvil - Versión 1.0.${{ github.run_number }}'
           body: |
             🚀 **Compilación Automática del APK**
             - Este APK fue generado automáticamente en la nube tras el último commit en la rama `master`.
