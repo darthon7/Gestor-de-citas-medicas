@@ -1,4 +1,4 @@
-FROM php:8.3-cli
+FROM php:8.4-cli
 
 # Instalar dependencias del sistema y extensiones de PHP requeridas por Laravel
 RUN apt-get update && apt-get install -y \
@@ -30,7 +30,7 @@ WORKDIR /var/www
 COPY . /var/www
 
 # Instalar dependencias de PHP con Composer y compilar el Frontend con Vite
-RUN composer install --no-dev --optimize-autoloader
+RUN composer install --no-dev --optimize-autoloader --ignore-platform-reqs
 RUN npm install && npm run build
 
 # Crear la base de datos SQLite si no existe (fallback)
