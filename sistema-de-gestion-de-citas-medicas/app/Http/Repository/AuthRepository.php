@@ -272,7 +272,7 @@ class AuthRepository
     public function cerrarSesion(Usuario $usuario)
     {
         try {
-            // Solo eliminar token si existe (sesión API con Sanctum)
+// Solo eliminar token si existe (sesión API con Sanctum)
             $token = $usuario->currentAccessToken();
             if ($token) {
                 $token->delete();

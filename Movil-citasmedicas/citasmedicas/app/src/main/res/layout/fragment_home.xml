@@ -27,7 +27,8 @@
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    app:cardCornerRadius="25dp">
+                    app:cardCornerRadius="25dp"
+                    app:cardBackgroundColor="@color/white">
                     <com.android.volley.toolbox.NetworkImageView
                         android:id="@+id/img_usuario"
                         android:layout_width="50dp"

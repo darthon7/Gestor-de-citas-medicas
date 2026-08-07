@@ -1,17 +1,17 @@
-# 🎨 Instrucciones de Diseño Visual — Sistema de Gestión de Citas Médicas
+  # 🎨 Instrucciones de Diseño Visual — Sistema de Gestión de Citas Médicas
 
 > **Propósito**: Este documento describe todas las pantallas y componentes visuales del frontend, tanto **Web** como **Móvil**, del Sistema de Gestión de Citas Médicas. Cada sección está redactada como un **prompt listo para usar en Google Stitch** para generar mockups y diseños de alta fidelidad.
 
 ---
 
-## 🎨 Paleta de Colores y Sistema de Diseño
+  ## 🎨 Paleta de Colores y Sistema de Diseño
 
-> **Fundamento UX/UI — Teoría del Color aplicada a Salud:**
-> - El **azul** transmite confianza, profesionalismo y calma — esencial en entornos médicos donde el paciente necesita sentir seguridad.
-> - El **verde azulado (teal)** se asocia con sanación, bienestar y frescura — refuerza la identidad de salud sin ser genérico.
-> - Los **blancos y grises claros** como fondos generan limpieza visual y legibilidad — principio de espacio negativo.
-> - Los **acentos cálidos** (ámbar/naranja suave) se usan exclusivamente para llamadas a la acción y estados de alerta — contraste complementario que guía la atención del usuario.
-> - El **rojo suave** se reserva para errores y cancelaciones — asociación universal de precaución sin generar ansiedad.
+  > **Fundamento UX/UI — Teoría del Color aplicada a Salud:**
+  > - El **azul** transmite confianza, profesionalismo y calma — esencial en entornos médicos donde el paciente necesita sentir seguridad.
+  > - El **verde azulado (teal)** se asocia con sanación, bienestar y frescura — refuerza la identidad de salud sin ser genérico.
+  > - Los **blancos y grises claros** como fondos generan limpieza visual y legibilidad — principio de espacio negativo.
+  > - Los **acentos cálidos** (ámbar/naranja suave) se usan exclusivamente para llamadas a la acción y estados de alerta — contraste complementario que guía la atención del usuario.
+  > - El **rojo suave** se reserva para errores y cancelaciones — asociación universal de precaución sin generar ansiedad.
 
 ### Colores Principales
 

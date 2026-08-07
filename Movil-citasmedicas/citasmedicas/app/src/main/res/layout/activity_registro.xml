@@ -36,86 +36,83 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="80">
-                <LinearLayout
+                <ScrollView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical"
                     android:gravity="top"
                     android:padding="20dp">
                     <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:src="@drawable/baseline_circle_active"
-                            android:paddingRight="5dp"></ImageView>
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:src="@drawable/baseline_circle_inactive"
-                            android:paddingRight="5dp"></ImageView>
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:src="@drawable/baseline_circle_inactive"></ImageView>
-                    </LinearLayout>
-                    <TextView
-                        android:paddingTop="10dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="left"
-                        android:text="@string/Informacion"
-                        android:textStyle="bold"
-                        android:textSize="20dp"
-                        android:textColor="@color/black"></TextView>
-                    <TextView
-                        android:paddingTop="5dp"
-                        android:layout_gravity="left"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/Paso1"
-                        android:paddingBottom="15dp"></TextView>
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:paddingBottom="15dp"
-                        android:layout_gravity="left"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="@string/nombre"
-                        android:textColorHint="@color/inputs"
-                        android:inputType="text"
-                        app:helperTextEnabled="true"
-                        app:helperText="@string/nombre"
-                        app:helperTextTextColor="@color/inputs"
-                        app:endIconMode="clear_text"
-                        app:endIconTint="@color/inputs"
-                        app:startIconTint="@color/inputs"
-                        app:startIconDrawable="@drawable/baseline_person_outline_24">
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/registro_nombre"
-                            android:textColor="@color/black"
+                        android:orientation="vertical"
+                        android:gravity="top"
+                        android:paddingHorizontal="20dp"
+                        android:paddingTop="20dp">
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/baseline_circle_active"
+                                android:paddingRight="5dp"></ImageView>
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/baseline_circle_inactive"
+                                android:paddingRight="5dp"></ImageView>
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/baseline_circle_inactive"></ImageView>
+                        </LinearLayout>
+                        <TextView
+                            android:paddingTop="10dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="left"
+                            android:text="@string/Informacion"
+                            android:textStyle="bold"
+                            android:textSize="20dp"
+                            android:textColor="@color/black"></TextView>
+                        <TextView
+                            android:paddingTop="5dp"
+                            android:layout_gravity="left"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/Paso1"
+                            android:paddingBottom="15dp"></TextView>
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/input_nombre"
+                            android:paddingBottom="15dp"
+                            android:layout_gravity="left"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent">
-                        </com.google.android.material.textfield.TextInputEditText>
-                    </com.google.android.material.textfield.TextInputLayout>
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:paddingBottom="15dp"
-                        android:layout_gravity="left"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="@string/Fecha"
-                        android:textColorHint="@color/inputs"
-                        app:endIconDrawable="@drawable/baseline_calendar_today_24"
-                        app:endIconTint="@color/inputs"
-                        app:startIconTint="@color/inputs"
-                        app:startIconDrawable="@drawable/baseline_calendar_today_24">
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:focusable="false"
-                            android:focusableInTouchMode="false"
-                            android:id="@+id/registro_fecha"
-                            android:textColor="@color/black"
-                            android:inputType="text"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/nombre"
+                            android:textColorHint="@color/inputs"
+                            app:helperTextEnabled="true"
+                            app:helperText="@string/nombre"
+                            app:helperTextTextColor="@color/inputs"
+                            app:endIconMode="clear_text"
+                            app:endIconTint="@color/inputs"
+                            app:startIconTint="@color/inputs"
+                            app:startIconDrawable="@drawable/baseline_person_outline_24">
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/registro_nombre"
+                                android:textColor="@color/black"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:maxLength="100"
+                                android:inputType="textPersonName|textCapWords"
+                                android:maxLines="1">
+                            </com.google.android.material.textfield.TextInputEditText>
+                        </com.google.android.material.textfield.TextInputLayout>
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/input_telefono"
+                            android:paddingBottom="15dp"
+                            android:layout_gravity="left"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent">
                         </com.google.android.material.textfield.TextInputEditText>
@@ -177,10 +174,19 @@
                             android:id="@+id/registro_direccion"
                             android:textColor="@color/inputs"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent">
-                        </com.google.android.material.textfield.TextInputEditText>
-                    </com.google.android.material.textfield.TextInputLayout>
-                </LinearLayout>
+                            android:layout_height="wrap_content"
+                            app:startIconDrawable="@drawable/baseline_wc_24"
+                            app:startIconTint="@color/inputs"
+                            app:boxBackgroundColor="@color/white">
+                            <AutoCompleteTextView
+                                android:id="@+id/spn_sexo"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="none"
+                                android:textColor="@color/inputs"></AutoCompleteTextView>
+                        </com.google.android.material.textfield.TextInputLayout>
+                    </LinearLayout>
+                </ScrollView>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -223,6 +229,7 @@
                         android:text="@string/Paso2"
                         android:paddingBottom="15dp"></TextView>
                     <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/input_correo"
                         android:paddingBottom="15dp"
                         android:layout_gravity="left"
                         android:layout_width="match_parent"
@@ -245,6 +252,7 @@
                         </com.google.android.material.textfield.TextInputEditText>
                     </com.google.android.material.textfield.TextInputLayout>
                     <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/input_contra"
                         android:paddingBottom="15dp"
                         android:layout_gravity="left"
                         android:layout_width="match_parent"
@@ -263,10 +271,13 @@
                             android:textColor="@color/inputs"
                             android:inputType="textPassword"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent">
+                            android:layout_height="match_parent"
+                            android:maxLength="80"
+                            android:maxLines="1">
                         </com.google.android.material.textfield.TextInputEditText>
                     </com.google.android.material.textfield.TextInputLayout>
                     <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/input_confirmarcontra"
                         android:paddingBottom="15dp"
                         android:layout_gravity="left"
                         android:layout_width="match_parent"
@@ -285,7 +296,9 @@
                             android:textColor="@color/inputs"
                             android:inputType="textPassword"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent">
+                            android:layout_height="match_parent"
+                            android:maxLength="80"
+                            android:maxLines="1">
                         </com.google.android.material.textfield.TextInputEditText>
                     </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
@@ -331,6 +344,7 @@
                         android:text="@string/Paso3"
                         android:paddingBottom="15dp"></TextView>
                     <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/input_curp"
                         android:paddingBottom="15dp"
                         android:layout_gravity="left"
                         android:layout_width="match_parent"
@@ -353,6 +367,7 @@
                         </com.google.android.material.textfield.TextInputEditText>
                     </com.google.android.material.textfield.TextInputLayout>
                     <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/input_nss"
                         android:paddingBottom="15dp"
                         android:layout_gravity="left"
                         android:layout_width="match_parent"

@@ -28,7 +28,7 @@
     <string name="direccion_hint">Calle, Numero, Colonia...</string>
     <string name="help_direccion">Ingresa tu dirreccion</string>
     <string name="curp">Curp</string>
-    <string name="help_curp">Ingresa tu Curp</string>
+    <string name="help_curp">18 caracteres: 4 letras, 6 números (AAMMDD), H/M, 5 letras de estado y 2 dígitos finales</string>
     <string name="NSS">NSS (opcional)</string>
     <string name="help_NSS">Ingresa tu NSS (opcional)</string>
     <string name="recuperar_contra">Recuperar Contraseña</string>

@@ -10,6 +10,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.citasmedicas.R
 import com.example.citasmedicas.model.Singleton
+import com.example.citasmedicas.utils.AutoUpdater
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -23,6 +24,10 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        // Verificar actualización al inicio de la app, antes de ir a Login o Home
+        AutoUpdater.comprobarActualizacion(this)
+
         lifecycleScope.launch {
             delay(2000)
             verificarsesion()
