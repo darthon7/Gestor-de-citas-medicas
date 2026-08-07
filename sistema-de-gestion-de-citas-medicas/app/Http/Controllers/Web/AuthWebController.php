@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Repository\AuthRepository;
 use App\Http\Requests\StoreLoginRequest;
 use App\Http\Requests\StoreRegistroPacienteRequest;
+use App\Http\Requests\StoreRegistroMedicoRequest;
 use App\Http\Requests\StoreRecuperacionRequest;
 use App\Http\Requests\StoreVerificarCodigoRequest;
 use App\Http\Requests\StoreRestablecerPasswordRequest;
@@ -61,7 +62,7 @@ class AuthWebController extends Controller
             $request->session()->invalidate();
             $request->session()->regenerateToken();
         }
-        return redirect()->route('login')->with('success', 'Sesión cerrada correctamente.');
+        return redirect()->route('landing')->with('success', 'Sesión cerrada correctamente.');
     }
 
     public function showRegistro()
@@ -137,6 +138,42 @@ class AuthWebController extends Controller
         try {
             $resultado = $this->authRepository->restablecerPassword($request->all());
             return redirect()->route('login')->with('success', $resultado['mensaje'] ?? 'Contraseña restablecida correctamente.');
+        } catch (\Exception $e) {
+            return back()->withInput()->with('error', $e->getMessage());
+        }
+    }
+
+    // ---------------------------------------------------------------
+    // Registro público de Doctor (auto-solicitud con validación admin)
+    // ---------------------------------------------------------------
+    public function showRegistroDoctor()
+    {
+        if (Auth::check()) {
+            return redirect()->route('dashboard');
+        }
+
+        // Obtener especialidades para el selector del formulario
+        $especialidades = \App\Models\Especialidad::orderBy('nombre')->get();
+
+        return view('auth.registro-doctor', compact('especialidades'));
+    }
+
+    public function registrarDoctor(StoreRegistroMedicoRequest $request)
+    {
+        try {
+            $resultado = $this->authRepository->registrarMedico($request->all());
+
+            // Si hay error de cédula u otro, regresar con el mensaje
+            if (!isset($resultado['usuario'])) {
+                return back()->withInput()->with('error', $resultado['mensaje'] ?? 'No fue posible registrar la solicitud.');
+            }
+
+            // El doctor NO inicia sesión. Su cuenta queda en estado_validacion = pendiente.
+            // El admin debe aprobarla desde el panel de Gestión de Doctores.
+            return redirect()->route('login')->with('success',
+                '✅ Solicitud enviada con éxito. Tu cuenta está pendiente de validación por el administrador. ' .
+                'Recibirás acceso una vez que sea aprobada.'
+            );
         } catch (\Exception $e) {
             return back()->withInput()->with('error', $e->getMessage());
         }

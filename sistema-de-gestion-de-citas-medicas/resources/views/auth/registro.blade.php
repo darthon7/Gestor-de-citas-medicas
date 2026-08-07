@@ -98,10 +98,14 @@
     </form>
 
     <!-- Footer link -->
-    <div class="mt-6 pt-4 border-t border-border w-full text-center">
+    <div class="mt-6 pt-4 border-t border-border w-full text-center space-y-2">
         <p class="text-xs text-text-secondary">
             ¿Ya tienes una cuenta? 
             <a href="{{ route('login') }}" class="text-primary font-bold hover:underline">Inicia sesión aquí</a>
+        </p>
+        <p class="text-xs text-text-secondary">
+            ¿Eres médico?
+            <a href="{{ route('registro.doctor') }}" class="text-primary font-bold hover:underline">Regístrate como doctor aquí</a>
         </p>
     </div>
 </div>

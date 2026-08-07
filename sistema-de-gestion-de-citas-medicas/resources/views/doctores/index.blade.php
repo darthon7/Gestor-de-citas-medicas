@@ -34,13 +34,6 @@
                 Limpiar
             </a>
         @endif
-
-        @if(Auth::user()->rol === 'admin')
-        <button type="button" onclick="abrirModalDoctor()" class="bg-primary text-white px-5 py-2 rounded-xl font-semibold text-xs flex items-center gap-2 hover:bg-primary-dark transition-colors shadow-sm active:scale-95">
-            <span class="material-symbols-outlined text-lg">add</span>
-            <span>Registrar Doctor</span>
-        </button>
-        @endif
     </form>
 </div>
 
@@ -100,44 +93,85 @@
 
             <div class="flex items-center justify-center mb-4 min-h-[24px]">
                 @if(!$inactivo)
-                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold border {{ $valBadge }} capitalize">
-                        <span class="material-symbols-outlined text-sm">{{ $valIcon }}</span>
-                        {{ $valEstado }}
-                    </span>
+                    @if($valEstado !== 'validado' && Auth::user()->rol === 'admin')
+                        <button type="button" onclick="abrirValidarDoctor(this)"
+                                data-id="{{ $doc['id'] }}"
+                                data-iniciales="{{ $iniciales }}"
+                                data-nombre="{{ $nombreCompleto }}"
+                                data-especialidad="{{ $espNombres->implode(', ') ?: 'General' }}"
+                                data-cedula="{{ $doc['cedula_profesional'] ?? 'N/A' }}"
+                                data-cedula-esp="{{ $doc['cedula_especialidad'] ?? 'Sin especificar' }}"
+                                data-curp="{{ $doc['usuario']['curp'] ?? 'N/A' }}"
+                                data-email="{{ $doc['usuario']['email'] ?? 'N/A' }}"
+                                data-telefono="{{ $doc['usuario']['telefono'] ?? 'Sin teléfono' }}"
+                                data-estado="{{ $valEstado }}"
+                                class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold border {{ $valBadge }} capitalize hover:scale-105 transition-transform cursor-pointer" title="Ver información y validar">
+                            <span class="material-symbols-outlined text-sm">{{ $valIcon }}</span>
+                            {{ $valEstado }}
+                        </button>
+                    @else
+                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold border {{ $valBadge }} capitalize">
+                            <span class="material-symbols-outlined text-sm">{{ $valIcon }}</span>
+                            {{ $valEstado }}
+                        </span>
+                    @endif
                 @endif
             </div>
 
             <div class="w-full border-t border-outline-variant pt-4 flex items-center justify-between gap-2">
-                <a href="{{ route('doctores.horarios', $doc['id']) }}" class="flex items-center gap-1 text-primary font-medium text-caption hover:underline {{ $inactivo ? 'opacity-50 pointer-events-none cursor-not-allowed' : '' }}">
-                    <span class="material-symbols-outlined text-lg">calendar_month</span>
-                    Disponibilidad
-                </a>
-
-                @if(Auth::user()->rol === 'admin' && !$inactivo && ($doc['estado_validacion'] ?? '') !== 'validado')
-                    <form method="POST" action="{{ route('doctores.validar', $doc['id']) }}" class="inline">
-                        @csrf
-                        @method('PATCH')
-                        <input type="hidden" name="estado_validacion" value="validado">
-                        <button type="submit" class="flex items-center gap-1 text-emerald-600 hover:text-emerald-700 font-medium text-caption" title="Aprobar Doctor">
-                            <span class="material-symbols-outlined text-lg">check_circle</span>
-                            Validar
-                        </button>
-                    </form>
+                {{-- Disponibilidad: Solo accesible para doctores validados y activos --}}
+                @if($valEstado === 'validado' && !$inactivo)
+                    <a href="{{ route('doctores.horarios', $doc['id']) }}" class="flex items-center gap-1 text-primary font-medium text-caption hover:underline">
+                        <span class="material-symbols-outlined text-lg">calendar_month</span>
+                        Disponibilidad
+                    </a>
+                @else
+                    <span class="flex items-center gap-1 text-text-muted font-medium text-caption opacity-40 cursor-not-allowed select-none" title="Disponibilidad disponible solo para médicos validados">
+                        <span class="material-symbols-outlined text-lg">calendar_month</span>
+                        Disponibilidad
+                    </span>
                 @endif
 
+                {{-- Validar / Ver Información --}}
+                @if(Auth::user()->rol === 'admin' && !$inactivo && $valEstado !== 'validado')
+                    <button type="button" onclick="abrirValidarDoctor(this)"
+                            data-id="{{ $doc['id'] }}"
+                            data-iniciales="{{ $iniciales }}"
+                            data-nombre="{{ $nombreCompleto }}"
+                            data-especialidad="{{ $espNombres->implode(', ') ?: 'General' }}"
+                            data-cedula="{{ $doc['cedula_profesional'] ?? 'N/A' }}"
+                            data-cedula-esp="{{ $doc['cedula_especialidad'] ?? 'Sin especificar' }}"
+                            data-curp="{{ $doc['usuario']['curp'] ?? 'N/A' }}"
+                            data-email="{{ $doc['usuario']['email'] ?? 'N/A' }}"
+                            data-telefono="{{ $doc['usuario']['telefono'] ?? 'Sin teléfono' }}"
+                            data-estado="{{ $valEstado }}"
+                            class="flex items-center gap-1 text-emerald-600 hover:text-emerald-700 font-semibold text-caption cursor-pointer" title="Ver información y validar">
+                        <span class="material-symbols-outlined text-lg">fact_check</span>
+                        Validar
+                    </button>
+                @endif
+
+                {{-- Editar: Solo accesible para doctores validados --}}
                 @if(Auth::user()->rol === 'admin')
-                <button type="button" onclick="abrirEditarDoctor(this)"
-                        data-id="{{ $doc['id'] }}"
-                        data-nombre="{{ $doc['usuario']['nombre'] ?? '' }}"
-                        data-email="{{ $doc['usuario']['email'] ?? '' }}"
-                        data-telefono="{{ $doc['usuario']['telefono'] ?? '' }}"
-                        data-cedula="{{ $doc['cedula_profesional'] ?? '' }}"
-                        data-cedula-esp="{{ $doc['cedula_especialidad'] ?? '' }}"
-                        data-especialidades="{{ collect($doc['especialidades'] ?? [])->pluck('id')->implode(',') }}"
-                        class="flex items-center gap-1 text-warning-gold font-medium text-caption hover:underline" title="Editar perfil">
-                    <span class="material-symbols-outlined text-lg">edit</span>
-                    Editar
-                </button>
+                    @if($valEstado === 'validado' && !$inactivo)
+                        <button type="button" onclick="abrirEditarDoctor(this)"
+                                data-id="{{ $doc['id'] }}"
+                                data-nombre="{{ $doc['usuario']['nombre'] ?? '' }}"
+                                data-email="{{ $doc['usuario']['email'] ?? '' }}"
+                                data-telefono="{{ $doc['usuario']['telefono'] ?? '' }}"
+                                data-cedula="{{ $doc['cedula_profesional'] ?? '' }}"
+                                data-cedula-esp="{{ $doc['cedula_especialidad'] ?? '' }}"
+                                data-especialidades="{{ collect($doc['especialidades'] ?? [])->pluck('id')->implode(',') }}"
+                                class="flex items-center gap-1 text-warning-gold font-medium text-caption hover:underline" title="Editar perfil">
+                            <span class="material-symbols-outlined text-lg">edit</span>
+                            Editar
+                        </button>
+                    @else
+                        <span class="flex items-center gap-1 text-text-muted font-medium text-caption opacity-40 cursor-not-allowed select-none" title="Editar disponible solo para médicos validados">
+                            <span class="material-symbols-outlined text-lg">edit</span>
+                            Editar
+                        </span>
+                    @endif
                 @endif
             </div>
         </div>
@@ -271,6 +305,85 @@
         </form>
     </div>
 </div>
+<!-- Modal Ver Información y Validar Doctor -->
+<div id="modal_validar_doctor" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm hidden p-4">
+    <div class="bg-surface rounded-2xl shadow-2xl border border-border w-full max-w-lg overflow-hidden flex flex-col">
+        <!-- Header -->
+        <div class="px-6 py-4 bg-background border-b border-border flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary text-2xl">verified_user</span>
+                <h3 class="font-bold text-primary-dark text-base">Solicitud de Registro de Doctor</h3>
+            </div>
+            <button type="button" onclick="cerrarValidarDoctor()" class="text-text-muted hover:text-text-primary transition-colors">
+                <span class="material-symbols-outlined text-2xl">close</span>
+            </button>
+        </div>
+
+        <!-- Body -->
+        <div class="p-6 space-y-4 overflow-y-auto max-h-[80vh]">
+            <div class="flex items-center gap-4 p-4 bg-background/60 rounded-xl border border-border">
+                <div id="v_doc_iniciales" class="w-14 h-14 rounded-full bg-primary-light text-primary-dark font-bold flex items-center justify-center text-lg border border-primary/20 flex-shrink-0">
+                    D
+                </div>
+                <div>
+                    <h4 id="v_doc_nombre" class="font-bold text-text-primary text-base">Dr. Nombre Doctor</h4>
+                    <span id="v_doc_especialidad" class="inline-block mt-0.5 px-2.5 py-0.5 rounded-md bg-secondary-light text-on-secondary-container text-xs font-semibold">
+                        General
+                    </span>
+                </div>
+            </div>
+
+            <p class="text-xs text-text-secondary">Revisa detalladamente la información registrada por el médico antes de aprobar o rechazar su solicitud de acceso:</p>
+
+            <!-- Datos del Doctor -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                <div class="p-3 bg-white border border-border rounded-xl">
+                    <span class="text-text-muted font-semibold block text-[11px]">Cédula Profesional</span>
+                    <span id="v_doc_cedula" class="font-bold text-text-primary text-sm">N/A</span>
+                </div>
+                <div class="p-3 bg-white border border-border rounded-xl">
+                    <span class="text-text-muted font-semibold block text-[11px]">Cédula Especialidad</span>
+                    <span id="v_doc_cedula_esp" class="font-bold text-text-primary text-sm">Sin especificar</span>
+                </div>
+                <div class="p-3 bg-white border border-border rounded-xl">
+                    <span class="text-text-muted font-semibold block text-[11px]">CURP</span>
+                    <span id="v_doc_curp" class="font-bold text-text-primary text-sm uppercase">N/A</span>
+                </div>
+                <div class="p-3 bg-white border border-border rounded-xl">
+                    <span class="text-text-muted font-semibold block text-[11px]">Estado Solicitud</span>
+                    <span id="v_doc_estado" class="font-bold capitalize text-amber-600 text-sm">Pendiente</span>
+                </div>
+                <div class="p-3 bg-white border border-border rounded-xl sm:col-span-2">
+                    <span class="text-text-muted font-semibold block text-[11px]">Correo Electrónico</span>
+                    <span id="v_doc_email" class="font-bold text-text-primary text-sm">doctor@ejemplo.com</span>
+                </div>
+                <div class="p-3 bg-white border border-border rounded-xl sm:col-span-2">
+                    <span class="text-text-muted font-semibold block text-[11px]">Teléfono de Contacto</span>
+                    <span id="v_doc_telefono" class="font-bold text-text-primary text-sm">Sin teléfono</span>
+                </div>
+            </div>
+
+            <!-- Formulario de Acción para Admin -->
+            <form id="form_validar_doctor" method="POST" class="pt-4 border-t border-border flex flex-col sm:flex-row items-center justify-end gap-3">
+                @csrf
+                @method('PATCH')
+                <input type="hidden" id="v_input_estado" name="estado_validacion" value="validado">
+                
+                <button type="button" onclick="cerrarValidarDoctor()" class="w-full sm:w-auto px-4 py-2.5 rounded-xl border border-border text-text-secondary text-xs font-semibold hover:bg-background transition-all">
+                    Cancelar
+                </button>
+                <button type="button" onclick="procesarValidacion('rechazado')" class="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-danger-light text-danger hover:bg-rose-100 font-semibold text-xs transition-all flex items-center justify-center gap-1">
+                    <span class="material-symbols-outlined text-base">gpp_bad</span>
+                    Rechazar Solicitud
+                </button>
+                <button type="button" onclick="procesarValidacion('validado')" class="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs shadow-md transition-all flex items-center justify-center gap-1">
+                    <span class="material-symbols-outlined text-base">verified</span>
+                    Aprobar y Validar Doctor
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
 @endsection
 
 @section('scripts')
@@ -302,6 +415,33 @@
 
     function cerrarEditarDoctor() {
         document.getElementById('modal_editar_doctor').classList.add('hidden');
+    }
+
+    function abrirValidarDoctor(btn) {
+        const id = btn.getAttribute('data-id');
+        const form = document.getElementById('form_validar_doctor');
+        form.action = '/doctores/' + id + '/validar';
+
+        document.getElementById('v_doc_iniciales').innerText = btn.getAttribute('data-iniciales') || 'D';
+        document.getElementById('v_doc_nombre').innerText = btn.getAttribute('data-nombre') || 'Dr. Médico';
+        document.getElementById('v_doc_especialidad').innerText = btn.getAttribute('data-especialidad') || 'General';
+        document.getElementById('v_doc_cedula').innerText = btn.getAttribute('data-cedula') || 'N/A';
+        document.getElementById('v_doc_cedula_esp').innerText = btn.getAttribute('data-cedula-esp') || 'Sin especificar';
+        document.getElementById('v_doc_curp').innerText = btn.getAttribute('data-curp') || 'N/A';
+        document.getElementById('v_doc_email').innerText = btn.getAttribute('data-email') || 'N/A';
+        document.getElementById('v_doc_telefono').innerText = btn.getAttribute('data-telefono') || 'Sin teléfono';
+        document.getElementById('v_doc_estado').innerText = btn.getAttribute('data-estado') || 'pendiente';
+
+        document.getElementById('modal_validar_doctor').classList.remove('hidden');
+    }
+
+    function cerrarValidarDoctor() {
+        document.getElementById('modal_validar_doctor').classList.add('hidden');
+    }
+
+    function procesarValidacion(estado) {
+        document.getElementById('v_input_estado').value = estado;
+        document.getElementById('form_validar_doctor').submit();
     }
 </script>
 @endsection

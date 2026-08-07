@@ -33,6 +33,10 @@ Route::middleware('guest')->group(function () {
     Route::get('/registro', [AuthWebController::class, 'showRegistro'])->name('registro');
     Route::post('/registro', [AuthWebController::class, 'registrar']);
 
+    // Registro público de Doctor (solicitud pendiente de validación admin)
+    Route::get('/registro-doctor', [AuthWebController::class, 'showRegistroDoctor'])->name('registro.doctor');
+    Route::post('/registro-doctor', [AuthWebController::class, 'registrarDoctor']);
+
     Route::get('/recuperar-password', [AuthWebController::class, 'showRecuperar'])->name('recuperar');
     Route::post('/recuperar-password', [AuthWebController::class, 'solicitarRecuperacion']);
 
