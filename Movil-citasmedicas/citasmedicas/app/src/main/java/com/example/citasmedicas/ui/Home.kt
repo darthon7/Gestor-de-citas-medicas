@@ -7,6 +7,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import com.example.citasmedicas.R
+import com.example.citasmedicas.utils.AutoUpdater
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
@@ -18,6 +19,9 @@ class Home : AppCompatActivity() {
         setContentView(R.layout.activity_home)
         val topbar=findViewById<MaterialToolbar>(R.id.top_bar)
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_navigation)
+
+        // Verificar si hay una nueva versión del APK en GitHub Releases
+        AutoUpdater.comprobarActualizacion(this)
 
         if (savedInstanceState == null) {
             cambiarFragment(HomeFragment())

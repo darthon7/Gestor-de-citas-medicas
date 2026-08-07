@@ -21,6 +21,7 @@ import com.example.citasmedicas.R
 import com.example.citasmedicas.model.Singleton
 import com.example.citasmedicas.network.VolleySingleton
 import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import org.json.JSONObject
 import java.io.ByteArrayOutputStream
 
@@ -39,6 +40,7 @@ class PerfilFragment : Fragment(R.layout.fragment_perfil) {
     private lateinit var btnCambiarPassword: View
     private lateinit var btnCerrarSesion: View
     private lateinit var progressBar: ProgressBar
+    lateinit var input_cambiartelefono: TextInputLayout
 
     private var fotoUriSeleccionada: Uri? = null
 
@@ -66,6 +68,7 @@ class PerfilFragment : Fragment(R.layout.fragment_perfil) {
         btnCambiarPassword = view.findViewById(R.id.btn_cambiar_password)
         btnCerrarSesion = view.findViewById(R.id.btn_cerrar_sesion)
         progressBar = view.findViewById(R.id.progress_perfil)
+        input_cambiartelefono=view.findViewById(R.id.input_cambiartelefono)
 
         txtCambiarFoto.setOnClickListener { selectorImagen.launch("image/*") }
         btnGuardarTelefono.setOnClickListener { guardarTelefono() }
@@ -189,11 +192,15 @@ class PerfilFragment : Fragment(R.layout.fragment_perfil) {
 
     private fun guardarTelefono() {
         val telefono = etTelefono.text.toString().trim()
+        input_cambiartelefono.error=null
         if (telefono.isEmpty()) {
-            Toast.makeText(requireContext(), "El telefono no puede estar vacio", Toast.LENGTH_SHORT).show()
+            input_cambiartelefono.error= Singleton.arraylist_mensajes[0]
             return
         }
-
+        else if (telefono.length<10){
+            input_cambiartelefono.error= Singleton.arraylist_mensajes[5]
+            return
+        }
         val url = "${Singleton.BASE_URL}/actualizarMiPerfil"
         val body = JSONObject()
         body.put("telefono", telefono)
@@ -230,15 +237,15 @@ class PerfilFragment : Fragment(R.layout.fragment_perfil) {
         layout.setPadding(50, 20, 50, 20)
 
         val inputActual = EditText(requireContext())
-        inputActual.hint = "Contrasena actual"
+        inputActual.hint = "Contraseña actual"
         inputActual.inputType = android.text.InputType.TYPE_CLASS_TEXT or android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD
 
         val inputNueva = EditText(requireContext())
-        inputNueva.hint = "Contrasena nueva"
+        inputNueva.hint = "Contraseña nueva"
         inputNueva.inputType = android.text.InputType.TYPE_CLASS_TEXT or android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD
 
         val inputConfirmar = EditText(requireContext())
-        inputConfirmar.hint = "Confirmar contrasena nueva"
+        inputConfirmar.hint = "Confirmar contraseña nueva"
         inputConfirmar.inputType = android.text.InputType.TYPE_CLASS_TEXT or android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD
 
         layout.addView(inputActual)
@@ -246,7 +253,7 @@ class PerfilFragment : Fragment(R.layout.fragment_perfil) {
         layout.addView(inputConfirmar)
 
         val dialog= AlertDialog.Builder(requireContext())
-            .setTitle("Cambiar contrasena")
+            .setTitle("Cambiar contraseña")
             .setView(layout)
             .setNegativeButton("Cancelar", null)
             .setPositiveButton("Guardar",null)
@@ -262,11 +269,11 @@ class PerfilFragment : Fragment(R.layout.fragment_perfil) {
                     return@setOnClickListener
                 }
                 if (nueva != confirmar) {
-                    Toast.makeText(requireContext(), "Las contrasenas nuevas no coinciden", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Las contraseñas nuevas no coinciden", Toast.LENGTH_SHORT).show()
                     return@setOnClickListener
                 }
                 if (nueva.length < 8) {
-                    Toast.makeText(requireContext(), "La contrasena debe tener al menos 8 caracteres", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "La contraseña debe tener al menos 8 caracteres", Toast.LENGTH_SHORT).show()
                     return@setOnClickListener
                 }
                     cambiarPassword(actual, nueva, confirmar)

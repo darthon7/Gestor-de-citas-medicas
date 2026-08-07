@@ -18,11 +18,14 @@ import com.example.citasmedicas.model.Singleton
 import com.example.citasmedicas.network.VolleySingleton
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import org.json.JSONObject
 
 class LoginActivity : AppCompatActivity() {
     lateinit var login_usuario: TextInputEditText
     lateinit var login_usuariocontra: TextInputEditText
+    lateinit var login_usuario1: TextInputLayout
+    lateinit var login_usuariocontra1: TextInputLayout
     lateinit var btn_olvido: TextView
     lateinit var btn_login: CardView
     lateinit var btn_registro: MaterialCardView
@@ -40,6 +43,8 @@ class LoginActivity : AppCompatActivity() {
         btn_olvido=findViewById(R.id.btn_olvido)
         btn_login=findViewById(R.id.btn_login)
         btn_registro=findViewById(R.id.btn_registro)
+        login_usuario1=findViewById(R.id.login_usuario1)
+        login_usuariocontra1=findViewById(R.id.login_usuariocontra1)
 
         btn_olvido.setOnClickListener {
             startActivity(Intent(this, Recuperar::class.java))
@@ -54,12 +59,18 @@ class LoginActivity : AppCompatActivity() {
     private fun login(){
         val email=login_usuario.text.toString().trim()
         val password=login_usuariocontra.text.toString().trim()
-        if (email.isEmpty()||password.isEmpty()){
-            Toast.makeText(this, Singleton.arraylist_mensajes[0],Toast.LENGTH_SHORT).show()
+        login_usuario1.error=null
+        login_usuariocontra1.error=null
+        if (email.isEmpty()){
+            login_usuario1.error= Singleton.arraylist_mensajes[0]
             return
         }
-        if (!email.matches(Regex(Singleton.arraylist_validaciones[0]))){
-            Toast.makeText(this, Singleton.arraylist_mensajes[1], Toast.LENGTH_SHORT).show()
+        else if (!email.matches(Regex(Singleton.arraylist_validaciones[0]))){
+            login_usuario1.error= Singleton.arraylist_mensajes[1]
+            return
+        }
+        if (password.isEmpty()){
+            login_usuariocontra1.error= Singleton.arraylist_mensajes[0]
             return
         }
         val url="${Singleton.BASE_URL}/auth/login"
@@ -118,6 +129,11 @@ class LoginActivity : AppCompatActivity() {
                 }
                 Toast.makeText(this, mensaje, Toast.LENGTH_LONG).show()
             }
+        )
+        request.retryPolicy = com.android.volley.DefaultRetryPolicy(
+            20000,
+            2,
+            com.android.volley.DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
         )
         VolleySingleton.getInstance(this).requestQueue.add(request)
     }
