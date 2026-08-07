@@ -26,3 +26,5 @@ Homestead.json
 Homestead.yaml
 Thumbs.db
 /Documentacion-backend
+/playwright-report
+/test-results
