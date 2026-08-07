@@ -69,8 +69,13 @@ class PacientesWebController extends Controller
     public function desactivar($id)
     {
         try {
-            $this->pacientesRepository->desactivarPaciente($id);
-            return redirect()->route('pacientes.index')->with('success', 'Paciente desactivado correctamente.');
+            $resultado = $this->pacientesRepository->desactivarPaciente($id);
+
+            if (!empty($resultado['error'])) {
+                return redirect()->route('pacientes.index')->with('error', $resultado['mensaje'] ?? 'Error al cambiar el estado del paciente.');
+            }
+
+            return redirect()->route('pacientes.index')->with('success', $resultado['mensaje'] ?? 'Estado del paciente actualizado.');
         } catch (\Exception $e) {
             return back()->with('error', $e->getMessage());
         }
