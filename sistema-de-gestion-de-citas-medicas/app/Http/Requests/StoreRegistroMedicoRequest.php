@@ -46,9 +46,17 @@ class StoreRegistroMedicoRequest extends FormRequest
 
     protected function failedValidation(Validator $validator)
     {
-        throw new HttpResponseException(response()->json([
-            'msj'    => 'Error de validación',
-            'errors' => $validator->errors(),
-        ], 422));
+        // Si la petición espera JSON (app móvil / API), devolver JSON
+        if ($this->expectsJson()) {
+            throw new HttpResponseException(response()->json([
+                'msj'    => 'Error de validación',
+                'errors' => $validator->errors(),
+            ], 422));
+        }
+
+        // Para web SSR: redirigir de vuelta con errores en sesión
+        throw new HttpResponseException(
+            redirect()->back()->withErrors($validator)->withInput()
+        );
     }
 }

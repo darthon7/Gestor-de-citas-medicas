@@ -74,13 +74,22 @@ class ReportesWebController extends Controller
 
     public function exportar(Request $request, string $tipo)
     {
-        $filtros = $request->all();
-        $datos = $this->reportesRepository->reporteCitas($filtros);
-        $citas = $datos['data'] ?? [];
+        $filtros = $request->query();
+        $reporteRes = $this->reportesRepository->reporteCitas($filtros);
+        $datos = $reporteRes['data'] ?? [];
+        $citas = $datos['citas'] ?? collect();
 
         if ($request->query('formato') === 'pdf') {
-            $pdf = Pdf::loadView('reportes.pdf', ['citas' => $citas, 'tipo' => $tipo]);
-            return $pdf->download('reporte-' . $tipo . '-' . now()->format('Ymd') . '.pdf');
+            $pdf = Pdf::loadView('reportes.pdf', [
+                'citas'       => $citas,
+                'tipo'        => $tipo,
+                'total'       => $datos['total'] ?? count($citas),
+                'agendadas'   => $datos['agendadas'] ?? 0,
+                'confirmadas' => $datos['confirmadas'] ?? 0,
+                'completadas' => $datos['completadas'] ?? 0,
+                'canceladas'  => $datos['canceladas'] ?? 0,
+            ]);
+            return $pdf->download('reporte-' . $tipo . '-' . now()->format('Ymd-His') . '.pdf');
         }
 
         return redirect()->route('reportes.index')->with('warning', 'Formato no soportado.');
