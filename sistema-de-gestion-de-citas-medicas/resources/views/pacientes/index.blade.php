@@ -95,11 +95,14 @@
                                 ]) }})">
                                     <span class="material-symbols-outlined text-lg">edit</span>
                                 </button>
-                                <form method="POST" action="{{ route('pacientes.desactivar', $paciente->id) }}" onsubmit="return confirm('¿Está seguro de que desea desactivar este paciente?');" class="inline">
+                                @php
+                                    $esActivo = ($paciente->usuario?->estado ?? 'activo') === 'activo';
+                                @endphp
+                                <form method="POST" action="{{ route('pacientes.desactivar', $paciente->id) }}" onsubmit="return confirm('¿Está seguro de que desea {{ $esActivo ? 'desactivar' : 'activar' }} este paciente?');" class="inline">
                                     @csrf
                                     @method('PATCH')
-                                    <button type="submit" class="p-2 text-rose-600 hover:bg-rose-50 rounded-lg transition-colors" title="Desactivar">
-                                        <span class="material-symbols-outlined text-lg">toggle_off</span>
+                                    <button type="submit" class="p-2 {{ $esActivo ? 'text-rose-600 hover:bg-rose-50' : 'text-emerald-600 hover:bg-emerald-50' }} rounded-lg transition-colors" title="{{ $esActivo ? 'Desactivar paciente' : 'Activar paciente' }}">
+                                        <span class="material-symbols-outlined text-lg">{{ $esActivo ? 'toggle_off' : 'toggle_on' }}</span>
                                     </button>
                                 </form>
                             </div>

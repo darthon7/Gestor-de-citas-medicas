@@ -133,25 +133,41 @@ class PacientesRepository
     public function desactivarPaciente(int $id)
     {
         try {
-            $usuario = Usuario::where('rol', 'paciente')->find($id);
+            // Buscar por id de Usuario o por id de PerfilPaciente
+            $usuario = Usuario::where('rol', 'paciente')
+                ->where(function ($q) use ($id) {
+                    $q->where('id', $id)
+                      ->orWhereHas('perfilPaciente', function ($qp) use ($id) {
+                          $qp->where('id', $id);
+                      });
+                })->first();
+
             if (!$usuario) {
-                return ['mensaje' => 'Paciente no encontrado'];
+                return ['error' => true, 'mensaje' => 'Paciente no encontrado'];
             }
 
-            // Verificar citas activas
-            $citasActivas = $usuario->perfilPaciente?->citas()
-                ->whereIn('estado', ['agendada', 'confirmada', 'en_consulta'])
-                ->count();
+            $nuevoEstado = ($usuario->estado === 'activo') ? 'inactivo' : 'activo';
 
-            if ($citasActivas > 0) {
-                return ['mensaje' => 'No se puede desactivar un paciente con citas activas pendientes.'];
+            // Si se va a desactivar, verificar citas activas pendientes
+            if ($nuevoEstado === 'inactivo') {
+                $citasActivas = $usuario->perfilPaciente?->citas()
+                    ->whereIn('estado', ['agendada', 'confirmada', 'en_consulta'])
+                    ->count();
+
+                if ($citasActivas > 0) {
+                    return ['error' => true, 'mensaje' => 'No se puede desactivar un paciente con citas activas pendientes.'];
+                }
             }
 
-            $usuario->update(['estado' => 'inactivo']);
+            $usuario->update(['estado' => $nuevoEstado]);
 
-            return ['mensaje' => 'Paciente desactivado correctamente'];
+            $msj = ($nuevoEstado === 'inactivo') 
+                ? 'Paciente desactivado correctamente.' 
+                : 'Paciente activado correctamente.';
+
+            return ['error' => false, 'mensaje' => $msj];
         } catch (Exception $e) {
-            return ['mensaje' => $e->getMessage()];
+            return ['error' => true, 'mensaje' => $e->getMessage()];
         }
     }
 }
