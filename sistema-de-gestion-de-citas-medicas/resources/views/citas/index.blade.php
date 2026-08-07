@@ -2,139 +2,322 @@
 @section('titulo', 'Calendario de Citas')
 
 @section('styles')
-<link rel="stylesheet" href="{{ asset('css/pages/citas.css') }}">
+<style>
+    .calendar-grid-wrapper {
+        display: grid;
+        grid-template-columns: 80px repeat(7, 1fr);
+    }
+    .time-slot-line {
+        height: 60px;
+        border-bottom: 1px solid #E2E8F0;
+    }
+    .appointment-block {
+        position: absolute;
+        border-radius: 8px;
+        padding: 4px 8px;
+        font-size: 12px;
+        overflow: hidden;
+    }
+</style>
 @endsection
 
 @section('content')
-<header class="header">
-    <h1 class="header__title">Calendario de Citas</h1>
-</header>
+@php
+    $fechaRef = $fechaRef ?? \Carbon\Carbon::now();
+    $mesRef = $fechaRef->copy()->startOfMonth();
+    $primerDiaCuadricula = $mesRef->copy()->startOfWeek(\Carbon\Carbon::MONDAY);
+    $ultimoDiaMes = $fechaRef->copy()->endOfMonth();
+    $vista = $vista ?? 'semana';
 
-<main class="main-content">
-    <!-- Control Bar -->
-    <div class="calendar-controls">
-        <form method="GET" action="{{ route('citas.index') }}" id="filter_form" style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
-            <input type="hidden" name="fecha" value="{{ $fechaRef->format('Y-m-d') }}">
+    $modos = [
+        'dia'    => 'Día',
+        'semana' => 'Semana',
+        'mes'    => 'Mes',
+    ];
 
-            <div style="display: flex; align-items: center; gap: 16px;">
-                <a href="{{ route('citas.index', ['fecha' => $fechaRef->copy()->subWeek()->format('Y-m-d'), 'doctor_id' => $doctorId]) }}" class="btn btn-icon">
-                    <i data-lucide="chevron-left"></i>
-                </a>
-                <span style="font-weight: 700; font-size: 16px; min-width: 240px; text-align: center;">
-                    {{ $startOfWeek->isoFormat('D [de] MMM') }} - {{ $endOfWeek->isoFormat('D [de] MMM, YYYY') }}
-                </span>
-                <a href="{{ route('citas.index', ['fecha' => $fechaRef->copy()->addWeek()->format('Y-m-d'), 'doctor_id' => $doctorId]) }}" class="btn btn-icon">
-                    <i data-lucide="chevron-right"></i>
-                </a>
-            </div>
+    // Navegacion prev/next segun modo
+    $fechaPrev = $fechaRef->copy()->subDay();
+    $fechaNext = $fechaRef->copy()->addDay();
+    if ($vista === 'semana') { $fechaPrev = $fechaRef->copy()->subWeek(); $fechaNext = $fechaRef->copy()->addWeek(); }
+    if ($vista === 'mes') { $fechaPrev = $fechaRef->copy()->subMonth(); $fechaNext = $fechaRef->copy()->addMonth(); }
 
-            <div style="display: flex; gap: 12px;">
-                <select name="doctor_id" onchange="document.getElementById('filter_form').submit();" class="form-select" style="width: 220px;">
-                    <option value="">Todos los doctores</option>
-                    @foreach($doctores as $doc)
-                        <option value="{{ $doc['id'] }}" {{ $doctorId == $doc['id'] ? 'selected' : '' }}>
-                            Dr. {{ $doc['nombre'] }}
-                        </option>
-                    @endforeach
-                </select>
-                <a href="{{ route('citas.crear') }}" class="btn btn-primary">
-                    <i data-lucide="plus"></i> Nueva Cita
-                </a>
-            </div>
-        </form>
+    $tituloRango = match($vista) {
+        'dia' => $fechaRef->isoFormat('D [de] MMMM, YYYY'),
+        'mes' => $fechaRef->isoFormat('MMMM YYYY'),
+        default => $startOfWeek->isoFormat('D [—] D [de] MMM, YYYY'),
+    };
+@endphp
+
+<!-- Control Bar -->
+<section class="bg-surface rounded-2xl card-shadow border border-border p-4 flex flex-wrap items-center justify-between gap-3 mb-6">
+    <div class="flex flex-wrap items-center gap-3">
+        <div class="flex items-center bg-background p-1 rounded-lg border border-border">
+            @foreach($modos as $clave => $etiqueta)
+                @if($vista === $clave)
+                    <span class="px-4 py-1.5 rounded-md text-xs bg-primary text-white shadow-sm">{{ $etiqueta }}</span>
+                @else
+                    <a href="{{ route('citas.index', ['vista' => $clave, 'fecha' => $fechaRef->format('Y-m-d'), 'doctor_id' => $doctorId]) }}" class="px-4 py-1.5 rounded-md text-xs font-medium text-text-secondary hover:bg-surface transition-all">{{ $etiqueta }}</a>
+                @endif
+            @endforeach
+        </div>
+        <div class="flex items-center gap-2 bg-surface p-0.5 rounded-lg border border-border">
+            <a href="{{ route('citas.index', ['vista' => $vista, 'fecha' => $fechaPrev->format('Y-m-d'), 'doctor_id' => $doctorId]) }}" class="p-1.5 rounded-lg hover:bg-background text-text-secondary transition-all">
+                <span class="material-symbols-outlined text-lg">chevron_left</span>
+            </a>
+            <h2 class="font-bold text-primary-dark text-sm px-1 whitespace-nowrap capitalize">
+                {{ $tituloRango }}
+            </h2>
+            <a href="{{ route('citas.index', ['vista' => $vista, 'fecha' => $fechaNext->format('Y-m-d'), 'doctor_id' => $doctorId]) }}" class="p-1.5 rounded-lg hover:bg-background text-text-secondary transition-all">
+                <span class="material-symbols-outlined text-lg">chevron_right</span>
+            </a>
+        </div>
     </div>
 
-    <!-- Calendar Main Grid & Right Summary Layout -->
-    <div style="display: grid; grid-template-columns: 1fr 300px; gap: 24px;">
-        <!-- Calendar Grid -->
-        <div id="calendar_grid" class="calendar-grid">
-            <div class="calendar-header-col" style="background-color: var(--color-bg);">Hora</div>
-            @for($i = 0; $i < 7; $i++)
-                @php
-                    $dayDate = $startOfWeek->copy()->addDays($i);
-                @endphp
-                <div class="calendar-header-col {{ $dayDate->isToday() ? 'calendar-header-col--today' : '' }}">
-                    <div>{{ ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'][$i] }}</div>
-                    <div style="font-size: 11px; font-weight: 500;">{{ $dayDate->format('d/m') }}</div>
-                </div>
-            @endfor
+    <div class="flex items-center gap-3">
+        <!-- Doctor Filter -->
+        <form method="GET" action="{{ route('citas.index') }}" id="filter_form" class="flex items-center gap-3">
+            <input type="hidden" name="fecha" value="{{ $fechaRef->format('Y-m-d') }}">
+            <input type="hidden" name="vista" value="{{ $vista }}">
+            <div class="relative">
+                <select name="doctor_id" onchange="document.getElementById('filter_form').submit();" class="appearance-none pl-4 pr-10 py-2 bg-surface border border-border rounded-xl text-xs font-medium text-text-primary focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all cursor-pointer">
+                    <option value="">Todos los doctores</option>
+                    @foreach($doctores as $doc)
+                        <option value="{{ $doc['id'] }}" {{ $doctorId == $doc['id'] ? 'selected' : '' }}>Dr. {{ $doc['nombre'] }}</option>
+                    @endforeach
+                </select>
+                <span class="material-symbols-outlined absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none text-text-muted text-lg">expand_more</span>
+            </div>
+        </form>
 
-            <!-- Hora 8:00 - 18:00 -->
-            <div class="calendar-time-col">
-                @for($h = 8; $h <= 18; $h++)
-                    <div class="calendar-time-slot-label">
-                        {{ $h < 12 ? "{$h}:00 AM" : ($h == 12 ? "12:00 PM" : ($h-12) . ":00 PM") }}
+        @if(in_array(Auth::user()->rol, ['admin', 'recepcionista', 'paciente']))
+            <button type="button" onclick="abrirModalCita()" class="flex items-center gap-2 bg-primary text-white px-5 py-2 rounded-xl font-semibold text-xs hover:bg-primary-dark shadow-md active:scale-95 transition-all">
+                <span class="material-symbols-outlined text-lg">add</span>
+                <span>Nueva Cita</span>
+            </button>
+        @endif
+    </div>
+</section>
+
+<!-- Calendar Layout Grid & Summary Side Panel -->
+<div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+    <!-- Main Calendar Grid (3 Cols) -->
+    <div class="lg:col-span-3 bg-surface rounded-2xl card-shadow border border-border overflow-hidden flex flex-col">
+        @if($vista === 'mes')
+            <!-- ===== VISTA MES ===== -->
+            <div class="grid grid-cols-7 border-b border-border bg-background/60 text-center">
+                @foreach(['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'] as $dayLabel)
+                    <div class="h-12 flex items-center justify-center text-[10px] uppercase font-bold tracking-wider text-text-secondary border-r border-border last:border-r-0">{{ $dayLabel }}</div>
+                @endforeach
+            </div>
+            <div class="grid grid-cols-7">
+                @for($d = 0; $d < $mesRef->diffInDays($primerDiaCuadricula); $d++)
+                    <div class="min-h-[110px] border-r border-b border-border bg-background/30"></div>
+                @endfor
+                @for($day = $mesRef->copy(); $day->lte($mesRef->copy()->endOfMonth()); $day->addDay())
+                    @php
+                        $citasDia = $citas->filter(fn($c) => \Carbon\Carbon::parse($c['fecha_hora'])->format('Y-m-d') === $day->format('Y-m-d'));
+                    @endphp
+                    <a href="{{ route('citas.index', ['vista' => 'dia', 'fecha' => $day->format('Y-m-d'), 'doctor_id' => $doctorId]) }}"
+                       class="min-h-[110px] border-r border-b border-border last:border-r-0 p-1.5 flex flex-col gap-1 transition-colors hover:bg-background/60 {{ $day->isToday() ? 'bg-primary/5' : '' }}">
+                        <span class="text-[11px] font-bold {{ $day->isToday() ? 'text-primary' : 'text-text-primary' }}">{{ $day->format('d') }}</span>
+                        <div class="flex flex-col gap-0.5">
+                            @foreach($citasDia->take(3) as $cita)
+                                @php
+                                    $estadoM = strtolower($cita['estado'] ?? 'pendiente');
+                                    $chip = match($estadoM) {
+                                        'confirmada', 'completada' => 'bg-emerald-100 text-emerald-800',
+                                        'en_consulta' => 'bg-sky-100 text-sky-800',
+                                        'agendada', 'pendiente' => 'bg-amber-100 text-amber-800',
+                                        'cancelada' => 'bg-rose-100 text-rose-800 opacity-60',
+                                        default => 'bg-gray-100 text-gray-700'
+                                    };
+                                @endphp
+                                <span class="truncate rounded px-1 py-0.5 text-[9px] font-semibold {{ $chip }}">
+                                    {{ \Carbon\Carbon::parse($cita['fecha_hora'])->format('H:i') }} {{ $cita['perfilPaciente']['usuario']['nombre'] ?? '' }}
+                                </span>
+                            @endforeach
+                            @if($citasDia->count() > 3)
+                                <span class="text-[9px] text-text-muted font-medium pl-1">+{{ $citasDia->count() - 3 }} más</span>
+                            @endif
+                        </div>
+                    </a>
+                @endfor
+            </div>
+        @else
+            <!-- ===== VISTA DÍA / SEMANA ===== -->
+            @php
+                $numCols = $vista === 'dia' ? 1 : 7;
+            @endphp
+            <!-- Days Header -->
+            <div class="calendar-grid-wrapper border-b border-border bg-background/60">
+                <div class="h-12 flex items-center justify-center border-r border-border text-text-muted">
+                    <span class="material-symbols-outlined text-lg">schedule</span>
+                </div>
+
+                @for($i = 0; $i < $numCols; $i++)
+                    @php
+                        $dayDate = $startOfWeek->copy()->addDays($i);
+                        $isToday = $dayDate->isToday();
+                    @endphp
+                    <div class="h-12 flex flex-col items-center justify-center border-r border-border last:border-r-0 {{ $isToday ? 'bg-primary/10 text-primary' : 'text-text-primary' }}">
+                        <span class="text-[10px] uppercase font-bold tracking-wider {{ $isToday ? 'text-primary' : 'text-text-secondary' }}">
+                            {{ ['LUN', 'MAR', 'MIÉ', 'JUE', 'VIE', 'SÁB', 'DOM'][$i] }}
+                        </span>
+                        <span class="text-xs font-bold">{{ $dayDate->format('d/m') }}</span>
                     </div>
                 @endfor
             </div>
 
-            @for($i = 0; $i < 7; $i++)
-                @php
-                    $currentColDate = $startOfWeek->copy()->addDays($i)->format('Y-m-d');
-                @endphp
-                <div class="calendar-day-col" id="day_col_{{ $i }}" style="position: relative;">
-                    @foreach($citas as $cita)
-                        @php
-                            $citaCarbon = \Carbon\Carbon::parse($cita['fecha_hora']);
-                        @endphp
-                        @if($citaCarbon->format('Y-m-d') === $currentColDate)
-                            @php
-                                $hour = (int)$citaCarbon->format('H');
-                                $min = (int)$citaCarbon->format('i');
-                                $topPx = (($hour - 8) * 60) + $min;
-                                $estado = strtolower($cita['estado'] ?? 'pendiente');
-                            @endphp
-                            <a href="{{ route('citas.show', $cita['id']) }}"
-                               class="appointment-block appointment-block--{{ $estado }}"
-                               style="top: {{ $topPx }}px; height: 52px; text-decoration: none;"
-                               title="Ver Cita #{{ $cita['id'] }}">
-                                <strong style="font-size:10px;">{{ $citaCarbon->format('h:i A') }}</strong>
-                                <span style="font-weight:600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ $cita['paciente']['nombre'] ?? 'Paciente' }}</span>
-                                <span style="font-size:10px; opacity:0.8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Dr. {{ $cita['doctor']['nombre'] ?? 'Médico' }}</span>
-                            </a>
-                        @endif
-                    @endforeach
-                </div>
-            @endfor
-        </div>
+            <!-- Scrollable Hours Body -->
+            <div class="max-h-[600px] overflow-y-auto relative custom-scrollbar">
+                <div class="calendar-grid-wrapper relative">
+                    <!-- Hour Labels (Left Column) -->
+                    <div class="border-r border-border bg-background/40">
+                        @for($h = 8; $h <= 18; $h++)
+                            <div class="time-slot-line flex items-center justify-center text-[10px] font-semibold text-text-muted">
+                                {{ $h < 12 ? "{$h}:00 AM" : ($h == 12 ? "12:00 PM" : ($h-12) . ":00 PM") }}
+                            </div>
+                        @endfor
+                    </div>
 
-        <!-- Right Summary Panel -->
-        <div class="card" style="height: fit-content; padding: 20px;">
-            <h3 style="margin-bottom: 16px; font-size: 16px;">Resumen de la Semana</h3>
-            <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px;">
-                <div style="display: flex; justify-content: space-between; font-size: 13px;">
-                    <span>Citas programadas:</span>
-                    <strong>{{ count($citas) }}</strong>
-                </div>
-                <div style="display: flex; justify-content: space-between; font-size: 13px;">
-                    <span>Confirmadas/Completadas:</span>
-                    <strong style="color: var(--color-secondary);">
-                        {{ count(array_filter($citas, fn($c) => in_array(strtolower($c['estado']), ['confirmada', 'completada']))) }}
-                    </strong>
-                </div>
-                <div style="display: flex; justify-content: space-between; font-size: 13px;">
-                    <span>Canceladas:</span>
-                    <strong style="color: var(--color-danger);">
-                        {{ count(array_filter($citas, fn($c) => strtolower($c['estado']) === 'cancelada')) }}
-                    </strong>
+                    <!-- Grid Slots & Appointment Blocks -->
+                    @for($i = 0; $i < $numCols; $i++)
+                        @php
+                            $currentColDate = $startOfWeek->copy()->addDays($i)->format('Y-m-d');
+                        @endphp
+                        <div class="relative border-r border-border last:border-r-0">
+                            @for($h = 8; $h <= 18; $h++)
+                                <div class="time-slot-line"></div>
+                            @endfor
+
+                            @foreach($citas as $cita)
+                                @php
+                                    $citaCarbon = \Carbon\Carbon::parse($cita['fecha_hora']);
+                                @endphp
+                                @if($citaCarbon->format('Y-m-d') === $currentColDate)
+                                    @php
+                                        $hour = (int)$citaCarbon->format('H');
+                                        $min = (int)$citaCarbon->format('i');
+                                        $topPx = (($hour - 8) * 60) + $min;
+                                        $estado = strtolower($cita['estado'] ?? 'pendiente');
+                                        $blockClass = match($estado) {
+                                            'confirmada', 'completada' => 'bg-emerald-50 text-emerald-900 border-l-4 border-emerald-500 shadow-sm',
+                                            'en_consulta' => 'bg-sky-50 text-sky-900 border-l-4 border-sky-500 shadow-sm',
+                                            'agendada', 'pendiente' => 'bg-amber-50 text-amber-900 border-l-4 border-amber-500 shadow-sm',
+                                            'cancelada' => 'bg-rose-50 text-rose-900 border-l-4 border-rose-400 opacity-60',
+                                            default => 'bg-gray-50 text-gray-900 border-l-4 border-gray-400'
+                                        };
+                                    @endphp
+                                    <a href="{{ route('citas.show', $cita['id']) }}" class="appointment-block left-1 right-1 p-2 rounded-lg text-xs {{ $blockClass }} transition-all hover:scale-[1.02] hover:z-10"
+                                       style="top: {{ $topPx }}px; height: 54px;"
+                                       title="Ver Cita #{{ $cita['id'] }}">
+                                        <div class="flex items-center justify-between">
+                                            <strong class="text-[10px] font-bold tracking-tight">{{ $citaCarbon->format('h:i A') }}</strong>
+                                            <span class="text-[9px] uppercase font-semibold opacity-75">{{ $cita['estado'] }}</span>
+                                        </div>
+                                        <p class="font-bold text-xs truncate leading-tight mt-0.5">{{ $cita['perfilPaciente']['usuario']['nombre'] ?? 'Paciente' }}</p>
+                                        <p class="text-[10px] opacity-80 truncate">Dr. {{ $cita['perfilDoctor']['usuario']['nombre'] ?? 'Médico' }}</p>
+                                    </a>
+                                @endif
+                            @endforeach
+                        </div>
+                    @endfor
                 </div>
             </div>
+        @endif
+    </div>
 
-            <h4 style="margin-bottom: 12px; font-size: 14px;">Próximas Citas</h4>
-            <div style="display: flex; flex-direction: column; gap: 10px;">
-                @forelse(array_slice($citas, 0, 5) as $cita)
-                    <a href="{{ route('citas.show', $cita['id']) }}" style="background-color: var(--color-bg); padding: 10px; border-radius: 6px; border: 1px solid var(--color-border); display:flex; justify-content:space-between; align-items:center; text-decoration: none; color: inherit;">
-                        <div>
-                            <strong style="font-size:13px; display: block;">{{ $cita['paciente']['nombre'] ?? 'Paciente' }}</strong>
-                            <div style="font-size:11px; color:var(--color-text-secondary);">Dr. {{ $cita['doctor']['nombre'] ?? 'Médico' }}</div>
+    <!-- Summary Side Panel (1 Col) -->
+    <div class="space-y-6">
+        <!-- Resumen Estadístico -->
+        <div class="bg-surface rounded-2xl shadow-sm border border-border p-5">
+            <h3 class="font-bold text-text-primary text-sm mb-4 pb-3 border-b border-border flex items-center justify-between">
+                <span>Resumen del {{ $vista === 'dia' ? 'Día' : ($vista === 'mes' ? 'Mes' : 'Semana') }}</span>
+                <span class="material-symbols-outlined text-text-muted text-lg">assessment</span>
+            </h3>
+
+            <div class="space-y-3">
+                <div class="bg-background p-3 rounded-xl flex items-center justify-between border border-border">
+                    <div>
+                        <p class="text-xs text-text-secondary font-medium">Programadas</p>
+                        <p class="text-lg font-bold text-primary">{{ $citas->count() }} Citas</p>
+                    </div>
+                    <span class="material-symbols-outlined text-primary/40">event</span>
+                </div>
+
+                <div class="bg-emerald-50 p-3 rounded-xl flex items-center justify-between border border-emerald-200/60">
+                    <div>
+                        <p class="text-xs text-emerald-700 font-medium">Confirmadas</p>
+                        <p class="text-lg font-bold text-emerald-700">
+                            {{ $citas->filter(fn($c) => in_array(strtolower($c['estado'] ?? 'pendiente'), ['confirmada', 'completada']))->count() }}
+                            <span class="text-xs font-medium">completadas</span>
+                        </p>
+                    </div>
+                    <span class="material-symbols-outlined text-emerald-500/40">check_circle</span>
+                </div>
+
+                <div class="bg-rose-50 p-3 rounded-xl flex items-center justify-between border border-rose-200/60">
+                    <div>
+                        <p class="text-xs text-rose-700 font-medium">Alertas</p>
+                        <p class="text-lg font-bold text-rose-600">
+                            {{ $citas->filter(fn($c) => strtolower($c['estado'] ?? 'pendiente') === 'cancelada')->count() }}
+                            <span class="text-xs font-medium">canceladas</span>
+                        </p>
+                    </div>
+                    <span class="material-symbols-outlined text-rose-500/40">cancel</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Próximas Citas del Rango -->
+        <div class="bg-surface rounded-2xl shadow-sm border border-border p-5">
+            <h3 class="font-bold text-text-primary text-sm mb-3 pb-2 border-b border-border">Próximas {{ $vista === 'mes' ? 'del Mes' : 'en la ' . ($vista === 'dia' ? 'Fecha' : 'Semana') }}</h3>
+            <div class="space-y-2.5">
+                @forelse($citas->slice(0, 5) as $cita)
+                    <a href="{{ route('citas.show', $cita['id']) }}" class="block p-3 bg-background hover:bg-border/60 rounded-xl border border-border transition-all">
+                        <div class="flex items-center justify-between">
+                            <strong class="text-xs text-text-primary truncate block">{{ $cita['perfilPaciente']['usuario']['nombre'] ?? 'Paciente' }}</strong>
+                            <span class="text-[10px] font-bold text-primary whitespace-nowrap">{{ \Carbon\Carbon::parse($cita['fecha_hora'])->format('d/M H:i') }}</span>
                         </div>
-                        <span style="font-weight:700; font-size:12px; color:var(--color-primary);">{{ \Carbon\Carbon::parse($cita['fecha_hora'])->format('d/M H:i') }}</span>
+                        <p class="text-[11px] text-text-secondary truncate mt-0.5">Dr. {{ $cita['perfilDoctor']['usuario']['nombre'] ?? 'Médico' }}</p>
                     </a>
                 @empty
-                    <p style="color:var(--color-text-muted); font-size:12px;">Sin citas para esta semana.</p>
+                    <p class="text-xs text-text-muted py-4 text-center">Sin citas para este período.</p>
                 @endforelse
             </div>
         </div>
+
+        <!-- Mini Calendar -->
+        <div class="bg-surface rounded-2xl shadow-sm border border-border p-5">
+            <div class="flex items-center justify-between mb-4">
+                <span class="font-bold text-text-primary text-sm">{{ $fechaRef->isoFormat('MMMM YYYY') }}</span>
+                <div class="flex gap-1 text-text-secondary">
+                    <a href="{{ route('citas.index', ['fecha' => $mesRef->copy()->subMonth()->format('Y-m-d'), 'doctor_id' => $doctorId]) }}">
+                        <span class="material-symbols-outlined text-sm cursor-pointer hover:text-primary">chevron_left</span>
+                    </a>
+                    <a href="{{ route('citas.index', ['fecha' => $fechaRef->copy()->addMonth()->format('Y-m-d'), 'doctor_id' => $doctorId]) }}">
+                        <span class="material-symbols-outlined text-sm cursor-pointer hover:text-primary">chevron_right</span>
+                    </a>
+                </div>
+            </div>
+            <div class="grid grid-cols-7 gap-1 text-center">
+                @foreach(['L', 'M', 'X', 'J', 'V', 'S', 'D'] as $dayLabel)
+                    <span class="text-[10px] text-text-muted font-semibold">{{ $dayLabel }}</span>
+                @endforeach
+
+                @for($d = 0; $d < $mesRef->diffInDays($primerDiaCuadricula); $d++)
+                    <span class="text-[11px] py-1 text-text-muted/40"></span>
+                @endfor
+
+                @for($day = $primerDiaCuadricula->copy(); $day->lte($ultimoDiaMes); $day->addDay())
+                    <span class="text-[11px] py-1 {{ $day->isToday() ? 'bg-primary text-white rounded-full font-bold' : ($day->month != $fechaRef->month ? 'text-text-muted/40' : '') }}">
+                        {{ $day->day }}
+                    </span>
+                @endfor
+            </div>
+        </div>
     </div>
-</main>
+</div>
+
+@include('components.modal-nueva-cita')
 @endsection

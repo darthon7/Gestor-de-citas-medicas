@@ -2,49 +2,63 @@
 @section('titulo', 'Inicio de Sesión')
 
 @section('content')
-<div class="card border-0 shadow-lg rounded-4 overflow-hidden" style="width: 100%; max-width: 440px;">
-    <div class="card-body p-4 p-sm-5">
-        <div class="text-center mb-4">
-            <div class="rounded-circle bg-primary bg-opacity-10 text-primary d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
-                <i data-lucide="activity" class="fs-2"></i>
+<div class="bg-surface rounded-2xl p-8 md:p-10 shadow-xl border border-border flex flex-col items-center w-full">
+    <!-- Brand Identity -->
+    <div class="mb-8 flex flex-col items-center text-center">
+        <div class="w-16 h-16 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mb-4 border border-primary/20 shadow-inner">
+            <span class="material-symbols-outlined text-4xl">medical_services</span>
+        </div>
+        <h1 class="text-2xl font-bold text-primary-dark tracking-tight">Agenda Médica</h1>
+        <p class="text-xs text-text-secondary mt-1">Acceso centralizado al Hospital Central</p>
+    </div>
+
+    <!-- Login Form -->
+    <form method="POST" action="{{ route('login') }}" class="w-full space-y-5">
+        @csrf
+
+        <!-- Email Field -->
+        <div class="space-y-1.5">
+            <label for="txt_email" class="text-xs font-semibold text-text-secondary block">Correo Electrónico</label>
+            <div class="relative">
+                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-muted text-xl">mail</span>
+                <input type="email" id="txt_email" name="email" value="{{ old('email') }}" required autocomplete="email" placeholder="usuario@hospitalcentral.com" class="w-full pl-10 pr-4 py-3 bg-white border border-border rounded-xl text-sm text-text-primary focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all">
             </div>
-            <h2 class="fw-bold text-dark h4 mb-1">Agenda Médica</h2>
-            <p class="text-secondary small mb-0">Sistema de Gestión de Citas Médicas</p>
         </div>
 
-        <form method="POST" action="{{ route('login') }}">
-            @csrf
-            <div class="mb-3">
-                <label for="txt_email" class="form-label small fw-semibold text-secondary">Correo Electrónico</label>
-                <div class="input-group">
-                    <span class="input-group-text bg-light border-end-0"><i data-lucide="mail" class="text-secondary"></i></span>
-                    <input type="email" id="txt_email" name="email" class="form-control border-start-0 ps-0 bg-light" value="{{ old('email') }}" placeholder="ejemplo@clinicamedica.com" required autocomplete="email">
-                </div>
+        <!-- Password Field -->
+        <div class="space-y-1.5">
+            <div class="flex justify-between items-center">
+                <label for="txt_password" class="text-xs font-semibold text-text-secondary">Contraseña</label>
+                <a href="{{ route('recuperar') }}" class="text-xs font-semibold text-primary hover:text-primary-dark transition-colors">¿Olvidaste tu contraseña?</a>
             </div>
-
-            <div class="mb-3">
-                <label for="txt_password" class="form-label small fw-semibold text-secondary">Contraseña</label>
-                <div class="input-group">
-                    <span class="input-group-text bg-light border-end-0"><i data-lucide="lock" class="text-secondary"></i></span>
-                    <input type="password" id="txt_password" name="password" class="form-control border-start-0 border-end-0 ps-0 bg-light" placeholder="••••••••" required autocomplete="current-password">
-                    <button type="button" onclick="const pass = document.getElementById('txt_password'); pass.type = pass.type === 'password' ? 'text' : 'password';" class="btn btn-light border border-start-0 text-secondary" tabindex="-1">
-                        <i data-lucide="eye"></i>
-                    </button>
-                </div>
+            <div class="relative">
+                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-muted text-xl">lock</span>
+                <input type="password" id="txt_password" name="password" required autocomplete="current-password" placeholder="••••••••" class="w-full pl-10 pr-10 py-3 bg-white border border-border rounded-xl text-sm text-text-primary focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all">
+                <button type="button" onclick="const pass = document.getElementById('txt_password'); pass.type = pass.type === 'password' ? 'text' : 'password';" class="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-primary transition-colors">
+                    <span class="material-symbols-outlined text-xl">visibility</span>
+                </button>
             </div>
+        </div>
 
-            <div class="text-end mb-4">
-                <a href="{{ route('recuperar') }}" class="small text-decoration-none text-primary fw-semibold">¿Olvidaste tu contraseña?</a>
-            </div>
+        <!-- Action Button -->
+        <button type="submit" class="w-full bg-primary hover:bg-primary-dark text-white py-3.5 px-6 rounded-xl font-semibold text-sm shadow-md hover:shadow-lg active:scale-[0.99] transition-all flex items-center justify-center space-x-2">
+            <span>Ingresar</span>
+            <span class="material-symbols-outlined text-xl">login</span>
+        </button>
+    </form>
 
-            <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold shadow-sm">
-                Ingresar
-            </button>
-        </form>
+    <!-- Footer Secondary Actions -->
+    <div class="mt-8 pt-6 border-t border-border w-full text-center">
+        <p class="text-xs text-text-secondary">
+            ¿No tienes una cuenta? 
+            <a href="{{ route('registro') }}" class="text-primary font-bold hover:underline">Regístrate aquí</a>
+        </p>
     </div>
+</div>
 
-    <div class="card-footer bg-light border-0 py-3 text-center small text-secondary">
-        ¿No tienes una cuenta? <a href="{{ route('registro') }}" class="fw-bold text-primary text-decoration-none">Regístrate aquí</a>
-    </div>
+<!-- System Status Indicator -->
+<div class="mt-6 flex items-center justify-center space-x-2 text-xs text-text-secondary">
+    <div class="w-2 h-2 rounded-full bg-secondary animate-pulse"></div>
+    <span>Servidores en línea - Acceso Seguro SSL</span>
 </div>
 @endsection

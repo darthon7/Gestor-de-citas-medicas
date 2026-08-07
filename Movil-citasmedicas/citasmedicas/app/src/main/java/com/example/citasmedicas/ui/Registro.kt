@@ -121,8 +121,6 @@ class Registro : AppCompatActivity() {
                 }
                 2->{
                     if (validacionpaso3()){
-                        btn_siguiente.isEnabled = false
-                        txt_boton.text = "Registrando..."
                     registrarpaciente()
                     }
                 }
@@ -149,55 +147,10 @@ class Registro : AppCompatActivity() {
     }
     private fun validacionpaso1(): Boolean{
         val nombre=registro_nombre.text.toString().trim()
-        val fecha=registro_fecha.text.toString().trim()
-        val direccion=registro_direccion.text.toString().trim()
-        val numero=registro_telefono.text.toString().trim()
-        val sexo=spn_sexo.text.toString().trim()
-        input_nombre.error=null
-        input_telefono.error=null
-        input_direccion.error=null
-        input_fecha.error=null
-        input_sexo.error=null
         if (nombre.isEmpty()){
-            input_nombre.error= Singleton.arraylist_mensajes[0]
+            Toast.makeText(this, Singleton.arraylist_mensajes[0], Toast.LENGTH_SHORT).show()
             return false
         }
-        else if (!nombre.matches(Regex(Singleton.arraylist_validaciones[3]))){
-            input_nombre.error= Singleton.arraylist_mensajes[8]
-        }
-        if (numero.isEmpty()){
-            input_telefono.error= Singleton.arraylist_mensajes[0]
-            return false
-        }
-        else if (numero.length<10){
-            input_telefono.error= Singleton.arraylist_mensajes[5]
-            return false
-        }
-        if (direccion.isEmpty()){
-            input_direccion.error= Singleton.arraylist_mensajes[0]
-            return false
-        }
-        else if (!direccion.matches(Regex(Singleton.arraylist_validaciones[4]))){
-            input_direccion.error= Singleton.arraylist_mensajes[9]
-            return false
-        }
-        if (fecha.isEmpty()){
-            input_fecha.error= Singleton.arraylist_mensajes[0]
-            return false
-        }
-        else {
-            val edad=calcularedad(fecha)
-            if (edad<18){
-                input_fecha.error= Singleton.arraylist_mensajes[6]
-                return false
-            }
-        }
-
-        if (sexo.isEmpty()){
-            input_sexo.error= Singleton.arraylist_mensajes[0]
-            return false
-        }
-
         return true
     }
     private fun validacionpaso2(): Boolean{
@@ -293,21 +246,20 @@ class Registro : AppCompatActivity() {
                     val usuarioJson = response.getJSONObject("usuario")
                     val nombre = usuarioJson.getString("nombre")
                     val rol = usuarioJson.getString("rol")
-                    val foto=if (!usuarioJson.isNull("foto_perfil"))usuarioJson.optString("foto_perfil",null)else null
+
                     Singleton.token_actual = token
                     Singleton.usuario_actual = nombre
                     Singleton.rol_usuario = rol
-                    Singleton.foto_perfil=foto
+
                     val prefs = getSharedPreferences("sesion_citas", Context.MODE_PRIVATE)
                     prefs.edit()
                         .putString("token", token)
                         .putString("usuario", nombre)
                         .putString("rol", rol)
-                        .putString("foto_perfil",foto)
                         .apply()
 
                     Toast.makeText(this, "Registro exitoso, bienvenido $nombre", Toast.LENGTH_SHORT).show()
-                    startActivity(Intent(this, Home::class.java))
+                    startActivity(Intent(this, BusquedaDoctores::class.java))
                     finish()
                 } else {
                     val mensaje = response.optString("mensaje", "No se pudo completar el registro")
@@ -315,30 +267,15 @@ class Registro : AppCompatActivity() {
                 }
             },
             { error ->
-                btn_siguiente.isEnabled = true
-                txt_boton.text = "Registrarme"
                 var mensaje = "Error de conexión con el servidor"
                 try {
                     val bodyStr = String(error.networkResponse.data)
                     Log.d("REGISTRO_ERROR", bodyStr)
                     val json = JSONObject(bodyStr)
-                    if (json.has("errors")){
-                        val errores=json.getJSONObject("errors")
-                        val primercampo=errores.keys().next()
-                        val listamensajes=errores.getJSONArray(primercampo)
-                        mensaje=listamensajes.getString(0)
-                    }
-                    else{
-                        mensaje = json.optString("mensaje", json.optString("msj", mensaje))
-                    }
+                    mensaje = json.optString("mensaje", json.optString("msj", mensaje))
                 } catch (e: Exception) { }
                 Toast.makeText(this, mensaje, Toast.LENGTH_LONG).show()
             }
-        )
-        request.retryPolicy = com.android.volley.DefaultRetryPolicy(
-            20000,
-            2,
-            com.android.volley.DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
         )
         VolleySingleton.getInstance(this).requestQueue.add(request)
     }

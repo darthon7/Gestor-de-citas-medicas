@@ -41,7 +41,8 @@ class ReportesWebController extends Controller
         if ($especialidadId) $filtros['especialidad_id'] = $especialidadId;
 
         $reporteCitas = $this->reportesRepository->reporteCitas($filtros);
-        $citasData = $reporteCitas['data'] ?? [];
+        $datos = $reporteCitas['data'] ?? [];
+        $citasData = collect($datos['citas'] ?? []);
 
         $resDocs = $this->doctoresRepository->obtenerDoctores();
         $doctores = $resDocs['data'] ?? [];
@@ -50,9 +51,10 @@ class ReportesWebController extends Controller
         $especialidades = $resEsps['data'] ?? [];
 
         // Calcular estadísticas
-        $totalAgendadas = count($citasData);
-        $totalCompletadas = count(array_filter($citasData, fn($c) => strtolower($c['estado']) === 'completada'));
-        $totalCanceladas = count(array_filter($citasData, fn($c) => strtolower($c['estado']) === 'cancelada'));
+        $totalAgendadas = $datos['total'] ?? $citasData->count();
+        $totalCompletadas = $datos['completadas'] ?? 0;
+        $totalCanceladas = $datos['canceladas'] ?? 0;
+        $tasaAsistencia = $totalAgendadas > 0 ? round(($totalCompletadas / $totalAgendadas) * 100, 1) : 0;
         $tasaAsistencia = $totalAgendadas > 0 ? round(($totalCompletadas / $totalAgendadas) * 100, 1) : 0;
 
         return view('reportes.index', compact(

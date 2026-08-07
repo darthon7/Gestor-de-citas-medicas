@@ -1,92 +1,82 @@
-<aside class="sidebar-wrapper d-flex flex-column p-3 text-white">
-    <!-- Brand -->
-    <a href="{{ route('dashboard') }}" class="d-flex align-items-center text-white text-decoration-none mb-4 ps-2">
-        <div class="rounded-3 bg-primary text-white font-weight-bold d-flex align-items-center justify-content-center me-2" style="width: 38px; height: 38px; font-weight: 700;">
+<aside class="w-[260px] h-screen fixed left-0 top-0 bg-primary-dark shadow-xl flex flex-col py-6 z-50 overflow-y-auto hidden md:flex">
+    <!-- Brand Header -->
+    <div class="px-6 mb-8 flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-white/10 text-white font-bold flex items-center justify-center text-lg border border-white/20 shadow-inner">
             AM
         </div>
-        <span class="fs-5 fw-bold">Agenda Médica</span>
-    </a>
-
-    <hr class="border-secondary opacity-25 mt-0 mb-3">
+        <div>
+            <span class="font-bold text-lg text-white tracking-tight block leading-tight">MediAdmin</span>
+            <span class="text-[11px] text-white/60">Hospital Central</span>
+        </div>
+    </div>
 
     <!-- Navigation List -->
-    <ul class="nav nav-pills flex-column mb-auto gap-1">
+    <nav class="flex-1 space-y-1.5 px-3">
+        <a href="{{ route('dashboard') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all {{ request()->routeIs('dashboard') ? 'sidebar-item-active text-white' : 'text-white/80 hover:text-white hover:bg-white/10' }}">
+            <span class="material-symbols-outlined text-xl">dashboard</span>
+            <span>Inicio</span>
+        </a>
+
         @if(in_array(Auth::user()->rol, ['admin', 'recepcionista']))
-            <li class="nav-item">
-                <a href="{{ route('dashboard') }}" class="nav-link text-white d-flex align-items-center gap-2 {{ request()->routeIs('dashboard') ? 'active bg-primary' : 'opacity-75 text-hover-white' }}">
-                    <i data-lucide="home"></i>
-                    <span>Inicio</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('pacientes.index') }}" class="nav-link text-white d-flex align-items-center gap-2 {{ request()->routeIs('pacientes.*') ? 'active bg-primary' : 'opacity-75' }}">
-                    <i data-lucide="users"></i>
-                    <span>Pacientes</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('citas.index') }}" class="nav-link text-white d-flex align-items-center gap-2 {{ request()->routeIs('citas.*') ? 'active bg-primary' : 'opacity-75' }}">
-                    <i data-lucide="calendar"></i>
-                    <span>Citas</span>
-                </a>
-            </li>
+            <a href="{{ route('pacientes.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all {{ request()->routeIs('pacientes.*') ? 'sidebar-item-active text-white' : 'text-white/80 hover:text-white hover:bg-white/10' }}">
+                <span class="material-symbols-outlined text-xl">group</span>
+                <span>Pacientes</span>
+            </a>
+            <a href="{{ route('citas.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all {{ request()->routeIs('citas.*') ? 'sidebar-item-active text-white' : 'text-white/80 hover:text-white hover:bg-white/10' }}">
+                <span class="material-symbols-outlined text-xl">calendar_month</span>
+                <span>Citas</span>
+            </a>
+            <a href="{{ route('doctores.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all {{ request()->routeIs('doctores.*') ? 'sidebar-item-active text-white' : 'text-white/80 hover:text-white hover:bg-white/10' }}">
+                <span class="material-symbols-outlined text-xl">medical_services</span>
+                <span>Doctores</span>
+            </a>
+        @endif
+
+        @if(Auth::user()->rol === 'paciente')
+            <a href="{{ route('citas.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all {{ request()->routeIs('citas.*') ? 'sidebar-item-active text-white' : 'text-white/80 hover:text-white hover:bg-white/10' }}">
+                <span class="material-symbols-outlined text-xl">event_upcoming</span>
+                <span>Mis Citas</span>
+            </a>
         @endif
 
         @if(Auth::user()->rol === 'doctor')
-            <li class="nav-item">
-                <a href="{{ route('doctor.agenda') }}" class="nav-link text-white d-flex align-items-center gap-2 {{ request()->routeIs('doctor.*') ? 'active bg-primary' : 'opacity-75' }}">
-                    <i data-lucide="calendar"></i>
-                    <span>Mi Agenda</span>
-                </a>
-            </li>
+            <a href="{{ route('doctor.agenda') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all {{ request()->routeIs('doctor.*') ? 'sidebar-item-active text-white' : 'text-white/80 hover:text-white hover:bg-white/10' }}">
+                <span class="material-symbols-outlined text-xl">calendar_today</span>
+                <span>Mi Agenda</span>
+            </a>
         @endif
 
         @if(Auth::user()->rol === 'admin')
-            <li class="nav-item">
-                <a href="{{ route('doctores.index') }}" class="nav-link text-white d-flex align-items-center gap-2 {{ request()->routeIs('doctores.*') ? 'active bg-primary' : 'opacity-75' }}">
-                    <i data-lucide="user-cog"></i>
-                    <span>Doctores</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('especialidades.index') }}" class="nav-link text-white d-flex align-items-center gap-2 {{ request()->routeIs('especialidades.*') ? 'active bg-primary' : 'opacity-75' }}">
-                    <i data-lucide="stethoscope"></i>
-                    <span>Especialidades</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('recepcionistas.index') }}" class="nav-link text-white d-flex align-items-center gap-2 {{ request()->routeIs('recepcionistas.*') ? 'active bg-primary' : 'opacity-75' }}">
-                    <i data-lucide="user-check"></i>
-                    <span>Recepcionistas</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('reportes.index') }}" class="nav-link text-white d-flex align-items-center gap-2 {{ request()->routeIs('reportes.*') ? 'active bg-primary' : 'opacity-75' }}">
-                    <i data-lucide="bar-chart-3"></i>
-                    <span>Reportes</span>
-                </a>
-            </li>
+            <a href="{{ route('especialidades.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all {{ request()->routeIs('especialidades.*') ? 'sidebar-item-active text-white' : 'text-white/80 hover:text-white hover:bg-white/10' }}">
+                <span class="material-symbols-outlined text-xl">stethoscope</span>
+                <span>Especialidades</span>
+            </a>
+            <a href="{{ route('recepcionistas.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all {{ request()->routeIs('recepcionistas.*') ? 'sidebar-item-active text-white' : 'text-white/80 hover:text-white hover:bg-white/10' }}">
+                <span class="material-symbols-outlined text-xl">badge</span>
+                <span>Recepcionistas</span>
+            </a>
+            <a href="{{ route('reportes.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all {{ request()->routeIs('reportes.*') ? 'sidebar-item-active text-white' : 'text-white/80 hover:text-white hover:bg-white/10' }}">
+                <span class="material-symbols-outlined text-xl">analytics</span>
+                <span>Reportes</span>
+            </a>
         @endif
-    </ul>
+    </nav>
 
-    <hr class="border-secondary opacity-25">
-
-    <!-- User Profile & Logout Footer -->
-    <div class="d-flex align-items-center justify-content-between pt-2">
-        <a href="{{ route('perfil') }}" class="d-flex align-items-center text-white text-decoration-none overflow-hidden me-2">
-            <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold me-2 flex-shrink-0" style="width: 36px; height: 36px;">
-                {{ strtoupper(substr(Auth::user()->nombre ?? 'U', 0, 1)) }}
-            </div>
-            <div class="text-truncate" style="max-width: 130px;">
-                <div class="fw-semibold text-truncate small">{{ Auth::user()->nombre }}</div>
-                <div class="text-white-50 extra-small text-capitalize" style="font-size: 11px;">{{ Auth::user()->rol }}</div>
+    <!-- Footer Action / Logout -->
+    <div class="px-4 pt-4 border-t border-white/10 space-y-2">
+        <a href="{{ route('perfil') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-white/80 hover:text-white hover:bg-white/10 transition-colors">
+            <span class="material-symbols-outlined text-xl">account_circle</span>
+            <div class="flex-1 truncate text-xs">
+                <p class="font-medium text-white truncate">{{ Auth::user()->nombre }}</p>
+                <p class="text-white/60 capitalize">{{ Auth::user()->rol }}</p>
             </div>
         </a>
 
         <form method="POST" action="{{ route('logout') }}" class="m-0">
             @csrf
-            <button type="submit" class="btn btn-sm btn-outline-light border-0 text-white-50 p-1" title="Cerrar Sesión">
-                <i data-lucide="log-out"></i>
+            <button type="submit" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium text-white/60 hover:text-red-300 hover:bg-red-500/10 transition-colors">
+                <span class="material-symbols-outlined text-lg">logout</span>
+                <span>Cerrar Sesión</span>
             </button>
         </form>
     </div>

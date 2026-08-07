@@ -40,8 +40,7 @@ class MainActivity : AppCompatActivity() {
             Singleton.rol_usuario=guardado.getString("rol","")?:""
             Singleton.usuario_actual=guardado.getString("usuario","")?:""
             Singleton.token_actual=token_guardado
-            Singleton.foto_perfil=guardado.getString("foto_perfil",null)
-            startActivity(Intent(this, Home::class.java))
+            startActivity(Intent(this, BusquedaDoctores::class.java))
         }
         else {
             startActivity(Intent(this, LoginActivity::class.java))

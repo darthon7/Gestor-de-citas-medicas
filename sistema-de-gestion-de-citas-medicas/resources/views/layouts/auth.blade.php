@@ -1,42 +1,53 @@
 <!DOCTYPE html>
-<html lang="es">
+<html class="light" lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Agenda Médica - @yield('titulo', 'Autenticación')</title>
+    <title>MediAdmin - @yield('titulo', 'Autenticación')</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 
-    <!-- Bootstrap 5.3 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Custom Theme & Auth Styles (Vite con fallback inteligente a asset()) -->
-    @if(file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
-    @else
-        <link rel="stylesheet" href="{{ asset('css/bootstrap-theme.css') }}">
-    @endif
-    @yield('styles')
-
-    <script src="https://unpkg.com/lucide@latest"></script>
-</head>
-<body class="auth-page-bg d-flex align-items-center justify-content-center py-5">
-
-    <div class="container d-flex flex-column align-items-center">
-        <div style="width: 100%; max-width: 520px;">
-            @include('components.flash-message')
-        </div>
-        @yield('content')
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        if (window.lucide) {
-            lucide.createIcons();
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary": "#005275",
+                        "primary-dark": "#0F4C6B",
+                        "primary-light": "#A8D5E2",
+                        "secondary": "#006a60",
+                        "danger": "#E76F51",
+                        "background": "#eef5f9",
+                        "surface": "#FFFFFF",
+                        "border": "#E2E8F0",
+                        "text-primary": "#1A1A2E",
+                        "text-secondary": "#4A5568",
+                        "text-muted": "#A0AEC0"
+                    }
+                }
+            }
         }
     </script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #e6f2f8 0%, #f7f9fc 100%);
+            font-family: 'Inter', sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+    </style>
+    @yield('styles')
+</head>
+<body class="min-h-screen flex flex-col justify-center items-center p-4 antialiased">
+    <div class="w-full max-w-md">
+        @include('components.flash-message')
+        @yield('content')
+    </div>
 </body>
 </html>

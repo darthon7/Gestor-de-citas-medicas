@@ -2,149 +2,195 @@
 @section('titulo', 'Detalle de la Cita')
 
 @section('content')
-<div class="d-flex align-items-center gap-3 mb-4 pb-2 border-bottom">
-    <a href="{{ route('citas.index') }}" class="btn btn-outline-secondary btn-sm"><i data-lucide="arrow-left"></i></a>
-    <h1 class="h3 fw-bold mb-0">Detalle de Cita #{{ $cita['id'] }}</h1>
+<!-- Header Controls -->
+<div class="flex items-center gap-3 mb-6">
+    <a href="{{ route('citas.index') }}" class="p-2 bg-surface border border-border rounded-xl text-text-secondary hover:text-primary transition-all">
+        <span class="material-symbols-outlined text-xl">arrow_back</span>
+    </a>
+    <div>
+        <h1 class="text-2xl font-bold text-primary-dark">Detalle de Cita #{{ $cita['id'] }}</h1>
+        <p class="text-xs text-text-secondary mt-0.5">Información completa y expediente de la consulta médica</p>
+    </div>
 </div>
 
-<div class="mx-auto" style="max-width: 680px;">
-    <!-- Status Banner -->
+<div class="max-w-2xl mx-auto space-y-6">
+    <!-- Status Banner Card -->
     @php
         $estado = strtolower($cita['estado'] ?? 'pendiente');
-        $badgeClass = match($estado) {
-            'confirmada', 'completada' => 'bg-success text-white',
-            'cancelada' => 'bg-danger text-white',
-            default => 'bg-warning text-dark'
+        $statusStyle = match($estado) {
+            'confirmada', 'completada' => 'bg-emerald-50 text-emerald-800 border-emerald-200',
+            'en_consulta' => 'bg-sky-50 text-sky-800 border-sky-200',
+            'cancelada' => 'bg-rose-50 text-rose-800 border-rose-200',
+            default => 'bg-amber-50 text-amber-800 border-amber-200'
         };
     @endphp
-    <div class="card border-0 shadow-sm rounded-3 mb-4 {{ $badgeClass }} bg-opacity-10">
-        <div class="card-body d-flex align-items-center justify-content-between py-3">
+    <div class="p-4 rounded-2xl border {{ $statusStyle }} flex items-center justify-between shadow-sm">
+        <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-2xl">event_available</span>
             <div>
-                <span class="text-uppercase small fw-bold">Estado de Cita:</span>
-                <span class="badge {{ $badgeClass }} fs-6 ms-2 text-capitalize">{{ $cita['estado'] }}</span>
+                <span class="text-xs font-bold uppercase tracking-wider block">Estado de la Cita</span>
+                <span class="text-sm font-semibold capitalize">{{ $cita['estado'] }}</span>
             </div>
-            <span class="font-monospace fw-bold opacity-75">REF-{{ str_pad($cita['id'], 5, '0', STR_PAD_LEFT) }}</span>
+        </div>
+        <span class="font-mono text-xs font-bold opacity-80">REF-{{ str_pad($cita['id'], 5, '0', STR_PAD_LEFT) }}</span>
+    </div>
+
+    <!-- Main Consultation Info Card -->
+    <div class="bg-surface rounded-2xl card-shadow border border-border p-6 space-y-4">
+        <h3 class="font-bold text-primary-dark text-base border-b border-border pb-3 flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary text-xl">medical_information</span>
+            <span>Información de la Consulta</span>
+        </h3>
+
+        <div class="divide-y divide-border text-xs">
+            <div class="py-3 flex items-center justify-between">
+                <span class="text-text-secondary font-medium">Fecha y Hora:</span>
+                <strong class="text-text-primary text-sm font-bold">
+                    {{ \Carbon\Carbon::parse($cita['fecha_hora'])->isoFormat('DD [de] MMMM YYYY, h:i A') }}
+                </strong>
+            </div>
+
+            <div class="py-3 flex items-center justify-between">
+                <span class="text-text-secondary font-medium">Paciente:</span>
+                <strong class="text-text-primary text-sm font-semibold">
+                    {{ $cita['perfilPaciente']['usuario']['nombre'] ?? 'N/A' }}
+                </strong>
+            </div>
+
+            <div class="py-3 flex items-center justify-between">
+                <span class="text-text-secondary font-medium">Doctor:</span>
+                <strong class="text-text-primary text-sm font-semibold">
+                    Dr. {{ $cita['perfilDoctor']['usuario']['nombre'] ?? 'N/A' }}
+                </strong>
+            </div>
+
+            <div class="py-3 flex items-center justify-between">
+                <span class="text-text-secondary font-medium">Especialidad:</span>
+                <span class="px-2.5 py-1 rounded-lg bg-background text-text-secondary border border-border font-semibold">
+                    {{ $cita['especialidad']['nombre'] ?? 'General' }}
+                </span>
+            </div>
+
+            <div class="pt-3">
+                <span class="text-text-secondary font-medium block mb-1">Motivo de Consulta:</span>
+                <div class="p-3.5 bg-background rounded-xl text-text-primary text-xs border border-border">
+                    {{ $cita['motivo_consulta'] ?? 'Sin motivo especificado' }}
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- Main Card Details -->
-    <div class="card border-0 shadow-sm rounded-3 mb-4">
-        <div class="card-header bg-white border-bottom py-3">
-            <h5 class="fw-bold mb-0 text-dark">Información de la Consulta</h5>
-        </div>
-        <div class="card-body p-4">
-            <ul class="list-group list-group-flush mb-0">
-                <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-3">
-                    <span class="text-secondary">Fecha y Hora:</span>
-                    <span class="fw-bold text-dark">{{ \Carbon\Carbon::parse($cita['fecha_hora'])->isoFormat('DD [de] MMMM YYYY, h:i A') }}</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-3">
-                    <span class="text-secondary">Paciente:</span>
-                    <span class="fw-bold text-dark">{{ $cita['paciente']['nombre'] ?? 'N/A' }}</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-3">
-                    <span class="text-secondary">Doctor:</span>
-                    <span class="fw-bold text-dark">Dr. {{ $cita['doctor']['nombre'] ?? 'N/A' }}</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-3">
-                    <span class="text-secondary">Especialidad:</span>
-                    <span class="badge bg-light text-dark border">{{ $cita['especialidad']['nombre'] ?? 'General' }}</span>
-                </li>
-                <li class="list-group-item px-0 pt-3 pb-0 border-0">
-                    <span class="text-secondary d-block mb-2">Motivo de Consulta:</span>
-                    <div class="p-3 bg-light rounded-3 text-dark small border">
-                        {{ $cita['motivo_consulta'] ?? 'Sin motivo especificado' }}
-                    </div>
-                </li>
-            </ul>
-        </div>
-    </div>
-
-    <!-- Doctor Notes Card -->
+    <!-- Doctor Clinical Notes Card (If available) -->
     @if(!empty($cita['nota_consulta']) || !empty($cita['notas']))
         @php
             $nota = $cita['nota_consulta'] ?? $cita['notas'] ?? null;
         @endphp
-        <div class="card border-0 shadow-sm rounded-3 mb-4 border-start border-4 border-success">
-            <div class="card-header bg-white border-bottom py-3">
-                <h5 class="fw-bold mb-0 text-success">Diagnóstico Médico</h5>
-            </div>
-            <div class="card-body p-4">
-                <div class="mb-3">
-                    <span class="fw-bold text-dark d-block mb-1">Diagnóstico:</span>
-                    <p class="text-secondary mb-0">{{ $nota['diagnostico'] ?? $nota['nota'] ?? 'N/A' }}</p>
-                </div>
+        <div class="bg-surface rounded-2xl card-shadow border-l-4 border-emerald-500 border border-border p-6 space-y-3">
+            <h3 class="font-bold text-emerald-800 text-base border-b border-border pb-3 flex items-center gap-2">
+                <span class="material-symbols-outlined text-emerald-600 text-xl">clinical_notes</span>
+                <span>Diagnóstico y Tratamiento Médico</span>
+            </h3>
+
+            <div class="space-y-3 text-xs">
                 <div>
-                    <span class="fw-bold text-dark d-block mb-1">Tratamiento Indicado:</span>
-                    <p class="text-secondary mb-0">{{ $nota['tratamiento'] ?? 'N/A' }}</p>
+                    <span class="font-bold text-text-primary block mb-1">Diagnóstico Clínico:</span>
+                    <p class="text-text-secondary bg-emerald-50/50 p-3 rounded-xl border border-emerald-100">
+                        {{ $nota['diagnostico'] ?? $nota['nota'] ?? 'N/A' }}
+                    </p>
+                </div>
+
+                <div>
+                    <span class="font-bold text-text-primary block mb-1">Tratamiento Indicado:</span>
+                    <p class="text-text-secondary bg-emerald-50/50 p-3 rounded-xl border border-emerald-100">
+                        {{ $nota['tratamiento'] ?? 'N/A' }}
+                    </p>
                 </div>
             </div>
         </div>
     @endif
 
-    <!-- Action Buttons Container -->
-    <div class="d-grid gap-2">
+    <!-- Action Buttons -->
+    <div class="space-y-3">
         @if(in_array(Auth::user()->rol, ['admin', 'recepcionista']))
-            @if(in_array($estado, ['pendiente', 'confirmada']))
-                <form method="POST" action="{{ route('citas.checkin', $cita['id']) }}" class="d-grid">
+            @if(in_array($estado, ['pendiente', 'confirmada', 'agendada']))
+                <form method="POST" action="{{ route('citas.checkin', $cita['id']) }}">
                     @csrf
                     @method('PATCH')
-                    <button type="submit" class="btn btn-primary py-2 fw-semibold">
-                        <i data-lucide="check-square" class="me-1"></i> Registrar Check-in (Paciente Presente)
+                    <button type="submit" class="w-full py-3.5 px-6 rounded-xl bg-primary hover:bg-primary-dark text-white font-semibold text-xs shadow-md transition-all flex items-center justify-center gap-2">
+                        <span class="material-symbols-outlined text-lg">how_to_reg</span>
+                        <span>Registrar Check-in (Paciente Presente)</span>
                     </button>
                 </form>
             @endif
 
             @if($estado !== 'cancelada' && $estado !== 'completada')
-                <button type="button" class="btn btn-outline-danger py-2 fw-semibold" data-bs-toggle="modal" data-bs-target="#modal_cancelar_cita">
-                    <i data-lucide="x-circle" class="me-1"></i> Cancelar Cita
+                <button type="button" onclick="abrirModalCancelar()" class="w-full py-3 px-6 rounded-xl border border-rose-300 text-rose-700 hover:bg-rose-50 font-semibold text-xs transition-all flex items-center justify-center gap-2">
+                    <span class="material-symbols-outlined text-lg">cancel</span>
+                    <span>Cancelar Cita</span>
                 </button>
             @endif
         @endif
 
         @if(Auth::user()->rol === 'doctor')
-            @if(in_array($estado, ['confirmada', 'pendiente']))
-                <form method="POST" action="{{ route('citas.iniciar', $cita['id']) }}" class="d-grid">
+            @if(in_array($estado, ['confirmada', 'pendiente', 'agendada']))
+                <form method="POST" action="{{ route('citas.iniciar', $cita['id']) }}">
                     @csrf
                     @method('PATCH')
-                    <button type="submit" class="btn btn-primary py-2 fw-semibold">
-                        <i data-lucide="play-circle" class="me-1"></i> Iniciar Consulta
+                    <button type="submit" class="w-full py-3.5 px-6 rounded-xl bg-primary hover:bg-primary-dark text-white font-semibold text-xs shadow-md transition-all flex items-center justify-center gap-2">
+                        <span class="material-symbols-outlined text-lg">play_circle</span>
+                        <span>Iniciar Consulta Médica</span>
                     </button>
                 </form>
             @endif
 
             @if($estado === 'en_consulta')
-                <a href="{{ route('doctor.diagnostico', $cita['id']) }}" class="btn btn-success py-2 fw-semibold text-center">
-                    <i data-lucide="clipboard-edit" class="me-1"></i> Registrar Nota y Finalizar Consulta
+                <a href="{{ route('doctor.diagnostico', $cita['id']) }}" class="w-full py-3.5 px-6 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs shadow-md transition-all flex items-center justify-center gap-2">
+                    <span class="material-symbols-outlined text-lg">edit_note</span>
+                    <span>Registrar Nota y Finalizar Consulta</span>
                 </a>
             @endif
         @endif
     </div>
 </div>
 
-<!-- Modal Cancelar Cita Nativo Bootstrap -->
-<div class="modal fade" id="modal_cancelar_cita" tabindex="-1" aria-labelledby="modal_cancelar_title" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow">
-            <div class="modal-header bg-light">
-                <h5 class="modal-title text-danger fw-bold" id="modal_cancelar_title">Cancelar Cita</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <form method="POST" action="{{ route('citas.cancelar', $cita['id']) }}">
-                @csrf
-                @method('PATCH')
-                <div class="modal-body p-4">
-                    <p class="text-secondary small mb-3">Por favor especifique el motivo de cancelación:</p>
-                    <div class="mb-3">
-                        <textarea name="motivo_cancelacion" class="form-control" rows="3" placeholder="Motivo de la cancelación..." required></textarea>
-                    </div>
-                </div>
-                <div class="modal-footer bg-light">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Volver</button>
-                    <button type="submit" class="btn btn-danger">Confirmar Cancelación</button>
-                </div>
-            </form>
+<!-- Modal Cancelar Cita -->
+<div id="modal_cancelar_cita" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm hidden p-4">
+    <div class="bg-surface rounded-2xl shadow-2xl border border-border w-full max-w-md overflow-hidden">
+        <div class="px-6 py-4 bg-rose-50 border-b border-rose-100 flex items-center justify-between">
+            <h3 class="font-bold text-rose-800 text-base">Cancelar Cita Médica</h3>
+            <button type="button" onclick="cerrarModalCancelar()" class="text-rose-400 hover:text-rose-800 transition-colors">
+                <span class="material-symbols-outlined text-2xl">close</span>
+            </button>
         </div>
+
+        <form method="POST" action="{{ route('citas.cancelar', $cita['id']) }}" class="p-6 space-y-4">
+            @csrf
+            @method('PATCH')
+
+            <p class="text-xs text-text-secondary">Por favor especifica el motivo de la cancelación:</p>
+
+            <textarea name="motivo_cancelacion" required rows="3" placeholder="Motivo de la cancelación..." class="w-full p-3 bg-white border border-border rounded-xl text-xs text-text-primary focus:outline-none focus:border-danger focus:ring-2 focus:ring-danger/10 transition-all"></textarea>
+
+            <div class="pt-4 border-t border-border flex items-center justify-end gap-3">
+                <button type="button" onclick="cerrarModalCancelar()" class="px-4 py-2 rounded-xl border border-border text-text-secondary text-xs font-semibold hover:bg-background transition-all">
+                    Volver
+                </button>
+                <button type="submit" class="px-5 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold shadow-md transition-all">
+                    Confirmar Cancelación
+                </button>
+            </div>
+        </form>
     </div>
 </div>
+@endsection
+
+@section('scripts')
+<script>
+    function abrirModalCancelar() {
+        document.getElementById('modal_cancelar_cita').classList.remove('hidden');
+    }
+    function cerrarModalCancelar() {
+        document.getElementById('modal_cancelar_cita').classList.add('hidden');
+    }
+</script>
 @endsection

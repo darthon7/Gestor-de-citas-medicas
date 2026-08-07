@@ -46,7 +46,7 @@ class PacientesWebController extends Controller
         }
     }
 
-    public function show(int $id)
+    public function show($id)
     {
         try {
             $paciente = \App\Models\PerfilPaciente::with(['usuario', 'citas.perfilDoctor.usuario', 'citas.especialidad'])->findOrFail($id);
@@ -66,7 +66,7 @@ class PacientesWebController extends Controller
         }
     }
 
-    public function desactivar(int $id)
+    public function desactivar($id)
     {
         try {
             $this->pacientesRepository->desactivarPaciente($id);

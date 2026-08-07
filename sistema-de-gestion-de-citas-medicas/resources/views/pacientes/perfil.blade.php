@@ -2,101 +2,132 @@
 @section('titulo', 'Expediente de Paciente')
 
 @section('content')
-<div class="d-flex align-items-center justify-content-between mb-4 pb-2 border-bottom">
-    <h1 class="h3 fw-bold mb-0">Expediente de Paciente</h1>
-    <a href="{{ route('pacientes.index') }}" class="btn btn-outline-secondary btn-sm">
-        <i data-lucide="arrow-left" class="me-1"></i> Volver a Lista
-    </a>
-</div>
-
-<!-- Patient Profile Card -->
-<div class="card border-0 shadow-sm rounded-3 p-4 mb-4">
-    <div class="d-flex align-items-center gap-3 flex-wrap">
-        <div class="profile-avatar-md flex-shrink-0" style="width: 72px; height: 72px; font-size: 26px;">
-            {{ strtoupper(substr($paciente->usuario?->nombre ?? 'P', 0, 2)) }}
-        </div>
+<!-- Header Controls -->
+<div class="flex items-center justify-between gap-4 mb-6">
+    <div class="flex items-center gap-3">
+        <a href="{{ route('pacientes.index') }}" class="p-2 bg-surface border border-border rounded-xl text-text-secondary hover:text-primary transition-all">
+            <span class="material-symbols-outlined text-xl">arrow_back</span>
+        </a>
         <div>
-            <div class="d-flex align-items-center gap-2 mb-1">
-                <h2 class="h4 fw-bold mb-0 text-dark">{{ $paciente->usuario?->nombre }}</h2>
-                @php
-                    $estado = strtolower($paciente->usuario?->estado ?? 'activo');
-                    $badgeClass = match($estado) {
-                        'activo' => 'bg-success',
-                        'inactivo' => 'bg-danger',
-                        default => 'bg-secondary'
-                    };
-                @endphp
-                <span class="badge {{ $badgeClass }} text-capitalize">{{ $estado }}</span>
+            <h1 class="text-2xl font-bold text-primary-dark">Expediente Clínico</h1>
+            <p class="text-xs text-text-secondary mt-0.5">Consulta la información y el historial de consultas del paciente</p>
+        </div>
+    </div>
+</div>
+
+<!-- Header Card: Patient Summary -->
+<div class="bg-surface rounded-2xl p-6 card-shadow border border-border mb-6">
+    <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <div class="flex items-center gap-4">
+            <div class="w-16 h-16 rounded-full bg-primary-light/40 text-primary-dark font-bold text-xl flex items-center justify-center border-2 border-primary/20 flex-shrink-0">
+                {{ strtoupper(substr($paciente->usuario?->nombre ?? 'P', 0, 2)) }}
             </div>
-            <div class="d-flex gap-3 text-secondary small flex-wrap">
-                <span>Expediente: <strong class="text-primary-custom">{{ $paciente->numero_expediente ?? 'EXP-' . str_pad($paciente->id, 4, '0', STR_PAD_LEFT) }}</strong></span>
-                <span>CURP: <strong class="text-dark font-monospace">{{ $paciente->usuario?->curp ?? 'N/A' }}</strong></span>
-                <span>Teléfono: <strong class="text-dark">{{ $paciente->usuario?->telefono ?? 'N/A' }}</strong></span>
-                <span>Correo: <strong class="text-dark">{{ $paciente->usuario?->email ?? 'N/A' }}</strong></span>
+            <div>
+                <div class="flex items-center gap-3">
+                    <h2 class="text-xl font-bold text-text-primary">{{ $paciente->usuario?->nombre }}</h2>
+                    @php
+                        $estado = strtolower($paciente->usuario?->estado ?? 'activo');
+                    @endphp
+                    @if($estado === 'activo')
+                        <span class="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-xs font-semibold border border-emerald-200">
+                            Activo
+                        </span>
+                    @else
+                        <span class="px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-700 text-xs font-semibold border border-rose-200">
+                            Inactivo
+                        </span>
+                    @endif
+                </div>
+
+                <div class="flex flex-wrap gap-4 mt-2 text-xs text-text-secondary">
+                    <span>Expediente: <strong class="text-primary font-semibold">{{ $paciente->numero_expediente ?? 'EXP-' . str_pad($paciente->id, 4, '0', STR_PAD_LEFT) }}</strong></span>
+                    <span>CURP: <strong class="text-text-primary font-mono">{{ $paciente->usuario?->curp ?? 'N/A' }}</strong></span>
+                    <span>Teléfono: <strong class="text-text-primary">{{ $paciente->usuario?->telefono ?? 'N/A' }}</strong></span>
+                    <span>Correo: <strong class="text-text-primary">{{ $paciente->usuario?->email ?? 'N/A' }}</strong></span>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Layout Details & Citas Timeline -->
-<div class="row g-4">
-    <!-- Left: Datos Personales -->
-    <div class="col-lg-4">
-        <div class="card border-0 shadow-sm rounded-3 p-4">
-            <h5 class="fw-bold mb-3 border-bottom pb-2 text-dark">Información General</h5>
-            <div class="d-flex flex-column gap-3 small">
-                <div>
-                    <span class="text-secondary d-block extra-small">Fecha de Nacimiento</span>
-                    <strong class="text-dark fs-6">{{ $paciente->fecha_nacimiento ? \Carbon\Carbon::parse($paciente->fecha_nacimiento)->format('d/m/Y') : 'N/A' }}</strong>
-                </div>
-                <div>
-                    <span class="text-secondary d-block extra-small">Sexo</span>
-                    <strong class="text-dark fs-6">{{ $paciente->sexo === 'M' ? 'Masculino' : ($paciente->sexo === 'F' ? 'Femenino' : 'N/A') }}</strong>
-                </div>
-                <div>
-                    <span class="text-secondary d-block extra-small">Dirección</span>
-                    <strong class="text-dark fs-6">{{ $paciente->direccion ?? 'No registrada' }}</strong>
-                </div>
+<!-- Details & History Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Left: Personal Data Card -->
+    <div class="bg-surface rounded-2xl card-shadow border border-border p-6 h-fit">
+        <h3 class="font-bold text-text-primary text-base mb-4 pb-3 border-b border-border flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary text-xl">badge</span>
+            <span>Información General</span>
+        </h3>
+
+        <div class="space-y-4 text-xs">
+            <div>
+                <span class="text-text-secondary block mb-1">Fecha de Nacimiento</span>
+                <p class="font-semibold text-text-primary text-sm">
+                    {{ $paciente->fecha_nacimiento ? \Carbon\Carbon::parse($paciente->fecha_nacimiento)->format('d/m/Y') : 'No registrada' }}
+                </p>
+            </div>
+
+            <div>
+                <span class="text-text-secondary block mb-1">Sexo</span>
+                <p class="font-semibold text-text-primary text-sm">
+                    {{ $paciente->sexo === 'M' ? 'Masculino' : ($paciente->sexo === 'F' ? 'Femenino' : 'No especificado') }}
+                </p>
+            </div>
+
+            <div>
+                <span class="text-text-secondary block mb-1">Dirección</span>
+                <p class="font-semibold text-text-primary text-sm">
+                    {{ $paciente->direccion ?? 'No registrada' }}
+                </p>
             </div>
         </div>
     </div>
 
-    <!-- Right: Historial de Citas -->
-    <div class="col-lg-8">
-        <h5 class="fw-bold mb-3 text-dark">Historial de Citas y Consultas</h5>
+    <!-- Right: Appointments Timeline -->
+    <div class="lg:col-span-2 space-y-4">
+        <div class="flex items-center justify-between mb-2">
+            <h3 class="font-bold text-text-primary text-base">Historial de Citas y Consultas</h3>
+            <span class="text-xs text-text-secondary">Total: {{ count($paciente->citas) }} citas</span>
+        </div>
+
         @forelse($paciente->citas as $cita)
-            <div class="card border-0 shadow-sm rounded-3 p-3 mb-3">
-                <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="rounded-3 bg-primary bg-opacity-10 text-primary fw-bold p-2 text-center" style="min-width: 60px;">
-                            <span class="fs-5 d-block leading-none">{{ \Carbon\Carbon::parse($cita->fecha_hora)->format('d') }}</span>
-                            <span class="extra-small text-uppercase">{{ \Carbon\Carbon::parse($cita->fecha_hora)->format('M') }}</span>
-                        </div>
-                        <div>
-                            <h6 class="fw-bold mb-1 text-dark">Dr. {{ $cita->perfilDoctor?->usuario?->nombre ?? 'Médico' }}</h6>
-                            <span class="text-secondary small d-block">Especialidad: {{ $cita->especialidad?->nombre ?? 'General' }}</span>
-                            <span class="text-muted extra-small">Hora: {{ \Carbon\Carbon::parse($cita->fecha_hora)->format('h:i A') }}</span>
-                        </div>
+            <div class="bg-surface rounded-2xl card-shadow border border-border p-5 hover:border-primary/30 transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div class="flex items-center gap-4">
+                    <div class="w-14 h-14 rounded-xl bg-primary/10 text-primary font-bold flex flex-col items-center justify-center flex-shrink-0 border border-primary/20">
+                        <span class="text-lg leading-none">{{ \Carbon\Carbon::parse($cita->fecha_hora)->format('d') }}</span>
+                        <span class="text-[10px] uppercase tracking-wider font-semibold">{{ \Carbon\Carbon::parse($cita->fecha_hora)->format('M') }}</span>
                     </div>
-                    <div class="text-end">
-                        @php
-                            $badgeClass = match(strtolower($cita->estado)) {
-                                'confirmada', 'completada' => 'bg-success',
-                                'pendiente' => 'bg-warning text-dark',
-                                'cancelada' => 'bg-danger',
-                                default => 'bg-info'
-                            };
-                        @endphp
-                        <span class="badge {{ $badgeClass }} text-capitalize mb-2 d-inline-block">{{ $cita->estado }}</span>
-                        <div>
-                            <a href="{{ route('citas.show', $cita->id) }}" class="btn btn-sm btn-outline-primary py-1">Ver Detalle</a>
-                        </div>
+
+                    <div>
+                        <h4 class="font-bold text-text-primary text-sm">Dr. {{ $cita->perfilDoctor?->usuario?->nombre ?? 'Médico' }}</h4>
+                        <p class="text-xs text-text-secondary mt-0.5">Especialidad: {{ $cita->especialidad?->nombre ?? 'General' }}</p>
+                        <p class="text-[11px] text-text-muted mt-0.5">Hora: {{ \Carbon\Carbon::parse($cita->fecha_hora)->format('h:i A') }}</p>
                     </div>
+                </div>
+
+                <div class="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
+                    @php
+                        $statusClass = match(strtolower($cita->estado)) {
+                            'confirmada', 'completada' => 'bg-emerald-50 text-emerald-700 border-emerald-200',
+                            'en_consulta' => 'bg-sky-50 text-sky-700 border-sky-200',
+                            'agendada', 'pendiente' => 'bg-amber-50 text-amber-700 border-amber-200',
+                            'cancelada' => 'bg-rose-50 text-rose-700 border-rose-200',
+                            default => 'bg-gray-50 text-gray-700 border-gray-200'
+                        };
+                    @endphp
+                    <span class="px-3 py-1 rounded-full text-xs font-semibold border {{ $statusClass }} capitalize">
+                        {{ $cita->estado }}
+                    </span>
+
+                    <a href="{{ route('citas.show', $cita->id) }}" class="px-3 py-1.5 bg-background border border-border text-primary font-semibold text-xs rounded-xl hover:bg-primary/5 transition-all">
+                        Ver Detalle
+                    </a>
                 </div>
             </div>
         @empty
-            <div class="card border-0 shadow-sm rounded-3 p-4 text-center text-muted">
-                Este paciente aún no registra historial de citas médicas.
+            <div class="bg-surface rounded-2xl card-shadow border border-border p-10 text-center text-xs text-text-muted">
+                <span class="material-symbols-outlined text-4xl mb-2 block text-text-muted">event_busy</span>
+                Este paciente aún no cuenta con citas registradas en su historial.
             </div>
         @endforelse
     </div>
