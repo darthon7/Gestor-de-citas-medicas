@@ -139,6 +139,11 @@ class HistorialFragment : Fragment(R.layout.fragment_historial) {
                 return  headers
             }
         }
+        request.retryPolicy = com.android.volley.DefaultRetryPolicy(
+            10000,
+            2,
+            com.android.volley.DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+        )
         VolleySingleton.getInstance(requireContext()).requestQueue.add(request)
     }
 }

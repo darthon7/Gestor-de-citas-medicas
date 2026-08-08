@@ -113,6 +113,11 @@ class CitasFragment : Fragment(R.layout.fragment_citas) {
                 return headers
             }
         }
+        request.retryPolicy = com.android.volley.DefaultRetryPolicy(
+            10000,
+            2,
+            com.android.volley.DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+        )
         VolleySingleton.getInstance(requireContext()).requestQueue.add(request)
     }
 
@@ -186,6 +191,11 @@ class CitasFragment : Fragment(R.layout.fragment_citas) {
                 return headers
             }
         }
+        request.retryPolicy = com.android.volley.DefaultRetryPolicy(
+            10000,
+            2,
+            com.android.volley.DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+        )
         VolleySingleton.getInstance(requireContext()).requestQueue.add(request)
     }
 }

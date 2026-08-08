@@ -97,6 +97,11 @@ class AgendarCitaActivity : AppCompatActivity() {
                 Toast.makeText(this, "Error al cargar el doctor", Toast.LENGTH_SHORT).show()
             }
         )
+        request.retryPolicy = com.android.volley.DefaultRetryPolicy(
+            10000,
+            2,
+            com.android.volley.DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+        )
         VolleySingleton.getInstance(this).requestQueue.add(request)
     }
 
@@ -195,6 +200,11 @@ class AgendarCitaActivity : AppCompatActivity() {
                 txtSinHorario.text = "No se pudo consultar la disponibilidad"
                 txtSinHorario.visibility = View.VISIBLE
             }
+        )
+        request.retryPolicy = com.android.volley.DefaultRetryPolicy(
+            10000,
+            2,
+            com.android.volley.DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
         )
         VolleySingleton.getInstance(this).requestQueue.add(request)
     }
@@ -304,6 +314,11 @@ class AgendarCitaActivity : AppCompatActivity() {
                 return headers
             }
         }
+        request.retryPolicy = com.android.volley.DefaultRetryPolicy(
+            10000,
+            2,
+            com.android.volley.DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+        )
         VolleySingleton.getInstance(this).requestQueue.add(request)
     }
 

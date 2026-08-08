@@ -68,7 +68,8 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 }
                 mostrarproximacita(proximacita)
             },
-            {error->}
+            {error->
+            }
         ){
             override fun getHeaders(): MutableMap<String, String> {
                 val headers= HashMap<String, String>()
@@ -77,6 +78,11 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 return headers
             }
         }
+        request.retryPolicy = com.android.volley.DefaultRetryPolicy(
+            10000,
+            2,
+            com.android.volley.DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+        )
         VolleySingleton.getInstance(requireContext()).requestQueue.add(request)
     }
     private fun mostrarproximacita(cita: Cita?){
