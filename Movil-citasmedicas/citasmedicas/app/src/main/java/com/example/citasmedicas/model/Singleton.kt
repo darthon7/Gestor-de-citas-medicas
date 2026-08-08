@@ -1,11 +1,12 @@
 package com.example.citasmedicas.model
 
 object Singleton {
-    const val BASE_URL: String = "http://127.0.0.1:8000/api"
+    const val BASE_URL: String = "https://gestor-de-citas-medicas.onrender.com/api"
     var token_actual: String?= null
     var rol_usuario: String=""
     var usuario_actual: String=""
-    var respuesta: String?=null
+    var foto_perfil: String?=null
+    var doctor_seleccionado_id: Int? = null
     val arraylist_validaciones: ArrayList<String>
     val arraylist_mensajes: ArrayList<String>
     var list_sexo=listOf("Masculino","Femenino")
@@ -34,5 +35,15 @@ object Singleton {
         arraylist_mensajes.add(8,"El nombre solo puede contener letras")
         arraylist_mensajes.add(9,"La direccion contiene caracteres no permitidos")
 
+    }
+    //convertir ruta relativa a url absoluta
+    fun obtenerfoto(rutaRelativa: String?): String?{
+        if (rutaRelativa.isNullOrEmpty())return null
+        if (rutaRelativa.startsWith("http://")||rutaRelativa.startsWith("https://")){
+            return rutaRelativa
+        }
+        val baseurllimpia=BASE_URL.removeSuffix("/api").removeSuffix("/")
+        val rutalimpia=rutaRelativa.removePrefix("/")
+        return "$baseurllimpia/storage/$rutalimpia"
     }
 }
