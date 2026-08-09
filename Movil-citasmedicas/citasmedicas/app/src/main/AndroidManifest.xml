@@ -15,13 +15,19 @@
         android:theme="@style/Theme.Citasmedicas"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".ui.DetalleConsultaActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.DetalleDoctorActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.Home"
+            android:exported="false" />
+        <activity
             android:name=".ui.Recuperar"
             android:exported="false" />
         <activity
             android:name=".ui.Registro"
-            android:exported="false" />
-        <activity
-            android:name=".ui.BusquedaDoctores"
             android:exported="false" />
         <activity
             android:name=".ui.LoginActivity"
@@ -35,6 +41,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".ui.AgendarCitaActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
     </application>
 
 </manifest>

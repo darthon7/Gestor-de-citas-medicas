@@ -89,6 +89,11 @@ class DetalleDoctorActivity : AppCompatActivity() {
                 finish()
             }
         )
+        request.retryPolicy = com.android.volley.DefaultRetryPolicy(
+            10000,
+            2,
+            com.android.volley.DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+        )
         VolleySingleton.getInstance(this).requestQueue.add(request)
     }
 }
