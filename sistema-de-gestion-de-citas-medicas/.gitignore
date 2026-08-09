@@ -28,3 +28,6 @@ Thumbs.db
 /Documentacion-backend
 /playwright-report
 /test-results
+/blob-report
+/playwright.config.js
+/tests/e2e/

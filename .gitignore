@@ -7,3 +7,10 @@ tutor-programacion-prompt.md
 Documentacion-backend/
 .idea/
 .skills-lock.json
+
+# Playwright
+test-results/
+playwright-report/
+blob-report/
+**/playwright.config.js
+**/tests/e2e/

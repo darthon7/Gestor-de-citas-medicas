@@ -31,16 +31,22 @@
                 <label for="txt_curp" class="text-xs font-semibold text-text-secondary block">CURP *</label>
                 <div class="relative">
                     <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-muted text-xl">badge</span>
-                    <input type="text" id="txt_curp" name="curp" value="{{ old('curp') }}" maxlength="18" required placeholder="18 CARACTERES" class="w-full pl-10 pr-4 py-2.5 bg-white border border-border rounded-xl text-sm uppercase text-text-primary focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all">
+                    <input type="text" id="txt_curp" name="curp" value="{{ old('curp') }}" maxlength="18" required placeholder="18 CARACTERES" class="w-full pl-10 pr-4 py-2.5 bg-white border @error('curp') border-danger @else border-border @enderror rounded-xl text-sm uppercase text-text-primary focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all">
                 </div>
+                @error('curp')
+                    <p class="text-xs text-danger mt-1">{{ $message }}</p>
+                @enderror
             </div>
 
             <div class="space-y-1">
                 <label for="txt_email" class="text-xs font-semibold text-text-secondary block">Correo Electrónico *</label>
                 <div class="relative">
                     <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-muted text-xl">mail</span>
-                    <input type="email" id="txt_email" name="email" value="{{ old('email') }}" required placeholder="ejemplo@correo.com" class="w-full pl-10 pr-4 py-2.5 bg-white border border-border rounded-xl text-sm text-text-primary focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all">
+                    <input type="email" id="txt_email" name="email" value="{{ old('email') }}" required placeholder="ejemplo@correo.com" class="w-full pl-10 pr-4 py-2.5 bg-white border @error('email') border-danger @else border-border @enderror rounded-xl text-sm text-text-primary focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all">
                 </div>
+                @error('email')
+                    <p class="text-xs text-danger mt-1">{{ $message }}</p>
+                @enderror
             </div>
         </div>
 
@@ -81,7 +87,10 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="space-y-1">
                 <label for="txt_password" class="text-xs font-semibold text-text-secondary block">Contraseña *</label>
-                <input type="password" id="txt_password" name="password" required minlength="8" placeholder="Mínimo 8 caracteres" class="w-full px-4 py-2.5 bg-white border border-border rounded-xl text-sm text-text-primary focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all">
+                <input type="password" id="txt_password" name="password" required minlength="8" placeholder="Mínimo 8 caracteres" class="w-full px-4 py-2.5 bg-white border @error('password') border-danger @else border-border @enderror rounded-xl text-sm text-text-primary focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all">
+                @error('password')
+                    <p class="text-xs text-danger mt-1">{{ $message }}</p>
+                @enderror
             </div>
 
             <div class="space-y-1">
