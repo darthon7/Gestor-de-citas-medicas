@@ -41,5 +41,5 @@ RUN chmod -R 777 /var/www/storage /var/www/bootstrap/cache /var/www/database
 
 EXPOSE 8000
 
-# Script de arranque: Ejecutar migraciones, seeders y servidor Laravel
-CMD php artisan migrate --force && php artisan db:seed --force && php artisan serve --host=0.0.0.0 --port=${PORT:-8000}
+# Script de arranque: Enlace de storage, migraciones, seeders y servidor Laravel
+CMD php artisan storage:link || true && php artisan migrate --force && php artisan db:seed --force && php artisan serve --host=0.0.0.0 --port=${PORT:-8000}
