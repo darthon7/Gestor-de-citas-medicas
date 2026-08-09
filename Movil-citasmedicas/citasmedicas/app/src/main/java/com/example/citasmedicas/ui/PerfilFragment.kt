@@ -94,10 +94,10 @@ class PerfilFragment : Fragment(R.layout.fragment_perfil) {
                 txtCurp.text = data.getString("curp")
                 txtCorreo.text = data.getString("email")
                 etTelefono.setText(data.optString("telefono", ""))
-                val fotorelativa=if (!data.isNull("foto_perfil"))data.optString("foto_perfil",null)else null
-                Singleton.foto_perfil=fotorelativa
-                val urlcompleta= Singleton.obtenerfoto(fotorelativa)
-                if (urlcompleta!=null){
+                val fotorelativa = if (!data.isNull("foto_perfil")) data.optString("foto_perfil", "") else null
+                Singleton.foto_perfil = fotorelativa
+                val urlcompleta = Singleton.obtenerfoto(fotorelativa)
+                if (urlcompleta.isNotEmpty()) {
                     VolleySingleton.getInstance(requireContext()).imageLoader.get(
                         urlcompleta,
                         com.android.volley.toolbox.ImageLoader.getImageListener(
