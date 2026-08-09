@@ -5,11 +5,21 @@ object Singleton {
     var token_actual: String?= null
     var rol_usuario: String=""
     var usuario_actual: String=""
+    var respuesta: String?=null
     var foto_perfil: String?=null
     var doctor_seleccionado_id: Int? = null
     val arraylist_validaciones: ArrayList<String>
     val arraylist_mensajes: ArrayList<String>
     var list_sexo=listOf("Masculino","Femenino")
+
+    fun obtenerfoto(ruta: String?): String {
+        if (ruta.isNullOrEmpty()) return ""
+        if (ruta.startsWith("http://") || ruta.startsWith("https://")) return ruta
+        val baseUrlLimpia = BASE_URL.removeSuffix("/api").removeSuffix("/")
+        val rutaLimpia = ruta.removePrefix("/")
+        return "$baseUrlLimpia/storage/$rutaLimpia"
+    }
+
     init {
         arraylist_validaciones= ArrayList<String>()
         //correo
@@ -34,16 +44,5 @@ object Singleton {
         arraylist_mensajes.add(7,"El codigo debe tener 6 digitos")
         arraylist_mensajes.add(8,"El nombre solo puede contener letras")
         arraylist_mensajes.add(9,"La direccion contiene caracteres no permitidos")
-
-    }
-    //convertir ruta relativa a url absoluta
-    fun obtenerfoto(rutaRelativa: String?): String?{
-        if (rutaRelativa.isNullOrEmpty())return null
-        if (rutaRelativa.startsWith("http://")||rutaRelativa.startsWith("https://")){
-            return rutaRelativa
-        }
-        val baseurllimpia=BASE_URL.removeSuffix("/api").removeSuffix("/")
-        val rutalimpia=rutaRelativa.removePrefix("/")
-        return "$baseurllimpia/storage/$rutalimpia"
     }
 }

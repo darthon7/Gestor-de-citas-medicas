@@ -107,6 +107,7 @@
                                 android:maxLines="1">
                             </com.google.android.material.textfield.TextInputEditText>
                         </com.google.android.material.textfield.TextInputLayout>
+
                         <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/input_telefono"
                             android:paddingBottom="15dp"
@@ -195,14 +196,57 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             app:startIconDrawable="@drawable/baseline_wc_24"
-                            app:startIconTint="@color/inputs"
-                            app:boxBackgroundColor="@color/white">
+                            app:startIconTint="@color/inputs">
                             <AutoCompleteTextView
                                 android:id="@+id/spn_sexo"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:inputType="none"
                                 android:textColor="@color/inputs"></AutoCompleteTextView>
+                        </com.google.android.material.textfield.TextInputLayout>
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/input_telefono"
+                            android:paddingBottom="15dp"
+                            android:layout_gravity="left"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="+52 000 000 0000"
+                            android:textColorHint="@color/inputs"
+                            app:helperTextEnabled="true"
+                            app:helperText="@string/Tel"
+                            app:helperTextTextColor="@color/inputs"
+                            app:endIconMode="clear_text"
+                            app:endIconTint="@color/inputs"
+                            app:startIconTint="@color/inputs"
+                            app:startIconDrawable="@drawable/baseline_phone_24">
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/registro_telefono"
+                                android:inputType="phone"
+                                android:textColor="@color/inputs"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
+                            </com.google.android.material.textfield.TextInputEditText>
+                        </com.google.android.material.textfield.TextInputLayout>
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/input_direccion"
+                            android:layout_gravity="left"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/direccion_hint"
+                            android:textColorHint="@color/inputs"
+                            android:inputType="text"
+                            app:helperTextEnabled="true"
+                            app:helperText="@string/help_direccion"
+                            app:helperTextTextColor="@color/inputs"
+                            app:endIconMode="clear_text"
+                            app:endIconTint="@color/inputs"
+                            app:startIconTint="@color/inputs"
+                            app:startIconDrawable="@drawable/baseline_location_on_24">
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/registro_direccion"
+                                android:textColor="@color/inputs"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content" />
                         </com.google.android.material.textfield.TextInputLayout>
                     </LinearLayout>
                 </ScrollView>
