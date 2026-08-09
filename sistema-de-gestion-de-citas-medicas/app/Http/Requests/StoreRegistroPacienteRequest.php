@@ -44,9 +44,15 @@ class StoreRegistroPacienteRequest extends FormRequest
 
     protected function failedValidation(Validator $validator)
     {
-        throw new HttpResponseException(response()->json([
-            'msj'    => 'Error de validación',
-            'errors' => $validator->errors(),
-        ], 422));
+        if ($this->expectsJson()) {
+            throw new HttpResponseException(response()->json([
+                'msj'    => 'Error de validación',
+                'errors' => $validator->errors(),
+            ], 422));
+        }
+
+        throw new HttpResponseException(
+            redirect()->back()->withErrors($validator)->withInput()
+        );
     }
 }
