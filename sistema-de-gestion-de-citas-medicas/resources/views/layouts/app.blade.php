@@ -16,29 +16,7 @@
             darkMode: "class",
             theme: {
                 extend: {
-                    "colors": {
-                        "primary": "#005275",
-                        "primary-dark": "#0F4C6B",
-                        "primary-light": "#A8D5E2",
-                        "primary-container": "#1b6b93",
-                        "on-primary": "#ffffff",
-                        "secondary": "#006a60",
-                        "secondary-light": "#B5E8D5",
-                        "tertiary": "#885c00",
-                        "tertiary-fixed-dim": "#ffba42",
-                        "danger": "#E76F51",
-                        "danger-light": "#FADED4",
-                        "error": "#ba1a1a",
-                        "warning-gold": "#E9A319",
-                        "background": "#f7f9fc",
-                        "surface": "#FFFFFF",
-                        "border": "#E2E8F0",
-                        "text-primary": "#1A1A2E",
-                        "text-secondary": "#4A5568",
-                        "text-muted": "#A0AEC0",
-                        "on-surface": "#191c1e",
-                        "on-surface-variant": "#40484e"
-                    },
+                    "colors": @json($paleta),
                     "borderRadius": {
                         "DEFAULT": "0.25rem",
                         "lg": "0.5rem",
@@ -56,6 +34,9 @@
         }
     </script>
     <style>
+        :root {
+{!! $paletaCssVars !!}
+        }
         body {
             background-color: #f7f9fc;
             font-family: 'Inter', sans-serif;
@@ -66,15 +47,15 @@
             vertical-align: middle;
         }
         .sidebar-item-active {
-            color: #ffffff !important;
-            background-color: rgba(27, 107, 147, 0.3) !important;
-            border-left: 4px solid #B5E8D5 !important;
+            color: var(--on-primary) !important;
+            background-color: rgba(var(--primary-container-rgb), 0.3) !important;
+            border-left: 4px solid var(--primary-light) !important;
         }
         .card-shadow {
-            box-shadow: 0 2px 12px rgba(27, 107, 147, 0.08);
+            box-shadow: 0 2px 12px rgba(var(--primary-container-rgb), 0.08);
         }
         .card-shadow-hover:hover {
-            box-shadow: 0 4px 20px rgba(27, 107, 147, 0.14);
+            box-shadow: 0 4px 20px rgba(var(--primary-container-rgb), 0.14);
         }
     </style>
     @yield('styles')

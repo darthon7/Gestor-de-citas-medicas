@@ -1,51 +1,77 @@
 /* resources/css/variables.css - Sistema de Diseño Visual Agenda Médica */
 :root {
-  /* Colores Principales */
+  /* Tokens semánticos base (valores por defecto = tema paciente) */
   --color-primary:        #1B6B93;
   --color-primary-dark:   #0F4C6B;
   --color-primary-light:  #A8D5E2;
+  --color-primary-rgb:    27, 107, 147;
 
-  /* Colores Secundarios */
   --color-secondary:      #2A9D8F;
   --color-secondary-light:#B5E8D5;
 
-  /* Acentos */
   --color-accent:         #E9A319;
   --color-accent-warm:    #F4A261;
 
-  /* Peligro / Alertas */
   --color-danger:         #E76F51;
   --color-danger-light:   #FADED4;
 
-  /* Fondos y Superficies */
   --color-bg:             #F7F9FC;
   --color-surface:        #FFFFFF;
 
-  /* Texto */
   --color-text-primary:   #1A1A2E;
   --color-text-secondary: #4A5568;
   --color-text-muted:     #A0AEC0;
 
-  /* Bordes y Separadores */
   --color-border:         #E2E8F0;
   --color-overlay:        rgba(26, 26, 46, 0.5);
 
-  /* Tipografía */
+  --color-on-primary:     #FFFFFF;
+  --color-nav-active-border: var(--color-secondary-light);
+
   --font-family:          'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 
-  /* Bordes Redondeados */
   --radius-btn:           8px;
   --radius-card:          12px;
   --radius-input:         8px;
   --radius-pill:          20px;
   --radius-avatar:        50%;
 
-  /* Sombras */
-  --shadow-card:          0 2px 12px rgba(27, 107, 147, 0.08);
+  --shadow-card:          0 2px 12px rgba(var(--color-primary-rgb), 0.08);
   --shadow-modal:         0 8px 32px rgba(26, 26, 46, 0.15);
-  --shadow-card-hover:    0 4px 20px rgba(27, 107, 147, 0.14);
+  --shadow-card-hover:    0 4px 20px rgba(var(--color-primary-rgb), 0.14);
 
-  /* Dimensiones del Layout */
   --sidebar-width:        260px;
   --header-height:        64px;
+}
+
+/* Admin — verde oscuro */
+.theme-admin {
+  --color-primary:       #1B5E3F;
+  --color-primary-dark:  #0F3D29;
+  --color-primary-light: #A8D9C0;
+  --color-primary-rgb:   27, 94, 63;
+}
+
+/* Recepcionista — verde médico */
+.theme-recepcionista {
+  --color-primary:       #2A9D8F;
+  --color-primary-dark:  #1F6F65;
+  --color-primary-light: #B5E8D5;
+  --color-primary-rgb:   42, 157, 143;
+}
+
+/* Doctor — azul oscuro */
+.theme-doctor {
+  --color-primary:       #0F4C6B;
+  --color-primary-dark:  #0A3550;
+  --color-primary-light: #A8D5E2;
+  --color-primary-rgb:   15, 76, 107;
+}
+
+/* Paciente — azul médico */
+.theme-paciente {
+  --color-primary:       #1B6B93;
+  --color-primary-dark:  #0F4C6B;
+  --color-primary-light: #A8D5E2;
+  --color-primary-rgb:   27, 107, 143;
 }

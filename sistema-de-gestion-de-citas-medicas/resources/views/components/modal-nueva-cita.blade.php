@@ -389,19 +389,19 @@
         padding: 6px 14px;
         border-radius: 20px;
         background-color: #ffffff;
-        border: 1px solid #1B6B93;
+        border: 1px solid var(--primary-container);
         font-size: 12px;
         font-weight: 600;
-        color: #1B6B93;
+        color: var(--primary-container);
         cursor: pointer;
         transition: all 0.2s ease;
     }
     .slot-chip-cita:hover {
-        background-color: #e6f2f8;
+        background-color: var(--primary-light);
     }
     .slot-chip-cita.active {
-        background-color: #1B6B93;
+        background-color: var(--primary-container);
         color: #ffffff;
-        box-shadow: 0 2px 8px rgba(27, 107, 147, 0.25);
+        box-shadow: 0 2px 8px rgba(var(--primary-container-rgb), 0.25);
     }
 </style>
