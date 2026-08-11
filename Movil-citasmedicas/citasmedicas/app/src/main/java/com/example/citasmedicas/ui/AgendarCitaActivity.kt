@@ -297,7 +297,7 @@ class AgendarCitaActivity : AppCompatActivity() {
                 progressBar.visibility = View.GONE
                 btnConfirmar.isEnabled = true
                 var mensaje = "No se pudo agendar la cita"
-                    try {
+                try {
                         val data=error.networkResponse?.data
                         if (data!=null){
                             val json= JSONObject(String(data))

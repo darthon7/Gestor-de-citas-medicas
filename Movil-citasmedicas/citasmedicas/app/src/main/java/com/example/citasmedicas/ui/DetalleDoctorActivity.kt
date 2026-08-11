@@ -72,7 +72,7 @@ class DetalleDoctorActivity : AppCompatActivity() {
                     img_doctor.setDefaultImageResId(R.drawable.baseline_person_outline_24)
                     img_doctor.setErrorImageResId(R.drawable.baseline_error_outline_24)
                 val urlcompleta= Singleton.obtenerfoto(foto)
-                    img_doctor.setImageUrl(urlcompleta,imageLoader)
+                img_doctor.setImageUrl(urlcompleta,imageLoader)
                 val especialidadesArray = data.getJSONArray("especialidades")
                 if (especialidadesArray.length() > 0) {
                     val nombres = ArrayList<String>()
