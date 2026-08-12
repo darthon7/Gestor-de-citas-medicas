@@ -81,7 +81,7 @@ jobs:
             -d '{
               "version": "1.0.${{ github.run_number }}",
               "run_number": ${{ github.run_number }},
-              "download_url": "https://github.com/darthon7/Gestor-de-citas-medicas/releases/download/v1.0.${{ github.run_number }}/app-debug.apk",
+              "download_url": "https://github.com/darthon7/Gestor-de-citas-medicas/releases/tag/v1.0.${{ github.run_number }}",
               "notas": "Compilación automática del APK #${{ github.run_number }}"
             }'
 
