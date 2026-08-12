@@ -73,7 +73,7 @@ class CitasWebController extends Controller
         $resCitas = $this->citasRepository->obtenerCitas($params);
         $citas = isset($resCitas['data']) ? collect($resCitas['data']->items()) : collect();
 
-        $resDoctores = $this->doctoresRepository->obtenerDoctores();
+        $resDoctores = $this->doctoresRepository->obtenerDoctores(['estado_validacion' => 'validado']);
         $doctores = $resDoctores['data'] ?? [];
 
         $resEsp = $this->especialidadesRepository->obtenerEspecialidades();
@@ -101,7 +101,7 @@ class CitasWebController extends Controller
     public function crear(Request $request)
     {
         $user = $request->user();
-        $resDoctores = $this->doctoresRepository->obtenerDoctores();
+        $resDoctores = $this->doctoresRepository->obtenerDoctores(['estado_validacion' => 'validado']);
         $doctores = $resDoctores['data'] ?? [];
 
         $resEsp = $this->especialidadesRepository->obtenerEspecialidades();

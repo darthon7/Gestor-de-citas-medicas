@@ -17,9 +17,9 @@ class StoreRegistroMedicoRequest extends FormRequest
             'email'               => 'required|email|unique:usuarios,email',
             'password'            => 'required|string|min:8|confirmed',
             'curp'                => ['required', 'string', 'size:18', 'unique:usuarios,curp', 'regex:/^[A-Z]{4}\d{6}[HM][A-Z]{5}[A-Z0-9]\d$/'],
-            'telefono'            => 'nullable|string|max:20',
-            'cedula_profesional'  => 'required|string|unique:perfiles_doctor,cedula_profesional',
-            'cedula_especialidad' => 'nullable|string',
+            'telefono'            => 'nullable|string|regex:/^\d{10}$/',
+            'cedula_profesional'  => 'required|string|unique:perfiles_doctor,cedula_profesional|regex:/^\d{7,8}$/',
+            'cedula_especialidad' => 'nullable|string|regex:/^\d{7,8}$/',
             'especialidades'      => 'nullable|array',
             'especialidades.*'    => 'exists:especialidades,id',
         ];
@@ -40,6 +40,9 @@ class StoreRegistroMedicoRequest extends FormRequest
             'curp.regex'                  => 'El formato de la CURP no es válido.',
             'cedula_profesional.required' => 'La cédula profesional es requerida.',
             'cedula_profesional.unique'   => 'Esta cédula profesional ya está registrada.',
+            'cedula_profesional.regex'    => 'La cédula profesional debe contener de 7 a 8 dígitos numéricos.',
+            'cedula_especialidad.regex'   => 'La cédula de especialidad debe contener de 7 a 8 dígitos numéricos.',
+            'telefono.regex'              => 'El teléfono debe contener exactamente 10 dígitos numéricos.',
             'especialidades.*.exists'     => 'Una o más especialidades seleccionadas no son válidas.',
         ];
     }

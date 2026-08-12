@@ -19,6 +19,7 @@ class Cita extends Model
         'fecha_cita',
         'hora_cita',
         'duracion_minutos',
+        'motivo_consulta',
         'estado',
         'motivo_cancelacion',
         'cancelado_por',

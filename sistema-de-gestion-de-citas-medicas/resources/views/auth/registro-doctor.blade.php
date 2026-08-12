@@ -52,7 +52,7 @@
                 <label for="txt_curp_doc" class="text-xs font-semibold text-text-secondary block">CURP *</label>
                 <div class="relative">
                     <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-muted text-xl">badge</span>
-                    <input type="text" id="txt_curp_doc" name="curp" value="{{ old('curp') }}" maxlength="18" required
+                    <input type="text" id="txt_curp_doc" name="curp" value="{{ old('curp') }}" maxlength="18" required pattern="[A-Z]{4}[0-9]{6}[HM][A-Z]{5}[A-Z0-9][0-9]" title="La CURP debe tener 18 caracteres con el formato oficial (4 letras, 6 dígitos, H/M, 5 letras, dígito/letra, dígito)"
                            placeholder="18 CARACTERES"
                            class="w-full pl-10 pr-4 py-2.5 bg-white border @error('curp') border-danger @else border-border @enderror rounded-xl text-sm uppercase text-text-primary focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all">
                 </div>
@@ -80,7 +80,7 @@
             <label for="txt_tel_doc" class="text-xs font-semibold text-text-secondary block">Telefono (opcional)</label>
             <div class="relative">
                 <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-muted text-xl">call</span>
-                <input type="tel" id="txt_tel_doc" name="telefono" value="{{ old('telefono') }}" maxlength="10"
+                <input type="tel" id="txt_tel_doc" name="telefono" value="{{ old('telefono') }}" maxlength="10" pattern="[0-9]{10}" title="El teléfono debe contener exactamente 10 dígitos"
                        placeholder="10 digitos"
                        class="w-full pl-10 pr-4 py-2.5 bg-white border border-border rounded-xl text-sm text-text-primary focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all">
             </div>
@@ -91,7 +91,7 @@
             <div class="space-y-1">
                 <label for="txt_cedula_prof" class="text-xs font-semibold text-text-secondary block">Cedula Profesional *</label>
                 <input type="text" id="txt_cedula_prof" name="cedula_profesional" value="{{ old('cedula_profesional') }}" required
-                       maxlength="10" placeholder="Num. cedula SEP"
+                       maxlength="10" pattern="[0-9]{7,8}" title="La cédula profesional debe contener de 7 a 8 dígitos numéricos" placeholder="Num. cedula SEP"
                        class="w-full px-4 py-2.5 bg-white border @error('cedula_profesional') border-danger @else border-border @enderror rounded-xl text-sm text-text-primary focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all">
                 @error('cedula_profesional')
                     <p class="text-xs text-danger mt-1">{{ $message }}</p>
@@ -101,7 +101,7 @@
             <div class="space-y-1">
                 <label for="txt_cedula_esp" class="text-xs font-semibold text-text-secondary block">Cedula de Especialidad <span class="font-normal text-text-muted">(opcional)</span></label>
                 <input type="text" id="txt_cedula_esp" name="cedula_especialidad" value="{{ old('cedula_especialidad') }}"
-                       maxlength="10" placeholder="Si aplica"
+                       maxlength="10" pattern="[0-9]{7,8}" title="La cédula de especialidad debe contener de 7 a 8 dígitos numéricos" placeholder="Si aplica"
                        class="w-full px-4 py-2.5 bg-white border border-border rounded-xl text-sm text-text-primary focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all">
             </div>
         </div>

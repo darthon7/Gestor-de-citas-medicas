@@ -18,7 +18,7 @@ class StoreRegistroPacienteRequest extends FormRequest
             'password'         => 'required|string|min:8|confirmed',
             'curp'             => ['required', 'string', 'size:18', 'unique:usuarios,curp', 'regex:/^[A-Z]{4}\d{6}[HM][A-Z]{5}[A-Z0-9]\d$/'],
             'telefono'         => 'nullable|string|max:20',
-            'fecha_nacimiento' => 'nullable|date',
+            'fecha_nacimiento' => 'required|date|before_or_equal:' . now()->subYears(18)->toDateString(),
             'sexo'             => 'nullable|in:M,F',
             'direccion'        => 'nullable|string|max:500',
             'nss'              => 'nullable|string|max:20',
@@ -39,6 +39,8 @@ class StoreRegistroPacienteRequest extends FormRequest
             'curp.unique'               => 'Esta CURP ya está registrada en el sistema.',
             'curp.regex'                => 'El formato de la CURP no es válido.',
             'sexo.in'                   => 'El sexo debe ser M (Masculino) o F (Femenino).',
+            'fecha_nacimiento.required'        => 'La fecha de nacimiento es requerida.',
+            'fecha_nacimiento.before_or_equal' => 'Debe tener al menos 18 años cumplidos para registrarse.',
         ];
     }
 

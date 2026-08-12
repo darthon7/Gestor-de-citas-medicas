@@ -121,10 +121,15 @@
             <div class="w-full border-t border-outline-variant pt-4 flex items-center justify-between gap-2">
                 {{-- Disponibilidad: Solo accesible para doctores validados y activos --}}
                 @if($valEstado === 'validado' && !$inactivo)
-                    <a href="{{ route('doctores.horarios', $doc['id']) }}" class="flex items-center gap-1 text-primary font-medium text-caption hover:underline">
+                    <button type="button" onclick="abrirModalDisponibilidad(this)"
+                            data-id="{{ $doc['id'] }}"
+                            data-nombre="{{ $nombreCompleto }}"
+                            data-iniciales="{{ $iniciales }}"
+                            data-especialidad="{{ $primeraEsp }}"
+                            class="flex items-center gap-1 text-primary font-semibold text-caption hover:underline cursor-pointer" title="Registrar horarios de atención">
                         <span class="material-symbols-outlined text-lg">calendar_month</span>
                         Disponibilidad
-                    </a>
+                    </button>
                 @else
                     <span class="flex items-center gap-1 text-text-muted font-medium text-caption opacity-40 cursor-not-allowed select-none" title="Disponibilidad disponible solo para médicos validados">
                         <span class="material-symbols-outlined text-lg">calendar_month</span>
@@ -213,14 +218,14 @@
                 </div>
                 <div class="space-y-1">
                     <label for="txt_cedula_doc_edit" class="text-xs font-semibold text-text-secondary block">Cédula Profesional *</label>
-                    <input type="text" id="txt_cedula_doc_edit" name="cedula_profesional" required maxlength="10" placeholder="8 dígitos" class="w-full px-4 py-2.5 bg-white border border-border rounded-xl text-sm text-text-primary focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all">
+                    <input type="text" id="txt_cedula_doc_edit" name="cedula_profesional" required maxlength="10" pattern="[0-9]{7,8}" title="La cédula profesional debe contener de 7 a 8 dígitos numéricos" placeholder="8 dígitos" class="w-full px-4 py-2.5 bg-white border border-border rounded-xl text-sm text-text-primary focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all">
                 </div>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div class="space-y-1">
                     <label for="txt_telefono_doc_edit" class="text-xs font-semibold text-text-secondary block">Teléfono *</label>
-                    <input type="tel" id="txt_telefono_doc_edit" name="telefono" required maxlength="10" placeholder="10 dígitos" class="w-full px-4 py-2.5 bg-white border border-border rounded-xl text-sm text-text-primary focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all">
+                    <input type="tel" id="txt_telefono_doc_edit" name="telefono" required maxlength="10" pattern="[0-9]{10}" title="El teléfono debe contener exactamente 10 dígitos" placeholder="10 dígitos" class="w-full px-4 py-2.5 bg-white border border-border rounded-xl text-sm text-text-primary focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all">
                 </div>
                 <div class="space-y-1">
                     <label for="txt_email_doc_edit" class="text-xs font-semibold text-text-secondary block">Correo Electrónico *</label>
@@ -230,7 +235,7 @@
 
             <div class="space-y-1">
                 <label for="txt_cedula_esp_doc_edit" class="text-xs font-semibold text-text-secondary block">Cédula de Especialidad</label>
-                <input type="text" id="txt_cedula_esp_doc_edit" name="cedula_especialidad" maxlength="10" placeholder="Opcional" class="w-full px-4 py-2.5 bg-white border border-border rounded-xl text-sm text-text-primary focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all">
+                <input type="text" id="txt_cedula_esp_doc_edit" name="cedula_especialidad" maxlength="10" pattern="[0-9]{7,8}" title="La cédula de especialidad debe contener de 7 a 8 dígitos numéricos" placeholder="Opcional" class="w-full px-4 py-2.5 bg-white border border-border rounded-xl text-sm text-text-primary focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all">
             </div>
 
             <div class="pt-4 border-t border-border flex items-center justify-end gap-3">
@@ -274,14 +279,14 @@
                 </div>
                 <div class="space-y-1">
                     <label for="txt_cedula" class="text-xs font-semibold text-text-secondary block">Cédula Profesional *</label>
-                    <input type="text" id="txt_cedula" name="cedula_profesional" required maxlength="10" placeholder="8 dígitos" class="w-full px-4 py-2.5 bg-white border border-border rounded-xl text-sm text-text-primary focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all">
+                    <input type="text" id="txt_cedula" name="cedula_profesional" required maxlength="10" pattern="[0-9]{7,8}" title="La cédula profesional debe contener de 7 a 8 dígitos numéricos" placeholder="8 dígitos" class="w-full px-4 py-2.5 bg-white border border-border rounded-xl text-sm text-text-primary focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all">
                 </div>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div class="space-y-1">
                     <label for="txt_telefono_doc" class="text-xs font-semibold text-text-secondary block">Teléfono *</label>
-                    <input type="tel" id="txt_telefono_doc" name="telefono" required maxlength="10" placeholder="10 dígitos" class="w-full px-4 py-2.5 bg-white border border-border rounded-xl text-sm text-text-primary focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all">
+                    <input type="tel" id="txt_telefono_doc" name="telefono" required maxlength="10" pattern="[0-9]{10}" title="El teléfono debe contener exactamente 10 dígitos" placeholder="10 dígitos" class="w-full px-4 py-2.5 bg-white border border-border rounded-xl text-sm text-text-primary focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all">
                 </div>
                 <div class="space-y-1">
                     <label for="txt_email_doc" class="text-xs font-semibold text-text-secondary block">Correo Electrónico *</label>
@@ -384,6 +389,79 @@
         </div>
     </div>
 </div>
+
+<!-- Modal Disponibilidad (Registro Rápido de Horarios) -->
+<div id="modal_disponibilidad" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm hidden p-4">
+    <div class="bg-surface rounded-2xl shadow-2xl border border-border w-full max-w-md overflow-hidden flex flex-col max-h-[90vh]">
+        <div class="px-6 py-4 bg-background border-b border-border flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary text-2xl">calendar_month</span>
+                <h3 class="font-bold text-primary-dark text-base">Disponibilidad del Doctor</h3>
+            </div>
+            <button type="button" onclick="cerrarModalDisponibilidad()" class="text-text-muted hover:text-text-primary transition-colors">
+                <span class="material-symbols-outlined text-2xl">close</span>
+            </button>
+        </div>
+
+        <div class="p-6 space-y-4 overflow-y-auto">
+            <div class="flex items-center gap-4 p-4 bg-background/60 rounded-xl border border-border">
+                <div id="d_doc_iniciales" class="w-14 h-14 rounded-full bg-primary-light text-primary-dark font-bold flex items-center justify-center text-lg border border-primary/20 flex-shrink-0">
+                    D
+                </div>
+                <div class="min-w-0">
+                    <h4 id="d_doc_nombre" class="font-bold text-text-primary text-base truncate">Dr. Nombre Doctor</h4>
+                    <span id="d_doc_especialidad" class="inline-block mt-0.5 px-2.5 py-0.5 rounded-md bg-secondary-light text-on-secondary-container text-xs font-semibold">
+                        General
+                    </span>
+                </div>
+            </div>
+
+            <form id="form_disponibilidad" method="POST" class="space-y-4">
+                @csrf
+                <div class="space-y-1">
+                    <label for="sel_dia_disponibilidad" class="text-xs font-semibold text-text-secondary block">Día de la Semana *</label>
+                    <select id="sel_dia_disponibilidad" name="dia_semana" required class="w-full px-4 py-2.5 bg-white border border-border rounded-xl text-sm text-text-primary focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all">
+                        <option value="lunes">Lunes</option>
+                        <option value="martes">Martes</option>
+                        <option value="miercoles">Miércoles</option>
+                        <option value="jueves">Jueves</option>
+                        <option value="viernes">Viernes</option>
+                        <option value="sabado">Sábado</option>
+                        <option value="domingo">Domingo</option>
+                    </select>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-1">
+                        <label for="inp_hora_inicio_disp" class="text-xs font-semibold text-text-secondary block">Hora Inicio *</label>
+                        <input type="time" id="inp_hora_inicio_disp" name="hora_inicio" value="08:00" required class="w-full px-4 py-2.5 bg-white border border-border rounded-xl text-sm text-text-primary focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all">
+                    </div>
+                    <div class="space-y-1">
+                        <label for="inp_hora_fin_disp" class="text-xs font-semibold text-text-secondary block">Hora Fin *</label>
+                        <input type="time" id="inp_hora_fin_disp" name="hora_fin" value="14:00" required class="w-full px-4 py-2.5 bg-white border border-border rounded-xl text-sm text-text-primary focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all">
+                    </div>
+                </div>
+                <div class="space-y-1">
+                    <label for="inp_duracion_disp" class="text-xs font-semibold text-text-secondary block">Duración por Cita (Minutos)</label>
+                    <input type="number" id="inp_duracion_disp" name="duracion_consulta_minutos" value="30" min="10" max="120" required class="w-full px-4 py-2.5 bg-white border border-border rounded-xl text-sm text-text-primary focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all">
+                </div>
+
+                <div class="pt-4 border-t border-border flex items-center justify-end gap-3">
+                    <button type="button" onclick="cerrarModalDisponibilidad()" class="px-4 py-2.5 rounded-xl border border-border text-text-secondary text-xs font-semibold hover:bg-background transition-all">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="px-5 py-2.5 rounded-xl bg-primary hover:bg-primary-dark text-white text-xs font-semibold shadow-md transition-all">
+                        Guardar Horario
+                    </button>
+                </div>
+            </form>
+
+            <p class="text-[11px] text-text-muted text-center pt-1">
+                <a id="lnk_horarios_completos" href="#" class="text-primary font-medium hover:underline">Ver horarios existentes</a>
+                para administrar o eliminar.
+            </p>
+        </div>
+    </div>
+</div>
 @endsection
 
 @section('scripts')
@@ -442,6 +520,38 @@
     function procesarValidacion(estado) {
         document.getElementById('v_input_estado').value = estado;
         document.getElementById('form_validar_doctor').submit();
+    }
+
+    // --- Disponibilidad: registro rápido de horarios ---
+    const estadoDisponibilidad = { doctorId: null, nombre: '' };
+
+    function abrirModalDisponibilidad(btn) {
+        estadoDisponibilidad.doctorId = btn.getAttribute('data-id');
+        estadoDisponibilidad.nombre = btn.getAttribute('data-nombre');
+
+        const urlHorarios = '/doctores/' + estadoDisponibilidad.doctorId + '/horarios';
+        document.getElementById('form_disponibilidad').action = urlHorarios;
+        document.getElementById('lnk_horarios_completos').href = urlHorarios;
+        document.getElementById('d_doc_iniciales').innerText = btn.getAttribute('data-iniciales') || 'D';
+        document.getElementById('d_doc_nombre').innerText = estadoDisponibilidad.nombre || 'Dr. Médico';
+        document.getElementById('d_doc_especialidad').innerText = btn.getAttribute('data-especialidad') || 'General';
+
+        document.getElementById('modal_disponibilidad').classList.remove('hidden');
+    }
+
+    function cerrarModalDisponibilidad() {
+        document.getElementById('modal_disponibilidad').classList.add('hidden');
+    }
+
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') cerrarModalDisponibilidad();
+    });
+
+    const modalDisponibilidad = document.getElementById('modal_disponibilidad');
+    if (modalDisponibilidad) {
+        modalDisponibilidad.addEventListener('click', function (e) {
+            if (e.target === this) cerrarModalDisponibilidad();
+        });
     }
 </script>
 @endsection

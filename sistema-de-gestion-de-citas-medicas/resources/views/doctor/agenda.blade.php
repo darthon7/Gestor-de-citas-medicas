@@ -33,7 +33,7 @@
 </div>
 
 <!-- Welcome Card -->
-<div class="rounded-2xl p-6 mb-6 text-white flex flex-col md:flex-row md:items-center justify-between gap-4" style="background: linear-gradient(135deg, #0F4C6B 0%, #1B6B93 100%);">
+<div class="rounded-2xl p-6 mb-6 text-white flex flex-col md:flex-row md:items-center justify-between gap-4" style="background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-container) 100%);">
     <div class="flex items-center gap-4">
         <div class="w-12 h-12 rounded-full bg-white/10 border border-white/20 flex items-center justify-center font-bold text-lg">
             {{ strtoupper(substr($perfilDoctor->usuario->nombre ?? Auth::user()->nombre, 0, 2)) }}

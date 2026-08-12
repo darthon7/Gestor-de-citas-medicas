@@ -61,8 +61,8 @@
             </div>
 
             <div class="space-y-1">
-                <label for="inp_fecha_nac" class="text-xs font-semibold text-text-secondary block">Fecha de Nacimiento</label>
-                <input type="date" id="inp_fecha_nac" name="fecha_nacimiento" value="{{ old('fecha_nacimiento') }}" class="w-full px-4 py-2.5 bg-white border border-border rounded-xl text-sm text-text-primary focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all">
+                <label for="inp_fecha_nac" class="text-xs font-semibold text-text-secondary block">Fecha de Nacimiento *</label>
+                <input type="date" id="inp_fecha_nac" name="fecha_nacimiento" value="{{ old('fecha_nacimiento') }}" required max="{{ now()->subYears(18)->toDateString() }}" class="w-full px-4 py-2.5 bg-white border border-border rounded-xl text-sm text-text-primary focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all">
             </div>
         </div>
 
@@ -79,7 +79,7 @@
 
             <div class="space-y-1">
                 <label for="txt_nss" class="text-xs font-semibold text-text-secondary block">NSS (Opcional)</label>
-                <input type="text" id="txt_nss" name="nss" value="{{ old('nss') }}" placeholder="Núm. Seguro Social" class="w-full px-4 py-2.5 bg-white border border-border rounded-xl text-sm text-text-primary focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all">
+                <input type="text" id="txt_nss" name="nss" value="{{ old('nss') }}" placeholder="Núm. Seguro Social" pattern="[0-9]{11}" maxlength="11" inputmode="numeric" title="El NSS debe contener exactamente 11 dígitos numéricos" class="w-full px-4 py-2.5 bg-white border border-border rounded-xl text-sm text-text-primary focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all">
             </div>
         </div>
 

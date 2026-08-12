@@ -87,6 +87,7 @@ class CitasRepository
                 'fecha_cita'         => $data['fecha_cita'],
                 'hora_cita'          => $data['hora_cita'],
                 'duracion_minutos'   => $data['duracion_minutos'] ?? 30,
+                'motivo_consulta'    => $data['motivo_consulta'] ?? null,
                 'estado'             => 'agendada',
             ]);
 
