@@ -8,16 +8,15 @@ import androidx.appcompat.app.AlertDialog
 import com.android.volley.Request
 import com.android.volley.toolbox.JsonObjectRequest
 import com.example.citasmedicas.BuildConfig
+import com.example.citasmedicas.model.Singleton
 import com.example.citasmedicas.network.VolleySingleton
 
 /**
- * AutoUpdater: compara el run_number del último release de GitHub
+ * AutoUpdater: compara el run_number registrado en el backend
  * contra el GITHUB_RUN_NUMBER compilado en el APK instalado.
- * Si GitHub tiene un número mayor -> hay actualización disponible.
+ * Si el servidor tiene un número mayor -> hay actualización disponible.
  */
 object AutoUpdater {
-    private const val GITHUB_RELEASE_API = "https://api.github.com/repos/darthon7/Gestor-de-citas-medicas/releases/latest"
-    private const val DOWNLOAD_URL = "https://github.com/darthon7/Gestor-de-citas-medicas/releases/latest/download/app-debug.apk"
     private const val TAG = "AutoUpdater"
 
     fun comprobarActualizacion(context: Context, onFinish: (() -> Unit)? = null) {
@@ -29,52 +28,60 @@ object AutoUpdater {
             }
         }
 
+        val url = "${Singleton.BASE_URL}/app-version/latest"
         val requestQueue = VolleySingleton.getInstance(context).requestQueue
-        val request = object : JsonObjectRequest(
-            Method.GET,
-            GITHUB_RELEASE_API,
+
+        val request = JsonObjectRequest(
+            Request.Method.GET,
+            url,
             null,
             { response ->
                 try {
-                    // El tag es "v1.0.8" o similar, extraemos el número final después del punto
-                    val tagName = response.optString("tag_name", "")
-                    val runNumberEnGithub = tagName.substringAfterLast(".").toIntOrNull()
+                    val version = response.optString("version", "")
+                    val runNumberRemoto = response.optInt("run_number", 0)
+                    val downloadUrl = response.optString("download_url", "")
 
                     val runNumberLocal = BuildConfig.GITHUB_RUN_NUMBER
-                    Log.d(TAG, "Versión GitHub: $tagName (Run #$runNumberEnGithub), Versión Local Run #$runNumberLocal")
+                    Log.d(TAG, "Versión Remota: $version (Run #$runNumberRemoto), Versión Local: Run #$runNumberLocal")
 
-                    if (runNumberEnGithub != null && runNumberEnGithub > runNumberLocal) {
-                        mostrarDialogoActualizacion(context, tagName, ::ejecutarCallback)
+                    if (runNumberRemoto > runNumberLocal && downloadUrl.isNotEmpty()) {
+                        mostrarDialogoActualizacion(context, version, downloadUrl, ::ejecutarCallback)
                     } else {
                         ejecutarCallback()
                     }
                 } catch (e: Exception) {
-                    Log.e(TAG, "Error al procesar versión de GitHub", e)
+                    Log.e(TAG, "Error al procesar versión del servidor", e)
                     ejecutarCallback()
                 }
             },
             { error ->
-                Log.w(TAG, "No se pudo consultar actualizaciones en GitHub: ${error.message}")
+                Log.w(TAG, "No se pudo consultar la versión más reciente en el servidor: ${error.message}")
                 ejecutarCallback()
             }
-        ) {
-            override fun getHeaders(): MutableMap<String, String> {
-                val headers = HashMap<String, String>()
-                headers["User-Agent"] = "CitasMedicas-AndroidApp"
-                return headers
-            }
-        }
+        )
+
+        request.retryPolicy = com.android.volley.DefaultRetryPolicy(
+            8000,
+            1,
+            com.android.volley.DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+        )
+
         requestQueue.add(request)
     }
 
-    private fun mostrarDialogoActualizacion(context: Context, tagName: String, onDismiss: () -> Unit) {
+    private fun mostrarDialogoActualizacion(
+        context: Context,
+        version: String,
+        downloadUrl: String,
+        onDismiss: () -> Unit
+    ) {
         AlertDialog.Builder(context)
             .setTitle("🚀 Actualización disponible")
-            .setMessage("Se ha detectado una nueva versión de la aplicación ($tagName). ¿Deseas descargar la actualización ahora?")
+            .setMessage("Se ha detectado una nueva versión de la aplicación ($version). ¿Deseas descargar la actualización ahora?")
             .setCancelable(false)
             .setPositiveButton("Actualizar") { _, _ ->
                 try {
-                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(DOWNLOAD_URL)).apply {
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(downloadUrl)).apply {
                         addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     }
                     context.startActivity(intent)

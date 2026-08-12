@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AppVersionController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BloqueosController;
 use App\Http\Controllers\CitasController;
@@ -18,6 +19,10 @@ use Illuminate\Support\Facades\Route;
 | Rutas API - Sistema de Gestión de Citas Médicas
 |--------------------------------------------------------------------------
 */
+
+// Versión del APK Móvil (AutoUpdater)
+Route::get('/app-version/latest', [AppVersionController::class, 'latest']);
+Route::post('/app-version', [AppVersionController::class, 'store']);
 
 // Rutas Públicas de Autenticación y Registro
 Route::prefix('auth')->group(function () {

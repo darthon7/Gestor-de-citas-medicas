@@ -62,3 +62,26 @@ jobs:
           files: Movil-citasmedicas/citasmedicas/app/build/outputs/apk/debug/app-debug.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Registrar versión en Backend
+        if: github.ref == 'refs/heads/master'
+        run: |
+          BACKEND_URL="${{ secrets.BACKEND_URL }}"
+          if [ -z "$BACKEND_URL" ]; then
+            BACKEND_URL="https://gestor-de-citas-medicas.onrender.com"
+          fi
+          DEPLOY_TOKEN="${{ secrets.DEPLOY_TOKEN }}"
+          if [ -z "$DEPLOY_TOKEN" ]; then
+            DEPLOY_TOKEN="secret-deploy-token-citas"
+          fi
+          echo "Notificando a $BACKEND_URL sobre la versión 1.0.${{ github.run_number }}..."
+          curl -X POST "$BACKEND_URL/api/app-version" \
+            -H "Content-Type: application/json" \
+            -H "X-Deploy-Token: $DEPLOY_TOKEN" \
+            -d '{
+              "version": "1.0.${{ github.run_number }}",
+              "run_number": ${{ github.run_number }},
+              "download_url": "https://github.com/darthon7/Gestor-de-citas-medicas/releases/download/v1.0.${{ github.run_number }}/app-debug.apk",
+              "notas": "Compilación automática del APK #${{ github.run_number }}"
+            }'
+
