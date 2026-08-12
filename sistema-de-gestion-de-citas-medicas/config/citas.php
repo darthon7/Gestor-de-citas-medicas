@@ -27,4 +27,6 @@ return [
         'Seguimiento de tratamiento',
     ],
 
+    'deploy_token' => env('APP_DEPLOY_TOKEN', 'secret-deploy-token-citas'),
+
 ];

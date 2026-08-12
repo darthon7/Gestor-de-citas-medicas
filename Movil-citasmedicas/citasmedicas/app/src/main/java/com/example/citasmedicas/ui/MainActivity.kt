@@ -34,9 +34,9 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        // Timeout de respaldo de 3.5 segundos en caso de lentitud extrema de red
+        // Timeout de respaldo de 6 segundos en caso de lentitud extrema de red (ej. cold-start en Render)
         lifecycleScope.launch {
-            delay(3500)
+            delay(6000)
             navegarASiguientePantalla()
         }
     }
