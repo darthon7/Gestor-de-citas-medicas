@@ -101,6 +101,7 @@ class AuthTest extends TestCase
             'password_confirmation' => 'Password123!',
             'curp'                  => 'AAAA900101HDFXXX01',
             'telefono'              => '5512345678',
+            'fecha_nacimiento'      => '1990-01-01',
         ]);
 
         $response->assertStatus(200)

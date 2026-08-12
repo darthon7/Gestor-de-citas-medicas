@@ -75,250 +75,14 @@
 <body class="bg-brand-bg text-brand-heading font-sans antialiased overflow-x-hidden selection:bg-brand-emerald selection:text-white">
 
     <!-- ============================================================
-         1. ANUNCIO SUPERIOR (STICKY / PROMO)
+         1. ANUNCIO SUPERIOR (STICKY / PROMO DESECHABLE)
     ============================================================ -->
-    <div class="w-full min-h-[46px] py-2 px-4 flex flex-wrap gap-3 justify-center items-center bg-gradient-to-r from-[#0E2218] via-[#165838] to-[#1E8E5A] text-white text-xs sm:text-sm font-medium z-50">
-        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full bg-brand-light text-brand-dark font-bold text-[10px] tracking-wider uppercase shadow-sm">
-            NUEVO
-        </span>
-        <span class="text-center">
-            Agenda citas médicas y recibe recordatorios inteligentes · Descarga Vida+ gratis
-        </span>
-    </div>
+    @include('components.announcement-banner')
 
     <!-- ============================================================
          2. NAVBAR CON MENÚS DROPDOWN CORREGIDOS Y ACCIONES
     ============================================================ -->
-    <header class="sticky top-0 navbar-glass border-b border-brand-border/60 z-40 transition-all duration-300">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-[78px] flex items-center justify-between relative">
-            
-            <!-- Marca / Logo -->
-            <a href="{{ route('landing') }}" class="flex items-center gap-2.5 group">
-                <div class="w-10 h-10 rounded-xl bg-emerald-100/70 p-1.5 flex items-center justify-center transition-transform group-hover:scale-105">
-                    <svg viewBox="0 0 38.717 33.301" class="w-7 h-7 overflow-visible">
-                        <path d="M37.31307 6.35258c-1.33739-2.67477-3.20973-4.41337-5.41641-5.41641-1.27052-0.53495-2.60791-0.8693-4.21277-0.8693-1.60487 0-2.6079 0.26748-3.81155 0.66869-2.00608 0.73556-3.61094 1.93921-4.94833 3.41034-1.00304-1.47112-2.07294-2.34043-3.41033-3.00912-1.538-0.80243-3.07599-1.13678-4.88146-1.13678-1.80547 0-3.00912 0.26748-4.1459 0.80243-2.07295 0.8693-3.87842 2.40729-5.0152 4.27964-0.93617 1.60486-1.47112 3.41033-1.47112 5.34954 0 3.20973 1.40425 6.48632 3.41033 9.42857 2.34043 3.41033 5.55015 6.55319 8.75988 8.96049 3.41033 2.47416 6.48632 4.07903 7.22189 4.41337l0.06686 0.06688 0.06688-0.06688 0.13373-0.06687c6.08511-2.94225 10.76596-6.88754 13.84195-10.43161 1.53799-1.80547 2.67477-3.4772 3.4772-5.08207 1.00304-1.93921 1.7386-4.27963 1.7386-6.55319 0-1.67173-0.40121-3.34347-1.40425-4.74772z" fill="#1E8E5A"/>
-                        <path d="M8.4924 4.3465l0-4.3465-3.81155 0 0 4.3465-4.68085 0 0 3.67782 4.68085 0 0 4.3465 3.61094 0 0-4.3465 4.68086 0 0.06686-3.67782-4.54711 0z" fill="#FFFFFF"/>
-                    </svg>
-                </div>
-                <span class="text-2xl font-bold font-funnel tracking-tight text-brand-heading">
-                    Vida<span class="text-brand-emerald">+</span>
-                </span>
-            </a>
-
-            <!-- Navegación Principal Desktop -->
-            <nav class="hidden lg:flex items-center gap-7 text-sm font-semibold text-brand-heading">
-                
-                <a href="#inicio" class="hover:text-brand-emerald transition-colors py-2">Inicio</a>
-
-                <!-- DROPDOWN 1: SERVICIOS -->
-                <div class="relative dropdown-parent py-4">
-                    <button type="button" class="flex items-center gap-1.5 hover:text-brand-emerald transition-colors focus:outline-none" aria-expanded="false">
-                        <span>Servicios</span>
-                        <i data-lucide="chevron-down" class="w-4 h-4 text-brand-muted chevron-ico transition-transform duration-200"></i>
-                    </button>
-
-                    <!-- Dropdown Menu Box -->
-                    <div class="dropdown-content absolute left-0 top-full mt-1 w-72 bg-white rounded-2xl p-2.5 shadow-2xl border border-brand-border z-50">
-                        <div class="px-3 py-1.5 text-[11px] font-bold text-brand-subtle uppercase tracking-wider">
-                            SERVICIOS DISPONIBLES
-                        </div>
-                        
-                        <a href="{{ route('registro') }}" class="flex items-center gap-3 p-2.5 rounded-xl bg-brand-cardBg hover:bg-emerald-100/80 transition-colors">
-                            <div class="w-8 h-8 rounded-lg bg-emerald-200/60 flex items-center justify-center text-brand-emerald shrink-0">
-                                <i data-lucide="calendar-check" class="w-4 h-4"></i>
-                            </div>
-                            <div>
-                                <div class="text-sm font-semibold text-brand-heading">Reservar cita médica</div>
-                                <div class="text-xs text-brand-muted font-normal">Agendamiento 24/7 en línea</div>
-                            </div>
-                        </a>
-
-                        <a href="#caracteristicas" class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-brand-bg transition-colors mt-1">
-                            <div class="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center text-brand-emerald shrink-0">
-                                <i data-lucide="video" class="w-4 h-4"></i>
-                            </div>
-                            <div>
-                                <div class="text-sm font-medium text-brand-heading">Telemedicina en línea</div>
-                                <div class="text-xs text-brand-muted font-normal">Consulta virtual segura</div>
-                            </div>
-                        </a>
-
-                        <a href="#caracteristicas" class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-brand-bg transition-colors">
-                            <div class="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center text-brand-emerald shrink-0">
-                                <i data-lucide="bell" class="w-4 h-4"></i>
-                            </div>
-                            <div>
-                                <div class="text-sm font-medium text-brand-heading">Recordatorios inteligentes</div>
-                                <div class="text-xs text-brand-muted font-normal">Notificaciones automáticas</div>
-                            </div>
-                        </a>
-
-                        <a href="#caracteristicas" class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-brand-bg transition-colors">
-                            <div class="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center text-brand-emerald shrink-0">
-                                <i data-lucide="file-text" class="w-4 h-4"></i>
-                            </div>
-                            <div>
-                                <div class="text-sm font-medium text-brand-heading">Recetas digitales</div>
-                                <div class="text-xs text-brand-muted font-normal">Expediente y prescripciones</div>
-                            </div>
-                        </a>
-
-                        <a href="#caracteristicas" class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-brand-bg transition-colors">
-                            <div class="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center text-brand-emerald shrink-0">
-                                <i data-lucide="folder-heart" class="w-4 h-4"></i>
-                            </div>
-                            <div>
-                                <div class="text-sm font-medium text-brand-heading">Historial clínico</div>
-                                <div class="text-xs text-brand-muted font-normal">Acceso privado y ordenado</div>
-                            </div>
-                        </a>
-
-                        <div class="pt-2 border-t border-brand-border/60 mt-1">
-                            <a href="#caracteristicas" class="flex items-center justify-between p-2 rounded-lg text-xs font-semibold text-brand-emerald hover:bg-brand-bg transition-colors">
-                                <span>Ver todos los servicios</span>
-                                <i data-lucide="arrow-right" class="w-4 h-4"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- DROPDOWN 2: ESPECIALIDADES -->
-                <div class="relative dropdown-parent py-4">
-                    <button type="button" class="flex items-center gap-1.5 hover:text-brand-emerald transition-colors focus:outline-none" aria-expanded="false">
-                        <span>Especialidades</span>
-                        <i data-lucide="chevron-down" class="w-4 h-4 text-brand-muted chevron-ico transition-transform duration-200"></i>
-                    </button>
-
-                    <!-- Dropdown Menu Box Grid -->
-                    <div class="dropdown-content absolute -left-20 top-full mt-1 w-[580px] bg-white rounded-2xl p-4 shadow-2xl border border-brand-border z-50">
-                        <div class="grid grid-cols-2 gap-2">
-                            
-                            <a href="#especialidades" class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-brand-bg transition-colors">
-                                <div class="w-9 h-9 rounded-xl bg-emerald-100/70 flex items-center justify-center text-brand-emerald shrink-0">
-                                    <i data-lucide="heart" class="w-4 h-4"></i>
-                                </div>
-                                <div>
-                                    <div class="text-sm font-semibold text-brand-heading">Cardiología</div>
-                                    <div class="text-xs text-brand-muted">Salud cardiovascular</div>
-                                </div>
-                            </a>
-
-                            <a href="#especialidades" class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-brand-bg transition-colors">
-                                <div class="w-9 h-9 rounded-xl bg-emerald-100/70 flex items-center justify-center text-brand-emerald shrink-0">
-                                    <i data-lucide="brain" class="w-4 h-4"></i>
-                                </div>
-                                <div>
-                                    <div class="text-sm font-semibold text-brand-heading">Psicología</div>
-                                    <div class="text-xs text-brand-muted">Salud emocional</div>
-                                </div>
-                            </a>
-
-                            <a href="#especialidades" class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-brand-bg transition-colors">
-                                <div class="w-9 h-9 rounded-xl bg-emerald-100/70 flex items-center justify-center text-brand-emerald shrink-0">
-                                    <i data-lucide="baby" class="w-4 h-4"></i>
-                                </div>
-                                <div>
-                                    <div class="text-sm font-semibold text-brand-heading">Pediatría</div>
-                                    <div class="text-xs text-brand-muted">Cuidado infantil</div>
-                                </div>
-                            </a>
-
-                            <a href="#especialidades" class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-brand-bg transition-colors">
-                                <div class="w-9 h-9 rounded-xl bg-emerald-100/70 flex items-center justify-center text-brand-emerald shrink-0">
-                                    <i data-lucide="flower-2" class="w-4 h-4"></i>
-                                </div>
-                                <div>
-                                    <div class="text-sm font-semibold text-brand-heading">Ginecología</div>
-                                    <div class="text-xs text-brand-muted">Salud femenina</div>
-                                </div>
-                            </a>
-
-                            <a href="#especialidades" class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-brand-bg transition-colors">
-                                <div class="w-9 h-9 rounded-xl bg-emerald-100/70 flex items-center justify-center text-brand-emerald shrink-0">
-                                    <i data-lucide="apple" class="w-4 h-4"></i>
-                                </div>
-                                <div>
-                                    <div class="text-sm font-semibold text-brand-heading">Nutrición</div>
-                                    <div class="text-xs text-brand-muted">Planes alimenticios</div>
-                                </div>
-                            </a>
-
-                            <a href="#especialidades" class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-brand-bg transition-colors">
-                                <div class="w-9 h-9 rounded-xl bg-emerald-100/70 flex items-center justify-center text-brand-emerald shrink-0">
-                                    <i data-lucide="smile" class="w-4 h-4"></i>
-                                </div>
-                                <div>
-                                    <div class="text-sm font-semibold text-brand-heading">Dermatología</div>
-                                    <div class="text-xs text-brand-muted">Cuidado de la piel</div>
-                                </div>
-                            </a>
-
-                        </div>
-
-                        <div class="pt-3 border-t border-brand-border/60 mt-2 flex items-center justify-between text-xs">
-                            <span class="text-brand-muted">Más de 30 especialidades disponibles</span>
-                            <a href="#especialidades" class="font-semibold text-brand-emerald hover:underline flex items-center gap-1">
-                                Explorar catálogo completo <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <a href="#habitos" class="hover:text-brand-emerald transition-colors py-2">Hábitos</a>
-                <a href="#nosotros" class="hover:text-brand-emerald transition-colors py-2">Nosotros</a>
-                <a href="#contacto" class="hover:text-brand-emerald transition-colors py-2">Contacto</a>
-            </nav>
-
-            <!-- Acciones / Auth Buttons -->
-            <div class="hidden sm:flex items-center gap-4">
-                @auth
-                    <a href="{{ route('dashboard') }}" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-brand-emerald text-white font-semibold text-sm hover:bg-emerald-700 shadow-md shadow-emerald-700/20 transition-all hover:scale-[1.02]">
-                        <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
-                        <span>Ir al Dashboard</span>
-                    </a>
-                @else
-                    <a href="{{ route('login') }}" class="text-sm font-semibold text-brand-emerald hover:text-emerald-800 transition-colors px-2 py-1">
-                        Iniciar sesión
-                    </a>
-                    <a href="{{ route('registro') }}" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-brand-emerald text-white font-semibold text-sm hover:bg-emerald-700 shadow-md shadow-emerald-700/20 transition-all hover:scale-[1.02]">
-                        <i data-lucide="play" class="w-3.5 h-3.5 fill-current"></i>
-                        <span>Descargar app</span>
-                    </a>
-                @endauth
-            </div>
-
-            <!-- Botón Hamburguesa Móvil -->
-            <button id="mobileMenuBtn" type="button" class="lg:hidden p-2 text-brand-heading hover:text-brand-emerald focus:outline-none" aria-label="Abrir menú">
-                <i data-lucide="menu" class="w-6 h-6"></i>
-            </button>
-        </div>
-
-        <!-- Menú Móvil Desplegable -->
-        <div id="mobileMenu" class="hidden lg:hidden bg-white border-b border-brand-border px-4 py-6 space-y-4">
-            <a href="#inicio" class="block text-base font-semibold text-brand-heading hover:text-brand-emerald">Inicio</a>
-            
-            <div class="space-y-2 pt-2 border-t border-brand-border">
-                <span class="block text-xs font-bold text-brand-subtle uppercase tracking-wider">Servicios</span>
-                <a href="{{ route('registro') }}" class="block text-sm text-brand-heading font-medium hover:text-brand-emerald">Reservar Cita Médica</a>
-                <a href="#caracteristicas" class="block text-sm text-brand-heading font-medium hover:text-brand-emerald">Telemedicina en línea</a>
-                <a href="#caracteristicas" class="block text-sm text-brand-heading font-medium hover:text-brand-emerald">Recordatorios Inteligentes</a>
-            </div>
-
-            <div class="space-y-2 pt-2 border-t border-brand-border">
-                <span class="block text-xs font-bold text-brand-subtle uppercase tracking-wider">Especialidades</span>
-                <a href="#especialidades" class="block text-sm text-brand-heading font-medium hover:text-brand-emerald">Cardiología, Pediatría, Nutrición...</a>
-            </div>
-
-            <div class="pt-4 border-t border-brand-border flex flex-col gap-3">
-                @auth
-                    <a href="{{ route('dashboard') }}" class="w-full text-center py-3 rounded-xl bg-brand-emerald text-white font-semibold">Ir al Dashboard</a>
-                @else
-                    <a href="{{ route('login') }}" class="w-full text-center py-2.5 rounded-xl border border-brand-emerald text-brand-emerald font-semibold">Iniciar sesión</a>
-                    <a href="{{ route('registro') }}" class="w-full text-center py-2.5 rounded-xl bg-brand-emerald text-white font-semibold">Regístrate gratis</a>
-                @endauth
-            </div>
-        </div>
-    </header>
+    @include('components.landing-navbar')
 
     <!-- ============================================================
          3. HERO PRINCIPAL CON MOCKUP DE CELULAR (IMAGEN ENTREGADA CON BORDE REDONDO)
@@ -881,12 +645,17 @@
                 
                 <!-- Columna Marca -->
                 <div class="space-y-4 md:col-span-1">
-                    <div class="flex items-center gap-2.5">
-                        <div class="w-8 h-8 rounded-lg bg-emerald-900/60 flex items-center justify-center text-brand-emerald">
-                            <i data-lucide="activity" class="w-5 h-5"></i>
+                    <a href="{{ route('landing') }}" class="flex items-center gap-2.5 group">
+                        <div class="w-10 h-10 rounded-xl bg-emerald-950/80 border border-emerald-800/60 p-1.5 flex items-center justify-center transition-transform group-hover:scale-105">
+                            <svg viewBox="0 0 38.717 33.301" class="w-7 h-7 overflow-visible">
+                                <path d="M37.31307 6.35258c-1.33739-2.67477-3.20973-4.41337-5.41641-5.41641-1.27052-0.53495-2.60791-0.8693-4.21277-0.8693-1.60487 0-2.6079 0.26748-3.81155 0.66869-2.00608 0.73556-3.61094 1.93921-4.94833 3.41034-1.00304-1.47112-2.07294-2.34043-3.41033-3.00912-1.538-0.80243-3.07599-1.13678-4.88146-1.13678-1.80547 0-3.00912 0.26748-4.1459 0.80243-2.07295 0.8693-3.87842 2.40729-5.0152 4.27964-0.93617 1.60486-1.47112 3.41033-1.47112 5.34954 0 3.20973 1.40425 6.48632 3.41033 9.42857 2.34043 3.41033 5.55015 6.55319 8.75988 8.96049 3.41033 2.47416 6.48632 4.07903 7.22189 4.41337l0.06686 0.06688 0.06688-0.06688 0.13373-0.06687c6.08511-2.94225 10.76596-6.88754 13.84195-10.43161 1.53799-1.80547 2.67477-3.4772 3.4772-5.08207 1.00304-1.93921 1.7386-4.27963 1.7386-6.55319 0-1.67173-0.40121-3.34347-1.40425-4.74772z" fill="#1E8E5A"/>
+                                <path d="M8.4924 4.3465l0-4.3465-3.81155 0 0 4.3465-4.68085 0 0 3.67782 4.68085 0 0 4.3465 3.61094 0 0-4.3465 4.68086 0 0.06686-3.67782-4.54711 0z" fill="#FFFFFF"/>
+                            </svg>
                         </div>
-                        <span class="text-xl font-bold font-funnel text-white">Vida+ Agenda Médica</span>
-                    </div>
+                        <span class="text-2xl font-bold font-funnel tracking-tight text-white">
+                            Vida<span class="text-brand-emerald">+</span>
+                        </span>
+                    </a>
                     <p class="text-xs text-zinc-400 leading-relaxed">
                         La solución integral que pone tu salud y la de tu familia en orden: citas, especialistas y expedientes digitales en un solo lugar.
                     </p>
@@ -907,10 +676,10 @@
                 <div class="space-y-3">
                     <h4 class="text-xs font-bold text-white uppercase tracking-wider">Especialidades</h4>
                     <ul class="space-y-2 text-xs">
-                        <li><a href="#especialidades" class="hover:text-brand-light transition-colors">Cardiología</a></li>
-                        <li><a href="#especialidades" class="hover:text-brand-light transition-colors">Pediatría</a></li>
-                        <li><a href="#especialidades" class="hover:text-brand-light transition-colors">Nutrición & Dietética</a></li>
-                        <li><a href="#especialidades" class="hover:text-brand-light transition-colors">Psicología Clínica</a></li>
+                        <li><a href="{{ route('especialidades.publicas') }}" class="hover:text-brand-light transition-colors">Cardiología</a></li>
+                        <li><a href="{{ route('especialidades.publicas') }}" class="hover:text-brand-light transition-colors">Pediatría</a></li>
+                        <li><a href="{{ route('especialidades.publicas') }}" class="hover:text-brand-light transition-colors">Nutrición & Dietética</a></li>
+                        <li><a href="{{ route('especialidades.publicas') }}" class="hover:text-brand-light transition-colors">Ver todas →</a></li>
                     </ul>
                 </div>
 
