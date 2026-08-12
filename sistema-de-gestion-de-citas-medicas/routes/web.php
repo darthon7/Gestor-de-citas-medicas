@@ -25,6 +25,10 @@ Route::get('/inicio', [LandingWebController::class, 'index'])->name('landing');
 // Ruta raíz: landing pública para visitantes / dashboard para usuarios autenticados
 Route::get('/', [LandingWebController::class, 'home'])->name('dashboard');
 
+// Página pública de Especialidades (sin autenticación)
+Route::get('/especialidades-medicas', [LandingWebController::class, 'especialidades'])->name('especialidades.publicas');
+
+
 // Rutas públicas de Autenticación (guest)
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthWebController::class, 'showLogin'])->name('login');

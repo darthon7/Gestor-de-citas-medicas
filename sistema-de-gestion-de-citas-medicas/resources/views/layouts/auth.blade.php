@@ -4,10 +4,12 @@
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>MediAdmin - @yield('titulo', 'Autenticación')</title>
+    <title>Vida+ Agenda Médica - @yield('titulo', 'Autenticación')</title>
 
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Funnel+Sans:wght@300..800&family=Geist:wght@100..900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 
     <script id="tailwind-config">
@@ -15,18 +17,36 @@
             darkMode: "class",
             theme: {
                 extend: {
-                    "colors": {
-                        "primary": "#005275",
-                        "primary-dark": "#0F4C6B",
-                        "primary-light": "#A8D5E2",
-                        "secondary": "#006a60",
+                    colors: {
+                        "primary": "#1E8E5A",
+                        "primary-dark": "#10231A",
+                        "primary-light": "#72D350",
+                        "secondary": "#1E8E5A",
+                        "secondary-light": "#E4F5E9",
                         "danger": "#E76F51",
-                        "background": "#eef5f9",
+                        "background": "#F6FBF4",
                         "surface": "#FFFFFF",
-                        "border": "#E2E8F0",
-                        "text-primary": "#1A1A2E",
-                        "text-secondary": "#4A5568",
-                        "text-muted": "#A0AEC0"
+                        "border": "#E3EDE5",
+                        "text-primary": "#10231A",
+                        "text-secondary": "#5B6B62",
+                        "text-muted": "#8FA198",
+                        brand: {
+                            dark:      '#0E2218',
+                            emerald:   '#1E8E5A',
+                            light:     '#72D350',
+                            bg:        '#F6FBF4',
+                            heading:   '#10231A',
+                            muted:     '#5B6B62',
+                            cardBg:    '#E4F5E9',
+                            sectionBg: '#F0F7F1',
+                            border:    '#E3EDE5',
+                            subtle:    '#8FA198'
+                        }
+                    },
+                    fontFamily: {
+                        sans:   ['Inter', 'system-ui', 'sans-serif'],
+                        funnel: ['Funnel Sans', 'sans-serif'],
+                        geist:  ['Geist', 'sans-serif']
                     }
                 }
             }
@@ -34,20 +54,63 @@
     </script>
     <style>
         body {
-            background: linear-gradient(135deg, #e6f2f8 0%, #f7f9fc 100%);
+            background: linear-gradient(135deg, #0E2218 0%, #12402A 50%, #1E8E5A 100%);
             font-family: 'Inter', sans-serif;
         }
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
             vertical-align: middle;
         }
+        .dropdown-content {
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(8px) scale(0.98);
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .dropdown-parent:hover .dropdown-content,
+        .dropdown-parent:focus-within .dropdown-content,
+        .dropdown-content.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0) scale(1);
+        }
+        .dropdown-parent:hover .chevron-ico,
+        .dropdown-parent:focus-within .chevron-ico {
+            transform: rotate(180deg);
+        }
+        .navbar-glass {
+            background-color: rgba(246, 251, 244, 0.95);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
     </style>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
     @yield('styles')
 </head>
-<body class="min-h-screen flex flex-col justify-center items-center p-4 antialiased">
-    <div class="w-full max-w-md">
-        @include('components.flash-message')
-        @yield('content')
-    </div>
+<body class="min-h-screen flex flex-col justify-between items-center antialiased selection:bg-brand-emerald selection:text-white">
+    <!-- Navbar landing visible en auth -->
+    @include('components.landing-navbar')
+
+    <main class="w-full flex-1 flex flex-col items-center justify-center p-4 my-8">
+        <div class="w-full max-w-md flex flex-col items-center">
+            @include('components.flash-message')
+            @yield('content')
+        </div>
+    </main>
+
+    <!-- Scripts de Navbar -->
+    <script>
+        if (window.lucide) {
+            lucide.createIcons();
+        }
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu    = document.getElementById('mobileMenu');
+        if (mobileMenuBtn && mobileMenu) {
+            mobileMenuBtn.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+        }
+    </script>
 </body>
 </html>
+
+

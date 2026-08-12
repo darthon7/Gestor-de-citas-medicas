@@ -76,6 +76,7 @@ class SistemaIntegralTest extends TestCase
             'password_confirmation' => 'Paciente123!',
             'curp'                  => 'GOML950505MDFXXX09',
             'telefono'              => '5599887766',
+            'fecha_nacimiento'      => '1995-05-05',
         ]);
 
         $respReg->assertStatus(200)
