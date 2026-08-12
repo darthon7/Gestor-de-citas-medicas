@@ -1,4 +1,22 @@
 {{-- Modal de Agendar Nueva Cita (WEB-08) --}}
+@php
+    // Proyección mínima de doctores para el cliente (mapeo corregido: nombre en usuario)
+    $doctoresLista = $doctores instanceof \Illuminate\Contracts\Pagination\Paginator
+        ? $doctores->items()
+        : $doctores;
+
+    $doctoresJson = collect($doctoresLista)->map(function ($d) {
+        $especialidades = collect($d['especialidades'] ?? []);
+
+        return [
+            'id'                  => $d['id'] ?? null,
+            'nombre'              => $d['usuario']['nombre'] ?? 'Médico',
+            'especialidad_nombre' => $especialidades->first()['nombre'] ?? 'General',
+            'especialidades'      => $especialidades->pluck('id'),
+            'estado_validacion'   => $d['estado_validacion'] ?? 'pendiente',
+        ];
+    })->values();
+@endphp
 <div id="modal_nueva_cita" class="fixed inset-0 z-50 flex items-center justify-center bg-[rgba(26,26,46,0.5)] backdrop-blur-sm hidden p-4">
     <div class="bg-surface rounded-2xl shadow-2xl border border-border w-full max-w-[560px] overflow-hidden max-h-[90vh] flex flex-col">
         {{-- Header --}}
@@ -86,30 +104,17 @@
                         <label for="sel_doctor_cita" class="text-xs font-semibold text-text-secondary block">Doctor *</label>
                         <select id="sel_doctor_cita" name="perfil_doctor_id" required onchange="consultarDisponibilidadCita()" class="w-full px-4 py-2.5 bg-white border border-border rounded-xl text-sm text-text-primary focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all">
                             <option value="">Seleccione Doctor...</option>
-                            @foreach($doctores as $doc)
-                                @php
-                                    $espIds = collect($doc->especialidades ?? [])->pluck('id')->implode(',');
-                                @endphp
-                                <option value="{{ $doc->id }}" data-especialidades="{{ $espIds }}">
-                                    Dr. {{ $doc->usuario?->nombre ?? 'Sin nombre' }} ({{ $doc->especialidades->first()?->nombre ?? 'General' }})
-                                </option>
-                            @endforeach
                         </select>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
-                    <div class="space-y-1">
-                        <label for="inp_fecha_cita" class="text-xs font-semibold text-text-secondary block">Fecha de Cita *</label>
-                        <input type="date" id="inp_fecha_cita" name="fecha_cita" value="{{ old('fecha_cita', date('Y-m-d')) }}" min="{{ date('Y-m-d') }}" required onchange="consultarDisponibilidadCita()" class="w-full px-4 py-2.5 bg-white border border-border rounded-xl text-sm text-text-primary focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all">
-                    </div>
-
-                    <div class="space-y-1">
-                        <label for="inp_hora_cita" class="text-xs font-semibold text-text-secondary block">Hora de Consulta *</label>
-                        <input type="time" id="inp_hora_cita" name="hora_cita" value="" required step="1" class="w-full px-4 py-2.5 bg-white border border-border rounded-xl text-sm font-semibold text-primary focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all">
-                        <input type="hidden" name="duracion_minutos" id="inp_duracion_cita" value="30">
-                    </div>
+                <div class="space-y-1 mt-4">
+                    <label for="inp_fecha_cita" class="text-xs font-semibold text-text-secondary block">Fecha de Cita *</label>
+                    <input type="date" id="inp_fecha_cita" name="fecha_cita" value="{{ old('fecha_cita', date('Y-m-d')) }}" min="{{ date('Y-m-d') }}" required onchange="consultarDisponibilidadCita()" class="w-full px-4 py-2.5 bg-white border border-border rounded-xl text-sm text-text-primary focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all">
                 </div>
+
+                <input type="hidden" id="inp_hora_cita" name="hora_cita" value="" required>
+                <input type="hidden" name="duracion_minutos" id="inp_duracion_cita" value="30">
 
                 <div class="space-y-1 mt-4">
                     <label class="text-xs font-semibold text-text-secondary block">Horarios Sugeridos Disponibles</label>
@@ -119,10 +124,7 @@
                 </div>
 
                 <div class="space-y-1 mt-4">
-                    <div class="space-y-1">
-                        <label for="txt_motivo_cita" class="text-xs font-semibold text-text-secondary block">Motivo de la Consulta *</label>
-                        <textarea id="txt_motivo_cita" name="motivo_consulta" rows="3" required placeholder="Describe brevemente el motivo o síntomas..." class="w-full p-4 bg-white border border-border rounded-xl text-sm text-text-primary focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all"></textarea>
-                    </div>
+                    @include('components.motivo-consulta', ['suf' => '_cita'])
                 </div>
             </div>
 
@@ -162,7 +164,7 @@
                 <button type="button" id="btn_anterior" onclick="cambiarPasoCita(-1)" class="px-5 py-2.5 rounded-xl border border-border text-text-secondary text-xs font-semibold hover:bg-background transition-all invisible">
                     <span class="material-symbols-outlined text-base align-middle">arrow_back</span> Anterior
                 </button>
-                <button type="button" id="btn_siguiente" onclick="cambiarPasoCita(1)" class="px-5 py-2.5 rounded-xl bg-primary hover:bg-primary-dark text-white text-xs font-semibold shadow-md transition-all">
+                <button type="button" id="btn_siguiente" onclick="cambiarPasoCita(1)" disabled class="px-5 py-2.5 rounded-xl bg-primary hover:bg-primary-dark text-white text-xs font-semibold shadow-md transition-all disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-primary">
                     Siguiente <span class="material-symbols-outlined text-base align-middle">arrow_forward</span>
                 </button>
                 <button type="submit" id="btn_confirmar" class="hidden px-6 py-2.5 rounded-xl bg-secondary hover:opacity-90 text-white text-xs font-semibold shadow-md transition-all">
@@ -219,7 +221,7 @@
                 return true;
             }
             case 2: {
-                const checks = ['sel_especialidad_cita', 'sel_doctor_cita', 'inp_fecha_cita', 'inp_hora_cita']
+                const checks = ['sel_especialidad_cita', 'sel_doctor_cita', 'inp_fecha_cita']
                     .map(elId)
                     .filter(Boolean);
                 for (const el of checks) {
@@ -229,6 +231,26 @@
                         return false;
                     }
                     el.classList.remove('border-red-500');
+                }
+                const horaCita = elId('inp_hora_cita');
+                const slotsCita = elId('slots_container_cita');
+                if (horaCita && !horaCita.value) {
+                    if (slotsCita) slotsCita.classList.add('border-danger');
+                    const chip = document.querySelector('.slot-chip-cita');
+                    if (chip) {
+                        chip.focus();
+                    } else {
+                        const selDoc = elId('sel_doctor_cita');
+                        if (selDoc) selDoc.focus();
+                    }
+                    return false;
+                }
+                if (slotsCita) slotsCita.classList.remove('border-danger');
+                if (!motivoTieneValor('_cita')) {
+                    marcarErrorMotivo('_cita', true);
+                    const selMotivo = elId('sel_motivo_cita');
+                    if (selMotivo) selMotivo.focus();
+                    return false;
                 }
                 return true;
             }
@@ -257,7 +279,44 @@
         if (btnAnt) btnAnt.classList.toggle('invisible', pasoCitaActual === 1);
         if (btnSig) btnSig.classList.toggle('hidden', pasoCitaActual === totalPasosCita);
         if (btnCon) btnCon.classList.toggle('hidden', pasoCitaActual !== totalPasosCita);
+        sincronizarBtnSiguiente();
     }
+
+    // --- Motivo de la consulta (asunto): bloqueo del avance sin asunto ---
+    function sincronizarBtnSiguiente() {
+        const btn = elId('btn_siguiente');
+        if (!btn) return;
+        btn.disabled = pasoCitaActual === 2 && !motivoTieneValor('_cita');
+    }
+
+    (function () {
+        const sel = elId('sel_motivo_cita');
+        const otro = elId('inp_motivo_otro_cita');
+        if (sel) sel.addEventListener('change', function () {
+            syncMotivo('_cita');
+            sincronizarBtnSiguiente();
+        });
+        if (otro) otro.addEventListener('input', function () {
+            syncMotivo('_cita');
+            sincronizarBtnSiguiente();
+        });
+        initMotivo('_cita', '');
+        sincronizarBtnSiguiente();
+    })();
+
+    // --- Doctores: mapeo corregido + solo validados (filtro en estado local, sin backend) ---
+    const doctoresModalCita = @json($doctoresJson);
+
+    (function () {
+        const select = elId('sel_doctor_cita');
+        if (!select) return;
+
+        const visibles = doctoresModalCita.filter(d => d.estado_validacion === 'validado');
+        select.insertAdjacentHTML('beforeend', visibles.map(d =>
+            '<option value="' + d.id + '" data-especialidades="' + d.especialidades.join(',') + '">Dr. ' +
+            d.nombre + ' (' + d.especialidad_nombre + ')</option>'
+        ).join(''));
+    })();
 
     function filtrarDoctoresCita() {
         const selectEsp = elId('sel_especialidad_cita');
@@ -282,6 +341,9 @@
             selectDoc.value = '';
             const inp = elId('inp_hora_cita');
             if (inp) inp.value = '';
+            const inpFecha = elId('inp_fecha_cita');
+            if (inpFecha) inpFecha.value = '';
+            container.classList.remove('border-danger');
         }
         container.innerHTML = '<p class="text-xs text-text-muted">Seleccione doctor y fecha para consultar horarios disponibles.</p>';
     }
@@ -319,11 +381,18 @@
             container.innerHTML = disponibles.map(s => `
                 <button type="button" class="slot-chip-cita" data-hora="${s.hora}" onclick="seleccionarHoraCita('${s.hora}')">${s.hora}</button>
             `).join('');
+            container.classList.remove('border-danger');
 
             const inp = elId('inp_hora_cita');
             if (inp) {
                 const horas = disponibles.map(s => s.hora);
-                if (inp.value && !horas.includes(inp.value)) inp.value = '';
+                if (inp.value && horas.includes(inp.value)) {
+                    document.querySelectorAll('.slot-chip-cita').forEach(btn => {
+                        btn.classList.toggle('active', btn.getAttribute('data-hora') === inp.value);
+                    });
+                } else if (inp.value) {
+                    inp.value = '';
+                }
             }
         } catch (e) {
             container.innerHTML = '<p class="text-xs text-text-muted">No fue posible consultar horarios. Ingresa la hora manualmente.</p>';
@@ -336,6 +405,9 @@
         document.querySelectorAll('.slot-chip-cita').forEach(btn => {
             btn.classList.toggle('active', btn.getAttribute('data-hora') === hora);
         });
+        const slotsCita = elId('slots_container_cita');
+        if (slotsCita) slotsCita.classList.remove('border-danger');
+        sincronizarBtnSiguiente();
     }
 
     function llenarResumenCita() {
@@ -366,7 +438,7 @@
             ? new Date(fecha + 'T12:00:00').toLocaleDateString('es-MX', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
             : '-') + ' ' + (hora || '');
 
-        if (resMotivo) resMotivo.textContent = elId('txt_motivo_cita')?.value || '-';
+        if (resMotivo) resMotivo.textContent = elId('inp_motivo_consulta_cita')?.value || '-';
     }
 
     document.addEventListener('keydown', function (e) {

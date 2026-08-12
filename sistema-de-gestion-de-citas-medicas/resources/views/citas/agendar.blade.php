@@ -28,6 +28,24 @@
 @endsection
 
 @section('content')
+@php
+    // Proyección mínima de doctores para el cliente (mapeo corregido: nombre en usuario)
+    $doctoresLista = $doctores instanceof \Illuminate\Contracts\Pagination\Paginator
+        ? $doctores->items()
+        : $doctores;
+
+    $doctoresJson = collect($doctoresLista)->map(function ($d) {
+        $especialidades = collect($d['especialidades'] ?? []);
+
+        return [
+            'id'                  => $d['id'] ?? null,
+            'nombre'              => $d['usuario']['nombre'] ?? 'Médico',
+            'especialidad_nombre' => $especialidades->first()['nombre'] ?? 'General',
+            'especialidades'      => $especialidades->pluck('id'),
+            'estado_validacion'   => $d['estado_validacion'] ?? 'pendiente',
+        ];
+    })->values();
+@endphp
 <!-- Header Controls -->
 <div class="flex items-center gap-3 mb-6">
     <a href="{{ route('citas.index') }}" class="p-2 bg-surface border border-border rounded-xl text-text-secondary hover:text-primary transition-all">
@@ -86,11 +104,6 @@
                     <label for="sel_doctor" class="text-xs font-semibold text-text-secondary block">Doctor *</label>
                     <select id="sel_doctor" name="perfil_doctor_id" required onchange="consultarDisponibilidad()" class="w-full px-4 py-2.5 bg-white border border-border rounded-xl text-sm text-text-primary focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all">
                         <option value="">Seleccione Doctor...</option>
-                        @foreach($doctores as $doc)
-                            <option value="{{ $doc['id'] }}" data-especialidad="{{ $doc['especialidad_id'] ?? '' }}">
-                                Dr. {{ $doc['nombre'] }} ({{ $doc['especialidad'] ?? 'General' }})
-                            </option>
-                        @endforeach
                     </select>
                 </div>
             </div>
@@ -117,17 +130,14 @@
             </div>
 
             <!-- Motivo -->
-            <div class="space-y-1">
-                <label for="txt_motivo" class="text-xs font-semibold text-text-secondary block">Motivo de la Consulta *</label>
-                <textarea id="txt_motivo" name="motivo_consulta" rows="3" required placeholder="Describe brevemente el motivo o síntomas..." class="w-full p-4 bg-white border border-border rounded-xl text-sm text-text-primary focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all">{{ old('motivo_consulta') }}</textarea>
-            </div>
+            @include('components.motivo-consulta', ['suf' => '', 'valorInicial' => old('motivo_consulta')])
 
             <!-- Buttons -->
             <div class="pt-4 border-t border-border flex items-center justify-end gap-3">
                 <a href="{{ route('citas.index') }}" class="px-5 py-2.5 rounded-xl border border-border text-text-secondary text-xs font-semibold hover:bg-background transition-all">
                     Cancelar
                 </a>
-                <button type="submit" class="px-6 py-2.5 rounded-xl bg-primary hover:bg-primary-dark text-white text-xs font-semibold shadow-md transition-all flex items-center gap-2">
+                <button type="submit" id="btn_confirmar_cita" disabled class="px-6 py-2.5 rounded-xl bg-primary hover:bg-primary-dark text-white text-xs font-semibold shadow-md transition-all flex items-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-primary">
                     <span class="material-symbols-outlined text-lg">check_circle</span>
                     <span>Confirmar Cita</span>
                 </button>
@@ -190,5 +200,54 @@
             btn.classList.toggle('active', btn.textContent === hora);
         });
     }
+
+    // --- Doctores: mapeo corregido + solo validados (filtro en estado local, sin backend) ---
+    const doctoresAgendar = @json($doctoresJson);
+
+    (function () {
+        const select = document.getElementById('sel_doctor');
+        if (!select) return;
+
+        const visibles = doctoresAgendar.filter(d => d.estado_validacion === 'validado');
+        select.insertAdjacentHTML('beforeend', visibles.map(d =>
+            '<option value="' + d.id + '" data-especialidad="' + d.especialidades.join(',') + '">Dr. ' +
+            d.nombre + ' (' + d.especialidad_nombre + ')</option>'
+        ).join(''));
+    })();
+
+    // --- Motivo de la consulta (asunto): estado local + bloqueo del envío sin asunto ---
+    function sincronizarEstadoBtnCita() {
+        const btn = document.getElementById('btn_confirmar_cita');
+        if (btn) btn.disabled = !motivoTieneValor('');
+    }
+
+    (function () {
+        const sel = document.getElementById('sel_motivo');
+        const otro = document.getElementById('inp_motivo_otro');
+        const form = document.getElementById('form_agendar_cita');
+
+        if (sel) sel.addEventListener('change', function () {
+            syncMotivo('');
+            sincronizarEstadoBtnCita();
+        });
+        if (otro) otro.addEventListener('input', function () {
+            syncMotivo('');
+            sincronizarEstadoBtnCita();
+        });
+
+        initMotivo('', @js(old('motivo_consulta')));
+        sincronizarEstadoBtnCita();
+
+        if (form) {
+            form.addEventListener('submit', function (e) {
+                if (!motivoTieneValor('')) {
+                    e.preventDefault();
+                    marcarErrorMotivo('', true);
+                    const selMotivo = document.getElementById('sel_motivo');
+                    if (selMotivo) selMotivo.focus();
+                }
+            });
+        }
+    })();
 </script>
 @endsection

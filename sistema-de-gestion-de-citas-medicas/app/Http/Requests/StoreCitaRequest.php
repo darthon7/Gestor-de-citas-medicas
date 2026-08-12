@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Validation\Rule;
 
 class StoreCitaRequest extends FormRequest
 {
@@ -19,6 +20,11 @@ class StoreCitaRequest extends FormRequest
             'fecha_cita'         => 'required|date|after_or_equal:today',
             'hora_cita'          => 'required|date_format:H:i:s',
             'duracion_minutos'   => 'nullable|integer|min:10|max:120',
+            'motivo_consulta'    => [
+                'nullable', 'string', 'max:200',
+                Rule::requiredIf(!$this->is('api/*')),
+                'not_in:__otro__',
+            ],
         ];
     }
 
@@ -35,6 +41,7 @@ class StoreCitaRequest extends FormRequest
             'fecha_cita.after_or_equal'   => 'La fecha de la cita no puede ser en el pasado.',
             'hora_cita.required'          => 'La hora de la cita es requerida.',
             'hora_cita.date_format'       => 'El formato de la hora debe ser HH:MM:SS.',
+            'motivo_consulta.required'    => 'El motivo de la consulta es requerido.',
         ];
     }
 

@@ -46,6 +46,23 @@
         'mes' => $fechaRef->isoFormat('MMMM YYYY'),
         default => $startOfWeek->isoFormat('D [—] D [de] MMM, YYYY'),
     };
+
+    // Proyección mínima de doctores para el cliente (mapeo corregido: nombre en usuario)
+    $doctoresLista = $doctores instanceof \Illuminate\Contracts\Pagination\Paginator
+        ? $doctores->items()
+        : $doctores;
+
+    $doctoresJson = collect($doctoresLista)->map(function ($d) {
+        $especialidades = collect($d['especialidades'] ?? []);
+
+        return [
+            'id'                  => $d['id'] ?? null,
+            'nombre'              => $d['usuario']['nombre'] ?? 'Médico',
+            'especialidad_nombre' => $especialidades->first()['nombre'] ?? 'General',
+            'especialidades'      => $especialidades->pluck('id'),
+            'estado_validacion'   => $d['estado_validacion'] ?? 'pendiente',
+        ];
+    })->values();
 @endphp
 
 <!-- Control Bar -->
@@ -79,11 +96,8 @@
             <input type="hidden" name="fecha" value="{{ $fechaRef->format('Y-m-d') }}">
             <input type="hidden" name="vista" value="{{ $vista }}">
             <div class="relative">
-                <select name="doctor_id" onchange="document.getElementById('filter_form').submit();" class="appearance-none pl-4 pr-10 py-2 bg-surface border border-border rounded-xl text-xs font-medium text-text-primary focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all cursor-pointer">
+                <select name="doctor_id" id="sel_filtro_doctor" onchange="document.getElementById('filter_form').submit();" class="appearance-none pl-4 pr-10 py-2 bg-surface border border-border rounded-xl text-xs font-medium text-text-primary focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all cursor-pointer">
                     <option value="">Todos los doctores</option>
-                    @foreach($doctores as $doc)
-                        <option value="{{ $doc['id'] }}" {{ $doctorId == $doc['id'] ? 'selected' : '' }}>Dr. {{ $doc['nombre'] }}</option>
-                    @endforeach
                 </select>
                 <span class="material-symbols-outlined absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none text-text-muted text-lg">expand_more</span>
             </div>
@@ -320,4 +334,28 @@
 </div>
 
 @include('components.modal-nueva-cita')
+@endsection
+
+@section('scripts')
+<script>
+    // --- Filtro de doctores: solo validados (filtro en estado local, sin backend) ---
+    const doctoresCitas = @json($doctoresJson);
+    const doctorIdActivo = @json($doctorId);
+
+    (function () {
+        const select = document.getElementById('sel_filtro_doctor');
+        if (!select) return;
+
+        const visibles = doctoresCitas.filter(d => d.estado_validacion === 'validado');
+        const opciones = visibles.map(d => '<option value="' + d.id + '">Dr. ' + d.nombre + '</option>');
+
+        if (doctorIdActivo && !visibles.some(d => String(d.id) === String(doctorIdActivo))) {
+            const activo = doctoresCitas.find(d => String(d.id) === String(doctorIdActivo));
+            if (activo) opciones.push('<option value="' + activo.id + '">Dr. ' + activo.nombre + '</option>');
+        }
+
+        select.insertAdjacentHTML('beforeend', opciones.join(''));
+        if (doctorIdActivo) select.value = String(doctorIdActivo);
+    })();
+</script>
 @endsection
