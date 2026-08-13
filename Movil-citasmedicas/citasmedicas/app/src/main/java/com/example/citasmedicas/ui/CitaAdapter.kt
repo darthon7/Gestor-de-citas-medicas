@@ -1,10 +1,10 @@
 package com.example.citasmedicas.ui
 
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.citasmedicas.R
 import com.example.citasmedicas.model.Cita
@@ -54,31 +54,32 @@ class CitaAdapter(
     }
 
     private fun aplicarEstiloEstado(holder: CitaViewHolder, estado: String) {
+        val context = holder.itemView.context
         when (estado) {
             "agendada" -> {
                 holder.tvEstado.text = "Agendada"
-                holder.tvEstado.setBackgroundColor(Color.parseColor("#D6E9F5"))
-                holder.tvEstado.setTextColor(Color.parseColor("#1B6B93"))
+                holder.tvEstado.setBackgroundColor(ContextCompat.getColor(context, R.color.estado_agendada_bg))
+                holder.tvEstado.setTextColor(ContextCompat.getColor(context, R.color.estado_agendada_text))
             }
             "confirmada" -> {
                 holder.tvEstado.text = "Confirmada"
-                holder.tvEstado.setBackgroundColor(Color.parseColor("#B5E8D5"))
-                holder.tvEstado.setTextColor(Color.parseColor("#006A60"))
+                holder.tvEstado.setBackgroundColor(ContextCompat.getColor(context, R.color.estado_confirmada_bg))
+                holder.tvEstado.setTextColor(ContextCompat.getColor(context, R.color.estado_confirmada_text))
             }
             "completada" -> {
                 holder.tvEstado.text = "Completada"
-                holder.tvEstado.setBackgroundColor(Color.parseColor("#E2E2E2"))
-                holder.tvEstado.setTextColor(Color.parseColor("#6B6B6B"))
+                holder.tvEstado.setBackgroundColor(ContextCompat.getColor(context, R.color.estado_completada_bg))
+                holder.tvEstado.setTextColor(ContextCompat.getColor(context, R.color.estado_completada_text))
             }
             "cancelada" -> {
                 holder.tvEstado.text = "Cancelada"
-                holder.tvEstado.setBackgroundColor(Color.parseColor("#F9D6D2"))
-                holder.tvEstado.setTextColor(Color.parseColor("#E76F51"))
+                holder.tvEstado.setBackgroundColor(ContextCompat.getColor(context, R.color.estado_cancelada_bg))
+                holder.tvEstado.setTextColor(ContextCompat.getColor(context, R.color.estado_cancelada_text))
             }
             else -> {
                 holder.tvEstado.text = estado
-                holder.tvEstado.setBackgroundColor(Color.parseColor("#E2E2E2"))
-                holder.tvEstado.setTextColor(Color.parseColor("#6B6B6B"))
+                holder.tvEstado.setBackgroundColor(ContextCompat.getColor(context, R.color.estado_completada_bg))
+                holder.tvEstado.setTextColor(ContextCompat.getColor(context, R.color.estado_completada_text))
             }
         }
     }

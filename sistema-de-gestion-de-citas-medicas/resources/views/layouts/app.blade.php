@@ -4,7 +4,7 @@
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>MediAdmin - @yield('titulo', 'Gestión de Citas Médicas')</title>
+    <title>Vida+ Agenda Médica - @yield('titulo', 'Gestión de Citas Médicas')</title>
 
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>

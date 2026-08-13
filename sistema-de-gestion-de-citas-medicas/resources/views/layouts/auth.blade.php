@@ -54,7 +54,12 @@
     </script>
     <style>
         body {
-            background: linear-gradient(135deg, #0E2218 0%, #12402A 50%, #1E8E5A 100%);
+            background-color: #F6FBF4;
+            background-image:
+                radial-gradient(55rem 55rem at 108% -12%, rgba(30, 142, 90, 0.10), transparent 60%),
+                radial-gradient(45rem 45rem at -8% 112%, rgba(114, 211, 80, 0.12), transparent 60%),
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56'%3E%3Cpath d='M26 22h4v4h4v4h-4v4h-4v-4h-4v-4h4z' fill='%231E8E5A' fill-opacity='0.05'/%3E%3C/svg%3E");
+            background-attachment: fixed;
             font-family: 'Inter', sans-serif;
         }
         .material-symbols-outlined {
@@ -83,6 +88,20 @@
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
         }
+        /* Línea de vida (ECG): trazo que se dibuja una sola vez al cargar */
+        .ecg-line path {
+            stroke-dasharray: 220;
+            stroke-dashoffset: 0;
+        }
+        @media (prefers-reduced-motion: no-preference) {
+            .ecg-line path {
+                animation: ecg-draw 1.6s ease-out both;
+            }
+        }
+        @keyframes ecg-draw {
+            from { stroke-dashoffset: 220; }
+            to { stroke-dashoffset: 0; }
+        }
     </style>
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -93,7 +112,7 @@
     @include('components.landing-navbar')
 
     <main class="w-full flex-1 flex flex-col items-center justify-center p-4 my-8">
-        <div class="w-full max-w-md flex flex-col items-center">
+        <div class="w-full @yield('ancho', 'max-w-md') flex flex-col items-center">
             @include('components.flash-message')
             @yield('content')
         </div>
@@ -110,6 +129,7 @@
             mobileMenuBtn.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
         }
     </script>
+    @yield('scripts')
 </body>
 </html>
 

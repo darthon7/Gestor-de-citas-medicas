@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Grupo centrado en la zona segura (Safe Zone 72x72 dentro de 108x108) -->
+    <group
+        android:translateX="26"
+        android:translateY="29"
+        android:scaleX="1.4"
+        android:scaleY="1.4">
+
+        <!-- Corazón Blanco con Sombra o Relleno Blanco -->
+        <path
+            android:fillColor="#FFFFFFFF"
+            android:pathData="M37.313,6.353 C35.976,3.678 34.103,1.939 31.897,0.936 C30.626,0.401 29.289,0.067 27.684,0.067 C26.079,0.067 25.076,0.334 23.872,0.736 C21.866,1.471 20.261,2.675 18.924,4.146 C17.921,2.675 16.851,1.806 15.514,1.137 C13.976,0.334 12.438,0.000 10.633,0.000 C8.827,0.000 7.624,0.267 6.487,0.802 C4.414,1.672 2.608,3.210 1.471,5.082 C0.535,6.687 0.000,8.492 0.000,10.432 C0.000,13.641 1.404,16.918 3.410,19.860 C5.751,23.270 8.960,26.413 12.170,28.820 C15.580,31.295 18.656,32.899 19.392,33.234 L19.459,33.301 L19.526,33.234 L19.659,33.167 C25.744,30.225 30.425,26.280 33.501,22.736 C35.039,20.930 36.176,19.258 36.978,17.653 C37.981,15.714 38.717,13.374 38.717,11.100 C38.717,9.428 38.316,7.757 37.313,6.353 Z" />
+
+        <!-- Cruz Médica Verde Esmeralda en contraste sobre el corazón blanco -->
+        <path
+            android:fillColor="#1E8E5A"
+            android:pathData="M8.492,4.347 L8.492,0.000 L4.681,0.000 L4.681,4.347 L0.000,4.347 L0.000,8.025 L4.681,8.025 L4.681,12.371 L8.292,12.371 L8.292,8.025 L12.973,8.025 L13.040,4.347 Z" />
+    </group>
+</vector>
