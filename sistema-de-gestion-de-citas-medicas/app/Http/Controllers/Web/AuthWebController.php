@@ -2,14 +2,16 @@
 
 namespace App\Http\Controllers\Web;
 
+use App\Exceptions\AuthException;
 use App\Http\Controllers\Controller;
 use App\Http\Repository\AuthRepository;
 use App\Http\Requests\StoreLoginRequest;
-use App\Http\Requests\StoreRegistroPacienteRequest;
-use App\Http\Requests\StoreRegistroMedicoRequest;
 use App\Http\Requests\StoreRecuperacionRequest;
-use App\Http\Requests\StoreVerificarCodigoRequest;
+use App\Http\Requests\StoreRegistroMedicoRequest;
+use App\Http\Requests\StoreRegistroPacienteRequest;
 use App\Http\Requests\StoreRestablecerPasswordRequest;
+use App\Http\Requests\StoreVerificarCodigoRequest;
+use App\Models\Especialidad;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -27,6 +29,7 @@ class AuthWebController extends Controller
         if (Auth::check()) {
             return redirect()->route('dashboard');
         }
+
         return view('auth.login');
     }
 
@@ -35,17 +38,18 @@ class AuthWebController extends Controller
         try {
             $resultado = $this->authRepository->login($request->all(), $request->ip());
             if (isset($resultado['usuario'])) {
-                Auth::login($resultado['usuario']);
+                Auth::login($resultado['usuario'], $request->boolean('remember'));
                 $request->session()->regenerate();
 
                 if ($resultado['usuario']->rol === 'doctor') {
                     return redirect()->route('doctor.agenda');
                 }
+
                 return redirect()->intended(route('dashboard'));
             }
 
             return back()->withInput()->with('error', $resultado['mensaje'] ?? 'Error al iniciar sesión.');
-        } catch (\App\Exceptions\AuthException $e) {
+        } catch (AuthException $e) {
             return back()->withInput()->with('error', $e->getMessage());
         } catch (\Exception $e) {
             return back()->withInput()->with('error', $e->getMessage());
@@ -62,6 +66,7 @@ class AuthWebController extends Controller
             $request->session()->invalidate();
             $request->session()->regenerateToken();
         }
+
         return redirect()->route('landing')->with('success', 'Sesión cerrada correctamente.');
     }
 
@@ -70,6 +75,7 @@ class AuthWebController extends Controller
         if (Auth::check()) {
             return redirect()->route('dashboard');
         }
+
         return view('auth.registro');
     }
 
@@ -80,8 +86,10 @@ class AuthWebController extends Controller
             if (isset($resultado['usuario'])) {
                 Auth::login($resultado['usuario']);
                 $request->session()->regenerate();
+
                 return redirect()->route('dashboard')->with('success', 'Registro completado con éxito.');
             }
+
             return back()->withInput()->with('error', $resultado['mensaje'] ?? 'Error al registrar.');
         } catch (\Exception $e) {
             return back()->withInput()->with('error', $e->getMessage());
@@ -97,6 +105,7 @@ class AuthWebController extends Controller
     {
         try {
             $resultado = $this->authRepository->solicitarRecuperacion($request->all());
+
             return redirect()->route('verificar.codigo', ['email' => $request->email])
                 ->with('success', $resultado['mensaje'] ?? 'Código de recuperación enviado.');
         } catch (\Exception $e) {
@@ -107,6 +116,7 @@ class AuthWebController extends Controller
     public function showVerificarCodigo(Request $request)
     {
         $email = $request->query('email');
+
         return view('auth.verificar-codigo', compact('email'));
     }
 
@@ -117,9 +127,10 @@ class AuthWebController extends Controller
             if (isset($resultado['valido']) && $resultado['valido']) {
                 return redirect()->route('restablecer', [
                     'email' => $request->email,
-                    'codigo' => $request->codigo
+                    'codigo' => $request->codigo,
                 ])->with('success', 'Código verificado exitosamente.');
             }
+
             return back()->withInput()->with('error', $resultado['mensaje'] ?? 'Código no válido o expirado.');
         } catch (\Exception $e) {
             return back()->withInput()->with('error', $e->getMessage());
@@ -130,6 +141,7 @@ class AuthWebController extends Controller
     {
         $email = $request->query('email');
         $codigo = $request->query('codigo');
+
         return view('auth.restablecer-password', compact('email', 'codigo'));
     }
 
@@ -137,6 +149,7 @@ class AuthWebController extends Controller
     {
         try {
             $resultado = $this->authRepository->restablecerPassword($request->all());
+
             return redirect()->route('login')->with('success', $resultado['mensaje'] ?? 'Contraseña restablecida correctamente.');
         } catch (\Exception $e) {
             return back()->withInput()->with('error', $e->getMessage());
@@ -153,7 +166,7 @@ class AuthWebController extends Controller
         }
 
         // Obtener especialidades para el selector del formulario
-        $especialidades = \App\Models\Especialidad::orderBy('nombre')->get();
+        $especialidades = Especialidad::orderBy('nombre')->get();
 
         return view('auth.registro-doctor', compact('especialidades'));
     }
@@ -164,14 +177,14 @@ class AuthWebController extends Controller
             $resultado = $this->authRepository->registrarMedico($request->all());
 
             // Si hay error de cédula u otro, regresar con el mensaje
-            if (!isset($resultado['usuario'])) {
+            if (! isset($resultado['usuario'])) {
                 return back()->withInput()->with('error', $resultado['mensaje'] ?? 'No fue posible registrar la solicitud.');
             }
 
             // El doctor NO inicia sesión. Su cuenta queda en estado_validacion = pendiente.
             // El admin debe aprobarla desde el panel de Gestión de Doctores.
             return redirect()->route('login')->with('success',
-                '✅ Solicitud enviada con éxito. Tu cuenta está pendiente de validación por el administrador. ' .
+                '✅ Solicitud enviada con éxito. Tu cuenta está pendiente de validación por el administrador. '.
                 'Recibirás acceso una vez que sea aprobada.'
             );
         } catch (\Exception $e) {

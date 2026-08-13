@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F7F9FC"
+    android:background="@color/background"
     tools:context=".ui.CitasFragment">
 
     <LinearLayout
@@ -17,14 +17,14 @@
             android:id="@+id/tabLayoutCitas"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#FFFFFF"
+            android:background="@color/surface"
             app:tabGravity="fill"
-            app:tabIndicatorColor="#1B6B93"
+            app:tabIndicatorColor="@color/primary"
             app:tabIndicatorHeight="3dp"
             app:tabMode="fixed"
             app:tabRippleColor="@android:color/transparent"
-            app:tabSelectedTextColor="#1B6B93"
-            app:tabTextColor="#A0AEC0">
+            app:tabSelectedTextColor="@color/primary"
+            app:tabTextColor="@color/text_muted">
 
             <com.google.android.material.tabs.TabItem
                 android:layout_width="wrap_content"
@@ -42,7 +42,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#D9E0E6"/>
+            android:background="@color/border"/>
 
 
         <androidx.recyclerview.widget.RecyclerView
@@ -64,7 +64,7 @@
         android:layout_margin="24dp"
         android:contentDescription="Agendar cita"
         android:src="@android:drawable/ic_input_add"
-        app:backgroundTint="#1B6B93"
-        app:tint="#FFFFFF"/>
+        app:backgroundTint="@color/primary"
+        app:tint="@color/white"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

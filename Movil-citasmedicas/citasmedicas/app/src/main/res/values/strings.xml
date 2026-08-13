@@ -1,6 +1,6 @@
 <resources>
-    <string name="app_name">citasmedicas</string>
-    <string name="titulo_inicio">Agenda medica</string>
+    <string name="app_name">Vida+ Agenda Médica</string>
+    <string name="titulo_inicio">Vida+</string>
     <string name="sub_inicio">Tu salud, a un toque de distancia</string>
     <string name="bienvenida">Bienvenido</string>
     <string name="texto_sesion">Inicia sesion para continuar</string>

@@ -1,40 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Predeterminados-->
+    <!-- Predeterminados -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <!-- Colores Principales -->
-    <color name="primary">#1B6B93</color>
-    <color name="primary_transparent">#331B6B93</color>
-    <color name="primary_dark">#0F4C6B</color>
-    <color name="primary_light">#00BCD4</color>
+    <!-- ═══════════════════════════════════════
+         Paleta Vida+ (sincronizada con web)
+    ═══════════════════════════════════════ -->
+
+    <!-- Colores Principales (brand emerald) -->
+    <color name="primary">#1E8E5A</color>
+    <color name="primary_transparent">#331E8E5A</color>
+    <color name="primary_dark">#0E2218</color>
+    <color name="primary_light">#72D350</color>
 
     <!-- Secundario -->
-    <color name="secondary">#2A9D8F</color>
-    <color name="secondary_light">#B5E8D5</color>
+    <color name="secondary">#1E8E5A</color>
+    <color name="secondary_light">#E4F5E9</color>
 
-    <!-- Acentos -->
-    <color name="accent">#E9A319</color>
+    <!-- Acentos (brand-light / terciario) -->
+    <color name="accent">#72D350</color>
     <color name="accent_warm">#F4A261</color>
 
-    <!-- Peligro / Error /Cosas -->
+    <!-- Peligro / Error -->
     <color name="danger">#E76F51</color>
     <color name="danger_light">#FADED4</color>
     <color name="desactivado">#E5E7EB</color>
-    <color name="inputs">#6C757D</color>
+    <color name="inputs">#5B6B62</color>
 
-    <!-- Fondos -->
-    <color name="background">#F7F9FC</color>
-    <color name="background2">#EBF1F5</color>
+    <!-- Fondos (sincronizados con landing bg) -->
+    <color name="background">#F6FBF4</color>
+    <color name="background2">#F0F7F1</color>
     <color name="surface">#FFFFFF</color>
     <color name="transparent">#26FFFFFF</color>
 
     <!-- Texto -->
-    <color name="text_primary">#1A1A2E</color>
-    <color name="text_secondary">#4A5568</color>
-    <color name="text_muted">#A0AEC0</color>
+    <color name="text_primary">#10231A</color>
+    <color name="text_secondary">#5B6B62</color>
+    <color name="text_muted">#8FA198</color>
 
     <!-- Bordes -->
-    <color name="border">#E2E8F0</color>
+    <color name="border">#E3EDE5</color>
+
+    <!-- ═══ Estados de citas ═══ -->
+    <color name="estado_agendada_bg">#E4F5E9</color>
+    <color name="estado_agendada_text">#1E8E5A</color>
+    <color name="estado_confirmada_bg">#D1FAE5</color>
+    <color name="estado_confirmada_text">#065F46</color>
+    <color name="estado_completada_bg">#E2E2E2</color>
+    <color name="estado_completada_text">#6B6B6B</color>
+    <color name="estado_cancelada_bg">#FADED4</color>
+    <color name="estado_cancelada_text">#E76F51</color>
+
+    <!-- Navbar gradient (Vida+ dark emerald) -->
+    <color name="navbar_start">#0E2218</color>
+    <color name="navbar_center">#165838</color>
+    <color name="navbar_end">#1E8E5A</color>
 </resources>
