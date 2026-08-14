@@ -23,7 +23,7 @@ import org.json.JSONObject
 
 class LoginActivity : AppCompatActivity() {
     lateinit var login_usuario: TextInputEditText
-    lateinit var txt_ingresar: TextInputEditText
+    lateinit var txt_ingresar: TextView
     lateinit var login_usuariocontra: TextInputEditText
     lateinit var login_usuario1: TextInputLayout
     lateinit var login_usuariocontra1: TextInputLayout
@@ -54,7 +54,7 @@ class LoginActivity : AppCompatActivity() {
         btn_login.setOnClickListener {
             if (validar()){
                 btn_login.isEnabled=false
-                txt_ingresar.setText( getString(R.string.ingresando))
+                txt_ingresar.text=getString(R.string.ingresando)
                 login()
             }
         }
@@ -126,7 +126,7 @@ class LoginActivity : AppCompatActivity() {
             },
             { error ->
                 btn_login.isEnabled=true
-                txt_ingresar.setText(getString(R.string.ingreso))
+                txt_ingresar.text=getString(R.string.ingreso)
                 val statusCode = error.networkResponse?.statusCode
                 val mensaje = if(statusCode == 401 || statusCode == 403 || statusCode == 422) {
                     try {
