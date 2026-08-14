@@ -81,7 +81,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/Paso1"
-                            android:paddingBottom="15dp"></TextView>
+                            android:paddingBottom="15dp"
+                            android:textColor="@color/black"></TextView>
                         <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/input_nombre"
                             android:paddingBottom="15dp"
@@ -192,6 +193,7 @@
                             app:helperTextTextColor="@color/inputs"
                             app:helperTextEnabled="true"
                             android:hint="@string/Sexo"
+                            android:textColorHint="@color/inputs"
                             android:layout_marginBottom="15dp"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -247,7 +249,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/Paso2"
-                        android:paddingBottom="15dp"></TextView>
+                        android:paddingBottom="15dp"
+                        android:textColor="@color/black"></TextView>
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/input_correo"
                         android:paddingBottom="15dp"
@@ -364,7 +367,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/Paso3"
-                        android:paddingBottom="15dp"></TextView>
+                        android:paddingBottom="15dp"
+                        android:textColor="@color/black"></TextView>
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/input_curp"
                         android:paddingBottom="15dp"

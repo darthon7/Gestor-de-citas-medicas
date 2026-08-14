@@ -216,7 +216,8 @@
                         android:inputType="phone"
                         android:maxLength="10"
                         android:digits="0123456789"
-                        android:maxLines="1"/>
+                        android:maxLines="1"
+                        android:textColor="@color/black"/>
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <androidx.cardview.widget.CardView

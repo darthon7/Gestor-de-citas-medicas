@@ -4,6 +4,7 @@
     <string name="sub_inicio">Tu salud, a un toque de distancia</string>
     <string name="bienvenida">Bienvenido</string>
     <string name="texto_sesion">Inicia sesion para continuar</string>
+    <string name="ingresando">Ingresando..</string>
     <string name="ingreso">Ingresar</string>
     <string name="correo">Correo electronico</string>
     <string name="help_correo">Ingresa tu correo electronico</string>

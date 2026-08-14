@@ -23,6 +23,7 @@ import org.json.JSONObject
 
 class LoginActivity : AppCompatActivity() {
     lateinit var login_usuario: TextInputEditText
+    lateinit var txt_ingresar: TextInputEditText
     lateinit var login_usuariocontra: TextInputEditText
     lateinit var login_usuario1: TextInputLayout
     lateinit var login_usuariocontra1: TextInputLayout
@@ -42,6 +43,7 @@ class LoginActivity : AppCompatActivity() {
         login_usuariocontra=findViewById(R.id.login_usuariocontra)
         btn_olvido=findViewById(R.id.btn_olvido)
         btn_login=findViewById(R.id.btn_login)
+        txt_ingresar=findViewById(R.id.txt_ingresar)
         btn_registro=findViewById(R.id.btn_registro)
         login_usuario1=findViewById(R.id.login_usuario1)
         login_usuariocontra1=findViewById(R.id.login_usuariocontra1)
@@ -50,29 +52,38 @@ class LoginActivity : AppCompatActivity() {
             startActivity(Intent(this, Recuperar::class.java))
         }
         btn_login.setOnClickListener {
-           login()
+            if (validar()){
+                btn_login.isEnabled=false
+                txt_ingresar.setText( getString(R.string.ingresando))
+                login()
+            }
         }
         btn_registro.setOnClickListener {
             startActivity(Intent(this, Registro::class.java))
         }
     }
-    private fun login(){
+    private fun validar(): Boolean{
         val email=login_usuario.text.toString().trim()
         val password=login_usuariocontra.text.toString().trim()
         login_usuario1.error=null
         login_usuariocontra1.error=null
         if (email.isEmpty()){
             login_usuario1.error= Singleton.arraylist_mensajes[0]
-            return
+            return false
         }
         else if (!email.matches(Regex(Singleton.arraylist_validaciones[0]))){
             login_usuario1.error= Singleton.arraylist_mensajes[1]
-            return
+            return false
         }
         if (password.isEmpty()){
             login_usuariocontra1.error= Singleton.arraylist_mensajes[0]
-            return
+            return false
         }
+        return true
+    }
+    private fun login(){
+        val email = login_usuario.text.toString().trim()
+        val password = login_usuariocontra.text.toString().trim()
         val url="${Singleton.BASE_URL}/auth/login"
         val body= JSONObject()
         body.put("email",email)
@@ -114,6 +125,8 @@ class LoginActivity : AppCompatActivity() {
                 }
             },
             { error ->
+                btn_login.isEnabled=true
+                txt_ingresar.setText(getString(R.string.ingreso))
                 val statusCode = error.networkResponse?.statusCode
                 val mensaje = if(statusCode == 401 || statusCode == 403 || statusCode == 422) {
                     try {
