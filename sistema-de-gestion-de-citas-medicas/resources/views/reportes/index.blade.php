@@ -34,7 +34,14 @@
             <select id="sel_doctor" name="doctor_id" class="pl-4 pr-8 py-2.5 bg-white border border-border rounded-xl text-xs font-medium text-text-primary focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all">
                 <option value="">Todos</option>
                 @foreach($doctores as $doc)
-                    <option value="{{ $doc['id'] }}" {{ $doctorId == $doc['id'] ? 'selected' : '' }}>Dr. {{ $doc['nombre'] }}</option>
+                    @php
+                        $docId = is_object($doc) ? $doc->id : ($doc['id'] ?? null);
+                        $nombre = is_object($doc)
+                            ? ($doc->usuario?->nombre ?? ($doc->nombre ?? 'Médico'))
+                            : ($doc['usuario']['nombre'] ?? ($doc['nombre'] ?? 'Médico'));
+                        $nombreCompleto = preg_match('/^(dr|dra)\.?\s/i', $nombre) ? $nombre : 'Dr. ' . $nombre;
+                    @endphp
+                    <option value="{{ $docId }}" {{ $doctorId == $docId ? 'selected' : '' }}>{{ $nombreCompleto }}</option>
                 @endforeach
             </select>
         </div>

@@ -35,14 +35,17 @@
         : $doctores;
 
     $doctoresJson = collect($doctoresLista)->map(function ($d) {
-        $especialidades = collect($d['especialidades'] ?? []);
+        $especialidades = collect(is_object($d) ? ($d->especialidades ?? []) : ($d['especialidades'] ?? []));
+        $nombre = is_object($d)
+            ? ($d->usuario?->nombre ?? ($d->nombre ?? 'Médico'))
+            : ($d['usuario']['nombre'] ?? ($d['nombre'] ?? 'Médico'));
 
         return [
-            'id'                  => $d['id'] ?? null,
-            'nombre'              => $d['usuario']['nombre'] ?? 'Médico',
-            'especialidad_nombre' => $especialidades->first()['nombre'] ?? 'General',
+            'id'                  => is_object($d) ? $d->id : ($d['id'] ?? null),
+            'nombre'              => $nombre,
+            'especialidad_nombre' => $especialidades->first()['nombre'] ?? ($especialidades->first()->nombre ?? 'General'),
             'especialidades'      => $especialidades->pluck('id'),
-            'estado_validacion'   => $d['estado_validacion'] ?? 'pendiente',
+            'estado_validacion'   => is_object($d) ? ($d->estado_validacion ?? 'pendiente') : ($d['estado_validacion'] ?? 'pendiente'),
         ];
     })->values();
 @endphp
@@ -123,7 +126,7 @@
 
             <!-- Slots recomendados -->
             <div class="space-y-1">
-                <label class="text-xs font-semibold text-text-secondary block">Horarios Sugeridos Disponibles</label>
+                <label class="text-xs font-semibold text-text-secondary block">Horarios Disponibles</label>
                 <div id="slots_container" class="flex flex-wrap gap-2 pt-1">
                     <p class="text-xs text-text-muted">Seleccione doctor y fecha para consultar horarios disponibles.</p>
                 </div>
@@ -208,10 +211,15 @@
         const select = document.getElementById('sel_doctor');
         if (!select) return;
 
+        function formatearNombreDoctorAgendar(nombre) {
+            const nom = (nombre || 'Médico').trim();
+            return /^(dr|dra)\.?\s/i.test(nom) ? nom : 'Dr. ' + nom;
+        }
+
         const visibles = doctoresAgendar.filter(d => d.estado_validacion === 'validado');
         select.insertAdjacentHTML('beforeend', visibles.map(d =>
-            '<option value="' + d.id + '" data-especialidad="' + d.especialidades.join(',') + '">Dr. ' +
-            d.nombre + ' (' + d.especialidad_nombre + ')</option>'
+            '<option value="' + d.id + '" data-especialidad="' + (d.especialidades || []).join(',') + '">' +
+            formatearNombreDoctorAgendar(d.nombre) + ' (' + (d.especialidad_nombre || 'General') + ')</option>'
         ).join(''));
     })();
 

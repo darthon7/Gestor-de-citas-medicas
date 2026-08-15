@@ -47,6 +47,10 @@
                 <span class="material-symbols-outlined text-xl">calendar_today</span>
                 <span>Mi Agenda</span>
             </a>
+            <a href="{{ route('citas.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all {{ request()->routeIs('citas.*') ? 'sidebar-item-active text-white' : 'text-white/80 hover:text-white hover:bg-white/10' }}">
+                <span class="material-symbols-outlined text-xl">calendar_month</span>
+                <span>Calendario</span>
+            </a>
         @endif
 
         @if(Auth::user()->rol === 'admin')
