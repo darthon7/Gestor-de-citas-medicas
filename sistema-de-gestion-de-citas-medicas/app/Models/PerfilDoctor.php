@@ -25,6 +25,15 @@ class PerfilDoctor extends Model
         'validado_en' => 'datetime',
     ];
 
+    protected $appends = [
+        'nombre',
+    ];
+
+    public function getNombreAttribute(): string
+    {
+        return $this->usuario?->nombre ?? 'Médico';
+    }
+
     public function usuario()
     {
         return $this->belongsTo(Usuario::class, 'usuario_id');

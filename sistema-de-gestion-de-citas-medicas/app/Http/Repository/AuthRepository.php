@@ -202,12 +202,6 @@ class AuthRepository
     public function registrarMedico(array $data)
     {
         try {
-            // Verificar cédula contra mock SEP
-            $cedula = VerificacionCedula::where('numero_cedula', $data['cedula_profesional'])->first();
-            if (!$cedula || !$cedula->es_valida) {
-                return ['mensaje' => 'La cédula profesional no se encuentra registrada en el sistema de verificación.'];
-            }
-
             $usuario = Usuario::create([
                 'nombre'   => $data['nombre'],
                 'email'    => $data['email'],

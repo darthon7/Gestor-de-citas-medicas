@@ -117,7 +117,7 @@
                 <input type="hidden" name="duracion_minutos" id="inp_duracion_cita" value="30">
 
                 <div class="space-y-1 mt-4">
-                    <label class="text-xs font-semibold text-text-secondary block">Horarios Sugeridos Disponibles</label>
+                    <label class="text-xs font-semibold text-text-secondary block">Horarios Disponibles</label>
                     <div id="slots_container_cita" class="flex flex-wrap gap-2 pt-1">
                         <p class="text-xs text-text-muted">Seleccione doctor y fecha para consultar horarios disponibles.</p>
                     </div>
@@ -311,10 +311,15 @@
         const select = elId('sel_doctor_cita');
         if (!select) return;
 
+        function formatearNombreDoctorModal(nombre) {
+            const nom = (nombre || 'Médico').trim();
+            return /^(dr|dra)\.?\s/i.test(nom) ? nom : 'Dr. ' + nom;
+        }
+
         const visibles = doctoresModalCita.filter(d => d.estado_validacion === 'validado');
         select.insertAdjacentHTML('beforeend', visibles.map(d =>
-            '<option value="' + d.id + '" data-especialidades="' + d.especialidades.join(',') + '">Dr. ' +
-            d.nombre + ' (' + d.especialidad_nombre + ')</option>'
+            '<option value="' + d.id + '" data-especialidades="' + (d.especialidades || []).join(',') + '">' +
+            formatearNombreDoctorModal(d.nombre) + ' (' + (d.especialidad_nombre || 'General') + ')</option>'
         ).join(''));
     })();
 
