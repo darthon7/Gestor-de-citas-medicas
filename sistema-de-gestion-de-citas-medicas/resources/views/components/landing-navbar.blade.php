@@ -30,7 +30,10 @@
             <a href="{{ route('landing') }}#inicio" class="hover:text-emerald-300 transition-colors py-2">Inicio</a>
             <a href="{{ route('landing') }}#caracteristicas" class="hover:text-emerald-300 transition-colors py-2">Servicios</a>
             <a href="{{ route('especialidades.publicas') }}" class="hover:text-emerald-300 transition-colors py-2">Especialidades</a>
-            
+            <a href="https://github.com/darthon7/Gestor-de-citas-medicas/releases/download/v1.0.27/app-debug.apk" target="_blank" rel="noopener noreferrer" class="hover:text-emerald-300 transition-colors py-2 flex items-center gap-1.5">
+                <i data-lucide="download" class="w-4 h-4"></i>
+                <span>Descarga</span>
+            </a>
         </nav>
 
         <!-- Acciones / Auth Buttons -->
@@ -62,6 +65,10 @@
         <a href="{{ route('landing') }}#inicio" class="block text-base font-semibold text-white hover:text-emerald-300">Inicio</a>
         <a href="{{ route('landing') }}#caracteristicas" class="block text-base font-semibold text-white hover:text-emerald-300">Servicios</a>
         <a href="{{ route('especialidades.publicas') }}" class="block text-base font-semibold text-white hover:text-emerald-300">Especialidades</a>
+        <a href="https://github.com/darthon7/Gestor-de-citas-medicas/releases/download/v1.0.27/app-debug.apk" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 text-base font-semibold text-white hover:text-emerald-300">
+            <i data-lucide="download" class="w-4 h-4"></i>
+            <span>Descarga</span>
+        </a>
         
         <div class="pt-4 border-t border-emerald-800/60 flex flex-col gap-3">
             @auth

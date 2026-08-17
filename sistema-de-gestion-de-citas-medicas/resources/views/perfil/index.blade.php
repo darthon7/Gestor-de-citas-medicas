@@ -12,22 +12,34 @@
     <!-- Profile Hero Header -->
     <div class="rounded-2xl p-6 text-white flex flex-col sm:flex-row sm:items-center justify-between gap-4" style="background: linear-gradient(135deg, #0F4C6B 0%, #1B6B93 100%);">
         <div class="flex items-center gap-4">
-            <div class="w-16 h-16 rounded-full bg-white/10 border-2 border-white/30 text-white font-bold flex items-center justify-center text-2xl flex-shrink-0">
-                {{ strtoupper(substr($usuario->nombre ?? 'U', 0, 2)) }}
-            </div>
+            @if(!empty($usuario->foto_perfil))
+                <img src="{{ asset('storage/' . $usuario->foto_perfil) }}" alt="{{ $usuario->nombre }}" class="w-16 h-16 rounded-full object-cover border-2 border-white/40 shadow-md flex-shrink-0 bg-white/20">
+            @else
+                <div class="w-16 h-16 rounded-full bg-white/10 border-2 border-white/30 text-white font-bold flex items-center justify-center text-2xl flex-shrink-0">
+                    {{ strtoupper(substr($usuario->nombre ?? 'U', 0, 2)) }}
+                </div>
+            @endif
             <div>
                 <h2 class="font-bold text-lg">{{ $usuario->nombre }}</h2>
                 <span class="inline-block mt-1 px-3 py-0.5 rounded-full bg-white/10 border border-white/20 text-xs font-semibold capitalize">{{ $usuario->rol }}</span>
             </div>
         </div>
 
-        <form method="POST" action="{{ route('perfil.foto') }}" enctype="multipart/form-data" class="self-start sm:self-auto">
+        <form id="form_foto_perfil" method="POST" action="{{ route('perfil.foto') }}" enctype="multipart/form-data" class="self-start sm:self-auto">
             @csrf
-            <label for="inp_foto_perfil" class="px-4 py-2.5 bg-white/10 border border-white/20 rounded-xl text-xs font-semibold cursor-pointer hover:bg-white/20 transition-all flex items-center gap-2">
-                <span class="material-symbols-outlined text-lg">photo_camera</span>
-                <span>Actualizar Foto</span>
+            <label for="inp_foto_perfil" id="lbl_foto_perfil" class="px-4 py-2.5 bg-white/10 border border-white/20 rounded-xl text-xs font-semibold cursor-pointer hover:bg-white/20 transition-all flex items-center gap-2">
+                <span id="icon_foto_perfil" class="material-symbols-outlined text-lg">photo_camera</span>
+                <span id="text_foto_perfil">Actualizar Foto</span>
             </label>
-            <input type="file" id="inp_foto_perfil" name="foto" accept="image/*" class="hidden" onchange="this.form.submit()">
+            <input type="file" id="inp_foto_perfil" name="foto" accept="image/png,image/jpeg,image/jpg,image/webp,image/gif" class="hidden" onchange="
+                if(this.files && this.files[0]) {
+                    document.getElementById('lbl_foto_perfil').classList.add('opacity-70', 'pointer-events-none');
+                    document.getElementById('text_foto_perfil').innerText = 'Subiendo...';
+                    document.getElementById('icon_foto_perfil').innerText = 'progress_activity';
+                    document.getElementById('icon_foto_perfil').classList.add('animate-spin');
+                    this.form.submit();
+                }
+            ">
         </form>
     </div>
 

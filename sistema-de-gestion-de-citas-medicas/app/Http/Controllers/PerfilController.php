@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Repository\UsuariosRepository;
 use Illuminate\Http\Request;
 
+use Illuminate\Support\Facades\Storage;
+
 class PerfilController extends Controller
 {
     protected $usuariosRepository;
@@ -51,9 +53,23 @@ class PerfilController extends Controller
     public function actualizarFoto(Request $request)
     {
         try {
-            $request->validate(['foto' => 'required|image|max:2048']);
+            $request->validate([
+                'foto' => 'required|image|mimes:jpeg,png,jpg,webp,gif|max:10240',
+            ], [
+                'foto.required' => 'Debes seleccionar una imagen.',
+                'foto.image'    => 'El archivo seleccionado debe ser una imagen.',
+                'foto.mimes'    => 'Formato no compatible. Usa JPG, PNG, WEBP o GIF.',
+                'foto.max'      => 'La imagen no debe superar los 10 MB.',
+                'foto.uploaded' => 'No se pudo subir la imagen. Verifica que el archivo no supere el tamaño permitido.',
+            ]);
+
+            $user = $request->user();
+            if ($user->foto_perfil && Storage::disk('public')->exists($user->foto_perfil)) {
+                Storage::disk('public')->delete($user->foto_perfil);
+            }
+
             $ruta      = $request->file('foto')->store('fotos_perfil', 'public');
-            $resultado = $this->usuariosRepository->actualizarFoto($request->user()->id, $ruta);
+            $resultado = $this->usuariosRepository->actualizarFoto($user->id, $ruta);
             return response()->json($resultado, 200);
         } catch (\Exception $e) {
             return response()->json(['mensaje' => $e->getMessage()], 500);

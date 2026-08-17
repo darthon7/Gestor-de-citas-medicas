@@ -6,7 +6,7 @@
         NUEVO
     </span>
     <span class="text-center text-amber-100/90">
-        Agenda citas médicas y recibe recordatorios inteligentes &middot; <strong class="text-amber-300 font-semibold">Descarga Vida+ gratis</strong>
+        Agenda citas médicas y recibe recordatorios inteligentes &middot; <a href="https://github.com/darthon7/Gestor-de-citas-medicas/releases/download/v1.0.27/app-debug.apk" target="_blank" rel="noopener noreferrer" class="text-amber-300 font-semibold underline decoration-amber-400/50 hover:text-amber-200 transition-colors">Descarga Vida+ gratis</a>
     </span>
     <button type="button" 
             onclick="document.getElementById('topBanner').style.display='none'" 

@@ -16,9 +16,13 @@
 <!-- Doctor Mini Card -->
 <div class="bg-surface rounded-2xl card-shadow border border-border p-5 mb-6 flex flex-wrap items-center justify-between gap-4">
     <div class="flex items-center gap-4">
-        <div class="w-14 h-14 rounded-full bg-primary-light/40 text-primary-dark font-bold flex items-center justify-center border border-primary/20 text-lg">
-            {{ strtoupper(substr($doctor->usuario->nombre ?? 'D', 0, 2)) }}
-        </div>
+        @if(!empty($doctor->usuario->foto_perfil))
+            <img src="{{ asset('storage/' . $doctor->usuario->foto_perfil) }}" alt="{{ $doctor->usuario->nombre }}" class="w-14 h-14 rounded-full object-cover border-2 border-primary/30 shadow-sm flex-shrink-0 bg-background">
+        @else
+            <div class="w-14 h-14 rounded-full bg-primary-light/40 text-primary-dark font-bold flex items-center justify-center border border-primary/20 text-lg flex-shrink-0">
+                {{ strtoupper(substr($doctor->usuario->nombre ?? 'D', 0, 2)) }}
+            </div>
+        @endif
         <div>
             <h4 class="font-bold text-text-primary text-base">Dr. {{ $doctor->usuario->nombre ?? 'Médico' }}</h4>
             <span class="inline-block mt-1 px-2.5 py-0.5 rounded-md bg-background text-primary text-[11px] font-semibold border border-border">{{ $doctor->especialidades->first()->nombre ?? 'General' }}</span>
