@@ -41,6 +41,7 @@ class DoctorWebController extends Controller
 
         $fecha = $request->query('fecha'); // Si es null, trae todas las fechas
         $estado = $request->query('estado');
+        $buscar = $request->query('buscar');
 
         $query = Cita::with(['perfilPaciente.usuario', 'especialidad', 'notaConsulta'])
             ->where('perfil_doctor_id', $perfilDoctor->id);
@@ -53,11 +54,17 @@ class DoctorWebController extends Controller
             $query->where('estado', $estado);
         }
 
+        if (!empty($buscar)) {
+            $query->whereHas('perfilPaciente.usuario', function ($qu) use ($buscar) {
+                $qu->where('nombre', 'like', "%{$buscar}%");
+            });
+        }
+
         $citas = $query->orderBy('fecha_cita', 'desc')
             ->orderBy('hora_cita', 'asc')
             ->get();
 
-        return view('doctor.agenda', compact('citas', 'fecha', 'estado', 'perfilDoctor'));
+        return view('doctor.agenda', compact('citas', 'fecha', 'estado', 'buscar', 'perfilDoctor'));
     }
 
     public function horario(Request $request)

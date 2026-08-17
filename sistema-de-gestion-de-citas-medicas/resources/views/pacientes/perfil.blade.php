@@ -19,9 +19,13 @@
 <div class="bg-surface rounded-2xl p-6 card-shadow border border-border mb-6">
     <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
         <div class="flex items-center gap-4">
-            <div class="w-16 h-16 rounded-full bg-primary-light/40 text-primary-dark font-bold text-xl flex items-center justify-center border-2 border-primary/20 flex-shrink-0">
-                {{ strtoupper(substr($paciente->usuario?->nombre ?? 'P', 0, 2)) }}
-            </div>
+            @if(!empty($paciente->usuario?->foto_perfil))
+                <img src="{{ asset('storage/' . $paciente->usuario->foto_perfil) }}" alt="{{ $paciente->usuario->nombre }}" class="w-16 h-16 rounded-full object-cover border-2 border-primary/20 flex-shrink-0 bg-background">
+            @else
+                <div class="w-16 h-16 rounded-full bg-primary-light/40 text-primary-dark font-bold text-xl flex items-center justify-center border-2 border-primary/20 flex-shrink-0">
+                    {{ strtoupper(substr($paciente->usuario?->nombre ?? 'P', 0, 2)) }}
+                </div>
+            @endif
             <div>
                 <div class="flex items-center gap-3">
                     <h2 class="text-xl font-bold text-text-primary">{{ $paciente->usuario?->nombre }}</h2>

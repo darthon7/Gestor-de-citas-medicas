@@ -21,6 +21,10 @@ class LandingWebController extends Controller
             return view('landing');
         }
 
+        if (Auth::user()->rol === 'doctor') {
+            return redirect()->route('doctor.agenda');
+        }
+
         return app(DashboardWebController::class)->index();
     }
 

@@ -81,11 +81,6 @@
     </div>
 </div>
 
-<!-- System Status Indicator -->
-<div class="mt-6 flex items-center justify-center space-x-2 text-xs text-text-secondary">
-    <div class="w-2 h-2 rounded-full bg-brand-emerald animate-pulse"></div>
-    <span>Sistema Vida+ en línea &middot; Acceso Seguro</span>
-</div>
 @endsection
 
 @section('scripts')

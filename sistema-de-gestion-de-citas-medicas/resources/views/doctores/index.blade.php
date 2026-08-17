@@ -64,9 +64,13 @@
         @endphp
 
         <div class="relative bg-surface rounded-xl card-shadow card-shadow-hover transition-all {{ $cardClass }} flex flex-col items-center text-center p-6">
-            <div class="w-16 h-16 rounded-full {{ $inactivo ? 'bg-surface-dim text-on-surface-variant' : 'bg-primary-light text-primary-dark' }} font-bold flex items-center justify-center mb-4 text-lg">
-                {{ $iniciales }}
-            </div>
+            @if(!empty($doc['usuario']['foto_perfil']))
+                <img src="{{ asset('storage/' . $doc['usuario']['foto_perfil']) }}" alt="{{ $nombreCompleto }}" class="w-16 h-16 rounded-full object-cover border-2 border-primary/30 shadow-md mb-4 flex-shrink-0 bg-background {{ $inactivo ? 'opacity-50 grayscale' : '' }}">
+            @else
+                <div class="w-16 h-16 rounded-full {{ $inactivo ? 'bg-surface-dim text-on-surface-variant' : 'bg-primary-light text-primary-dark' }} font-bold flex items-center justify-center mb-4 text-lg flex-shrink-0">
+                    {{ $iniciales }}
+                </div>
+            @endif
 
             <h3 class="font-semibold text-[16px] text-text-primary mb-1 truncate w-full">{{ $nombreCompleto }}</h3>
             <span class="{{ $inactivo ? 'bg-surface-variant text-on-surface-variant' : 'bg-secondary-light text-on-secondary-container' }} px-3 py-1 rounded-full text-[12px] font-medium mb-2">

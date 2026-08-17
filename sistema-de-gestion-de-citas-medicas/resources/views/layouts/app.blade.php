@@ -80,9 +80,13 @@
                             <p class="text-sm font-semibold text-text-primary leading-tight">{{ Auth::user()->nombre }}</p>
                             <p class="text-xs text-text-secondary capitalize">{{ Auth::user()->rol }}</p>
                         </div>
-                        <div class="w-9 h-9 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm shadow-sm">
-                            {{ strtoupper(substr(Auth::user()->nombre ?? 'U', 0, 1)) }}
-                        </div>
+                        @if(!empty(Auth::user()->foto_perfil))
+                            <img src="{{ asset('storage/' . Auth::user()->foto_perfil) }}" alt="{{ Auth::user()->nombre }}" class="w-9 h-9 rounded-full object-cover border border-primary/30 shadow-sm flex-shrink-0">
+                        @else
+                            <div class="w-9 h-9 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm shadow-sm flex-shrink-0">
+                                {{ strtoupper(substr(Auth::user()->nombre ?? 'U', 0, 1)) }}
+                            </div>
+                        @endif
                     </a>
                     @endauth
                 </div>

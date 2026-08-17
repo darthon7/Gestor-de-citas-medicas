@@ -25,42 +25,59 @@
             <h1 class="text-2xl font-bold text-primary-dark">Mi Agenda Médica</h1>
         </div>
         <p class="text-xs text-text-secondary mt-1">
-            @if(!empty($fecha))
-                Mostrando <strong class="text-primary">{{ count($citas) }}</strong> consulta(s) para el <strong>{{ \Carbon\Carbon::parse($fecha)->isoFormat('D [de] MMMM, YYYY') }}</strong>.
+            @if(!empty($fecha) || !empty($buscar))
+                Mostrando <strong class="text-primary">{{ count($citas) }}</strong> consulta(s) 
+                @if(!empty($fecha)) para el <strong>{{ \Carbon\Carbon::parse($fecha)->isoFormat('D [de] MMMM, YYYY') }}</strong> @endif
+                @if(!empty($buscar)) para el paciente "<strong>{{ $buscar }}</strong>" @endif.
             @else
                 Tienes <strong class="text-primary">{{ count($citas) }}</strong> consulta(s) registradas en total en tu agenda médica.
             @endif
         </p>
     </div>
 
-    <!-- Date and filter bar -->
-    <div class="flex flex-wrap items-center gap-2">
-        <a href="{{ route('doctor.agenda') }}" class="px-3.5 py-2 rounded-xl text-xs font-semibold transition-all {{ empty($fecha) ? 'bg-primary text-white shadow-sm' : 'bg-surface border border-border text-text-secondary hover:bg-background' }}">
-            Todas las fechas
-        </a>
-        <a href="{{ route('doctor.agenda', ['fecha' => date('Y-m-d')]) }}" class="px-3.5 py-2 rounded-xl text-xs font-semibold transition-all {{ $fecha === date('Y-m-d') ? 'bg-primary text-white shadow-sm' : 'bg-surface border border-border text-text-secondary hover:bg-background' }}">
-            Hoy
-        </a>
-
-        <form method="GET" action="{{ route('doctor.agenda') }}" class="flex items-center gap-2 m-0">
-            <div class="relative">
-                <input type="date" id="inp_fecha_agenda" name="fecha" value="{{ $fecha ?? '' }}" onchange="this.form.submit()" class="px-3.5 py-2 bg-surface border border-border rounded-xl text-xs font-medium text-text-primary focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all">
-            </div>
-            @if(!empty($fecha))
-                <a href="{{ route('doctor.agenda') }}" class="p-2 text-text-muted hover:text-danger hover:bg-danger-light/50 rounded-xl transition-colors" title="Quitar filtro de fecha">
-                    <span class="material-symbols-outlined text-lg">close</span>
+    <!-- Patient Name Search and Date Filter Bar -->
+    <form method="GET" action="{{ route('doctor.agenda') }}" class="flex flex-wrap items-center gap-2 m-0">
+        <!-- Buscador por nombre de paciente -->
+        <div class="relative min-w-[240px] flex-1 sm:flex-initial">
+            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-muted text-lg pointer-events-none">person_search</span>
+            <input type="text" name="buscar" value="{{ $buscar ?? '' }}" placeholder="Buscar paciente por nombre..." class="w-full pl-9 pr-8 py-2 bg-surface border border-border rounded-xl text-xs font-medium text-text-primary focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all">
+            @if(!empty($buscar))
+                <a href="{{ route('doctor.agenda', array_filter(['fecha' => $fecha])) }}" class="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-danger" title="Limpiar búsqueda">
+                    <span class="material-symbols-outlined text-base">close</span>
                 </a>
             @endif
-        </form>
-    </div>
+        </div>
+
+        <!-- Selector de fecha opcional -->
+        <div class="relative">
+            <input type="date" id="inp_fecha_agenda" name="fecha" value="{{ $fecha ?? '' }}" onchange="this.form.submit()" class="px-3.5 py-2 bg-surface border border-border rounded-xl text-xs font-medium text-text-primary focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all">
+        </div>
+
+        <!-- Botón Buscar -->
+        <button type="submit" class="px-3.5 py-2 bg-primary hover:bg-primary-dark text-white rounded-xl text-xs font-semibold shadow-sm transition-all flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-base">search</span>
+            <span>Buscar</span>
+        </button>
+
+        @if(!empty($fecha) || !empty($buscar))
+            <a href="{{ route('doctor.agenda') }}" class="px-3 py-2 text-xs font-semibold text-rose-600 hover:bg-rose-50 border border-rose-200 rounded-xl transition-all flex items-center gap-1" title="Restablecer filtros">
+                <span class="material-symbols-outlined text-base">filter_alt_off</span>
+                <span>Limpiar</span>
+            </a>
+        @endif
+    </form>
 </div>
 
 <!-- Welcome Banner -->
 <div class="rounded-2xl p-6 mb-6 text-white flex flex-col md:flex-row md:items-center justify-between gap-4" style="background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-container) 100%);">
     <div class="flex items-center gap-4">
-        <div class="w-12 h-12 rounded-full bg-white/10 border border-white/20 flex items-center justify-center font-bold text-lg">
-            {{ strtoupper(substr($perfilDoctor->usuario->nombre ?? Auth::user()->nombre, 0, 2)) }}
-        </div>
+        @if(!empty(Auth::user()->foto_perfil))
+            <img src="{{ asset('storage/' . Auth::user()->foto_perfil) }}" alt="{{ Auth::user()->nombre }}" class="w-12 h-12 rounded-full object-cover border-2 border-white/30 flex-shrink-0">
+        @else
+            <div class="w-12 h-12 rounded-full bg-white/10 border border-white/20 flex items-center justify-center font-bold text-lg flex-shrink-0">
+                {{ strtoupper(substr($perfilDoctor->usuario->nombre ?? Auth::user()->nombre, 0, 2)) }}
+            </div>
+        @endif
         <div>
             <h3 class="font-bold text-lg">Hola, Dr. {{ Auth::user()->nombre }}</h3>
             <p class="text-xs text-white/70">
@@ -187,8 +204,10 @@
     @empty
         <div class="relative z-10 bg-surface rounded-2xl card-shadow border border-border p-10 text-center text-xs text-text-muted">
             <span class="material-symbols-outlined text-4xl mb-2 block text-text-muted">event_busy</span>
-            @if(!empty($fecha))
-                No tienes consultas agendadas para el {{ \Carbon\Carbon::parse($fecha)->isoFormat('D [de] MMMM, YYYY') }}.
+            @if(!empty($fecha) || !empty($buscar))
+                No se encontraron consultas
+                @if(!empty($buscar)) para el paciente "<strong>{{ $buscar }}</strong>" @endif
+                @if(!empty($fecha)) en la fecha {{ \Carbon\Carbon::parse($fecha)->isoFormat('D [de] MMMM, YYYY') }} @endif.
                 <div class="mt-3">
                     <a href="{{ route('doctor.agenda') }}" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 text-primary font-semibold rounded-lg hover:bg-primary/20 transition-all">
                         <span class="material-symbols-outlined text-sm">visibility</span>

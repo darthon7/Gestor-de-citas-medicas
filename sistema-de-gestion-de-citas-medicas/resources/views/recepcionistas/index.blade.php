@@ -31,9 +31,13 @@
                     <tr class="hover:bg-background/40 transition-colors">
                         <td class="px-6 py-4">
                             <div class="flex items-center gap-3">
-                                <div class="w-9 h-9 rounded-full bg-primary-light/40 text-primary-dark font-bold text-xs flex items-center justify-center flex-shrink-0">
-                                    {{ strtoupper(substr($recep->nombre ?? 'R', 0, 2)) }}
-                                </div>
+                                @if(!empty($recep->foto_perfil))
+                                    <img src="{{ asset('storage/' . $recep->foto_perfil) }}" alt="{{ $recep->nombre }}" class="w-9 h-9 rounded-full object-cover border border-primary/20 flex-shrink-0 bg-background">
+                                @else
+                                    <div class="w-9 h-9 rounded-full bg-primary-light/40 text-primary-dark font-bold text-xs flex items-center justify-center flex-shrink-0">
+                                        {{ strtoupper(substr($recep->nombre ?? 'R', 0, 2)) }}
+                                    </div>
+                                @endif
                                 <span class="font-semibold text-text-primary text-xs">{{ $recep->nombre }}</span>
                             </div>
                         </td>

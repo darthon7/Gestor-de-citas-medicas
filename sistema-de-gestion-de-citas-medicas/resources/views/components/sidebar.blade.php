@@ -15,10 +15,12 @@
 
     <!-- Navigation List -->
     <nav class="flex-1 space-y-1.5 px-3">
-        <a href="{{ route('dashboard') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all {{ request()->routeIs('dashboard') ? 'sidebar-item-active text-white' : 'text-white/80 hover:text-white hover:bg-white/10' }}">
-            <span class="material-symbols-outlined text-xl">dashboard</span>
-            <span>Inicio</span>
-        </a>
+        @if(Auth::user()->rol !== 'doctor')
+            <a href="{{ route('dashboard') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all {{ request()->routeIs('dashboard') ? 'sidebar-item-active text-white' : 'text-white/80 hover:text-white hover:bg-white/10' }}">
+                <span class="material-symbols-outlined text-xl">dashboard</span>
+                <span>Inicio</span>
+            </a>
+        @endif
 
         @if(in_array(Auth::user()->rol, ['admin', 'recepcionista']))
             <a href="{{ route('pacientes.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all {{ request()->routeIs('pacientes.*') ? 'sidebar-item-active text-white' : 'text-white/80 hover:text-white hover:bg-white/10' }}">
@@ -72,7 +74,11 @@
     <!-- Footer Action / Logout -->
     <div class="px-4 pt-4 border-t border-white/10 space-y-2">
         <a href="{{ route('perfil') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-white/80 hover:text-white hover:bg-white/10 transition-colors">
-            <span class="material-symbols-outlined text-xl">account_circle</span>
+            @if(!empty(Auth::user()->foto_perfil))
+                <img src="{{ asset('storage/' . Auth::user()->foto_perfil) }}" alt="{{ Auth::user()->nombre }}" class="w-8 h-8 rounded-full object-cover border border-white/30 flex-shrink-0">
+            @else
+                <span class="material-symbols-outlined text-xl">account_circle</span>
+            @endif
             <div class="flex-1 truncate text-xs">
                 <p class="font-medium text-white truncate">{{ Auth::user()->nombre }}</p>
                 <p class="text-white/60 capitalize">{{ Auth::user()->rol }}</p>
