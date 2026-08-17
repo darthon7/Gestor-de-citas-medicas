@@ -49,7 +49,7 @@ class LoginActivity : AppCompatActivity() {
         login_usuariocontra1=findViewById(R.id.login_usuariocontra1)
 
         btn_olvido.setOnClickListener {
-            startActivity(Intent(this, Recuperar::class.java))
+            Toast.makeText(this,"Funcion restablecer contraseña no disponible", Toast.LENGTH_LONG).show()
         }
         btn_login.setOnClickListener {
             if (validar()){

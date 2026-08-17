@@ -65,12 +65,11 @@ class Recuperar : AppCompatActivity() {
             }
         }
         btn_siguiente.setOnClickListener {
-            Toast.makeText(this,"Funcion restablecer contraseña no disponible", Toast.LENGTH_LONG).show()
-            /*when(viewflipper_recuperar.displayedChild){
+            when(viewflipper_recuperar.displayedChild){
                 0->solicitarRecuperacion()
                 1->verificarcodigo()
                 2->restablecerpassword()
-            }*/
+            }
         }
     }
     private fun solicitarRecuperacion(){
