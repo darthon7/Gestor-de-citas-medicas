@@ -6,6 +6,10 @@
     <meta name="description" content="Explora el catálogo completo de especialidades médicas de Vida+. Filtra, compara y encuentra especialistas certificados.">
     <title>Especialidades Médicas — Vida+ Agenda Médica</title>
 
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="{{ asset('assets/logo-am.svg') }}">
+    <link rel="shortcut icon" href="{{ asset('assets/logo-am.svg') }}">
+
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>

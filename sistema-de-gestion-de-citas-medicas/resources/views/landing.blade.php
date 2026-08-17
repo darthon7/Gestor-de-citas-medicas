@@ -6,6 +6,10 @@
     <meta name="description" content="Vida+ Agenda Médica — Sistema de Gestión de Citas Médicas. Agenda tu atención médica sin filas ni llamadas, recordatorios inteligentes y recetas digitales.">
     <title>Vida+ Agenda Médica — Gestión de Citas & Salud Digital</title>
 
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="{{ asset('assets/logo-am.svg') }}">
+    <link rel="shortcut icon" href="{{ asset('assets/logo-am.svg') }}">
+
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
