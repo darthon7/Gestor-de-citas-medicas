@@ -28,7 +28,6 @@
         <!-- Navegación Principal Desktop (Enlaces estáticos) -->
         <nav class="hidden lg:flex items-center gap-7 text-sm font-semibold text-white">
             <a href="{{ route('landing') }}#inicio" class="hover:text-emerald-300 transition-colors py-2">Inicio</a>
-            <a href="{{ route('landing') }}#caracteristicas" class="hover:text-emerald-300 transition-colors py-2">Servicios</a>
             <a href="{{ route('especialidades.publicas') }}" class="hover:text-emerald-300 transition-colors py-2">Especialidades</a>
             <a href="https://github.com/darthon7/Gestor-de-citas-medicas/releases/download/v1.0.27/app-debug.apk" target="_blank" rel="noopener noreferrer" class="hover:text-emerald-300 transition-colors py-2 flex items-center gap-1.5">
                 <i data-lucide="download" class="w-4 h-4"></i>
@@ -63,7 +62,6 @@
     <!-- Menú Móvil Desplegable -->
     <div id="mobileMenu" class="hidden lg:hidden bg-[#0A1D13] border-b border-emerald-800/80 px-4 py-6 space-y-4">
         <a href="{{ route('landing') }}#inicio" class="block text-base font-semibold text-white hover:text-emerald-300">Inicio</a>
-        <a href="{{ route('landing') }}#caracteristicas" class="block text-base font-semibold text-white hover:text-emerald-300">Servicios</a>
         <a href="{{ route('especialidades.publicas') }}" class="block text-base font-semibold text-white hover:text-emerald-300">Especialidades</a>
         <a href="https://github.com/darthon7/Gestor-de-citas-medicas/releases/download/v1.0.27/app-debug.apk" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 text-base font-semibold text-white hover:text-emerald-300">
             <i data-lucide="download" class="w-4 h-4"></i>

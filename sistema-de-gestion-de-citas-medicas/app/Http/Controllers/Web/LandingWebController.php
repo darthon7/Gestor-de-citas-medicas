@@ -30,27 +30,22 @@ class LandingWebController extends Controller
 
     /**
      * Página pública de especialidades (sin autenticación).
-     * Carga máximo 12 especialidades activas del backend.
+     * Carga todas las especialidades activas del backend.
      */
     public function especialidades()
     {
-        // Máximo 12 especialidades activas, ordenadas por nombre
+        // Todas las especialidades activas ordenadas alfabéticamente
         $especialidades = Especialidad::where('activa', true)
             ->withCount('doctores')
             ->orderBy('nombre')
-            ->take(12)
             ->get();
 
-        // Las primeras 3 se muestran como "destacadas" en la sección superior
-        $destacadas = $especialidades->take(3);
-
         // Conteos para el eyebrow del hero
-        $totalEspecialidades = Especialidad::where('activa', true)->count();
+        $totalEspecialidades = $especialidades->count();
         $totalDoctores       = PerfilDoctor::count();
 
         return view('especialidades-landing', compact(
             'especialidades',
-            'destacadas',
             'totalEspecialidades',
             'totalDoctores'
         ));

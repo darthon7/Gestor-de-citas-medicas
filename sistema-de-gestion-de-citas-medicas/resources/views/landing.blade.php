@@ -315,25 +315,8 @@
                             </span>
                         </div>
 
-                        <div>
-                            <div class="flex items-center justify-between">
-                                <h3 class="text-lg font-bold font-funnel text-brand-heading">Dr. Gregory House</h3>
-                                <span class="flex items-center gap-1 text-xs font-bold text-amber-500 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
-                                    ★ 4.9
-                                </span>
-                            </div>
-                            <p class="text-xs font-medium text-brand-emerald">Diagnóstico Clínico & Medicina Interna</p>
-                            <p class="text-xs text-brand-muted mt-1">Atención presencial y consulta de telemedicina especializada.</p>
-                        </div>
-
-                        <div class="pt-2 border-t border-brand-border flex items-center justify-between gap-3">
-                            <div class="text-xs font-medium text-brand-muted">
-                                <span class="inline-block w-2 h-2 rounded-full bg-emerald-500 mr-1 animate-pulse"></span>
-                                Horarios disponibles hoy
-                            </div>
-                            <a href="{{ route('registro') }}" class="px-4 py-2 rounded-full bg-brand-emerald hover:bg-emerald-700 text-white font-semibold text-xs transition-colors">
-                                Reservar Cita
-                            </a>
+                        <div class="text-center pt-1">
+                            <h3 class="text-lg font-bold font-funnel text-brand-heading">Dr. Gregory House</h3>
                         </div>
 
                     </div>

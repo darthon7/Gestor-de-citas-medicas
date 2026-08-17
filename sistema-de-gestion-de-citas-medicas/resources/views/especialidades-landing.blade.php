@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Explora el catálogo completo de especialidades médicas de Vida+. Filtra, compara y reserva tu cita en segundos.">
+    <meta name="description" content="Explora el catálogo completo de especialidades médicas de Vida+. Filtra, compara y encuentra especialistas certificados.">
     <title>Especialidades Médicas — Vida+ Agenda Médica</title>
 
     <!-- Tailwind CSS CDN -->
@@ -52,44 +52,33 @@
             -webkit-backdrop-filter: blur(12px);
         }
 
-        /* Card hover lift */
+        /* Card hover lift & border */
         .spec-card {
-            transition: transform 0.22s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                        box-shadow 0.22s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transition: all 0.22s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
         .spec-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 16px 40px rgba(30, 142, 90, 0.13);
+            transform: translateY(-3px);
+            box-shadow: 0 14px 30px rgba(30, 142, 90, 0.10);
+            border-color: rgba(30, 142, 90, 0.35);
         }
 
         /* Featured card hover */
         .feat-card {
-            transition: transform 0.22s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                        box-shadow 0.22s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transition: all 0.22s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
         .feat-card:hover {
             transform: translateY(-3px);
-            box-shadow: 0 12px 32px rgba(30, 142, 90, 0.16);
+            box-shadow: 0 12px 28px rgba(30, 142, 90, 0.12);
         }
 
         /* Fade-in animation for cards */
         @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(18px); }
+            from { opacity: 0; transform: translateY(14px); }
             to   { opacity: 1; transform: translateY(0); }
         }
         .animate-fadeInUp {
-            animation: fadeInUp 0.45s ease-out both;
+            animation: fadeInUp 0.35s ease-out both;
         }
-
-        /* Icon tile color classes */
-        .tile-green  { background-color: #E4F5E9; }
-        .tile-teal   { background-color: #E0F2EA; }
-        .tile-lime   { background-color: #EDF5DF; }
-        .tile-amber  { background-color: #FDF6E0; }
-        .tile-blue   { background-color: #E0EEF9; }
-        .tile-pink   { background-color: #FDE8E8; }
-        .tile-purple { background-color: #EDE8FD; }
-        .tile-sky    { background-color: #E0F3FD; }
     </style>
 </head>
 <body class="bg-brand-bg text-brand-heading font-sans antialiased overflow-x-hidden">
@@ -105,179 +94,172 @@
     @include('components.landing-navbar')
 
     <!-- ============================================================
-         HERO
+         HERO CON DOCTOR GOGO A LA DERECHA
     ============================================================ -->
-    <section class="w-full min-h-[320px] flex flex-col gap-5 px-4 sm:px-10 py-16 justify-center items-center"
-             style="background-image: linear-gradient(0deg, #0E2218 0%, #12402A 55%, #1E8E5A 100%);">
+    <section class="w-full relative overflow-hidden px-4 sm:px-10 lg:px-16 pt-10 sm:pt-14 pb-0"
+             style="background-image: linear-gradient(135deg, #0E2218 0%, #12402A 55%, #1E8E5A 100%);">
 
-        <!-- Eyebrow -->
-        <div class="flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/20 bg-white/10">
-            <i data-lucide="heart-pulse" class="w-3.5 h-3.5 text-[#72D350]"></i>
-            <span class="text-xs font-semibold text-white whitespace-nowrap">
-                {{ $totalEspecialidades }}+ especialidades &middot; {{ $totalDoctores }}+ médicos verificados
-            </span>
-        </div>
+        <div class="max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-6 lg:gap-8 min-h-[420px] lg:min-h-[460px]">
+            
+            <!-- Columna Izquierda: Textos y Buscador (Buscador intacto) -->
+            <div class="flex-1 flex flex-col items-center lg:items-start text-center lg:text-left gap-4 sm:gap-5 py-6 sm:py-10 max-w-2xl z-10">
+                
 
-        <h1 class="text-4xl sm:text-5xl font-bold font-funnel text-white text-center leading-tight max-w-2xl">
-            Encuentra al especialista<br>perfecto para ti
-        </h1>
 
-        <p class="text-sm sm:text-base text-[#C4D6C8] text-center max-w-lg leading-relaxed">
-            Explora el catálogo completo de especialidades de Vida+. Filtra, compara y reserva tu cita en segundos.
-        </p>
+                <h1 class="text-3xl sm:text-5xl font-bold font-funnel text-white leading-tight">
+                    Encuentra al especialista<br class="hidden sm:inline"> perfecto para ti
+                </h1>
 
-        <!-- Buscador -->
-        <div class="w-full max-w-xl flex items-center gap-2 bg-white rounded-full shadow-xl px-4 py-1.5">
-            <i data-lucide="search" class="w-5 h-5 text-brand-subtle shrink-0"></i>
-            <input
-                id="search-input"
-                type="text"
-                placeholder="Busca por especialidad, síntoma o médico"
-                class="flex-1 text-sm text-brand-heading placeholder-brand-subtle bg-transparent py-2 focus:outline-none"
-                oninput="filtrarTarjetas(this.value)"
-            >
-            <button class="px-4 py-2 bg-brand-emerald text-white text-xs font-bold rounded-full whitespace-nowrap hover:bg-emerald-700 transition-colors">
-                Buscar
-            </button>
-        </div>
-    </section>
-
-    <!-- ============================================================
-         CATÁLOGO — Explora todas las especialidades (máx 12 del backend)
-    ============================================================ -->
-    <section id="catalogo" class="w-full bg-brand-bg px-4 sm:px-10 lg:px-14 py-14">
-
-        <div class="text-center mb-10">
-            <p class="text-xs font-bold text-brand-emerald tracking-[2px] uppercase mb-2">CATÁLOGO COMPLETO</p>
-            <h2 class="text-3xl sm:text-4xl font-bold font-funnel text-brand-heading">Explora todas las especialidades</h2>
-        </div>
-
-        @if($especialidades->count() > 0)
-            @php
-                $tileClasses = [
-                    'tile-green','tile-teal','tile-lime','tile-amber',
-                    'tile-blue','tile-pink','tile-purple','tile-sky',
-                    'tile-green','tile-teal','tile-lime','tile-amber',
-                ];
-                $iconNames = [
-                    'heart','brain','baby','apple','activity','sparkles',
-                    'flower-2','eye','bone','thermometer','stethoscope','shield-check',
-                ];
-            @endphp
-
-            <div id="cards-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
-                @foreach($especialidades as $index => $esp)
-                @php $cnt = $esp->doctores_count ?? $esp->doctores->count(); @endphp
-                <div class="spec-card card-item flex flex-col gap-2.5 p-[18px] bg-white rounded-[18px] border border-brand-border/80 animate-fadeInUp"
-                     style="animation-delay: {{ $index * 60 }}ms;"
-                     data-nombre="{{ strtolower($esp->nombre) }}">
-
-                    <!-- Ícono + Rating -->
-                    <div class="flex items-center justify-between">
-                        <div class="w-11 h-11 flex items-center justify-center rounded-[13px] {{ $tileClasses[$index % count($tileClasses)] }}">
-                            <i data-lucide="{{ $iconNames[$index % count($iconNames)] }}" class="w-5 h-5 text-brand-emerald"></i>
-                        </div>
-                        <div class="flex items-center gap-1 px-2.5 py-1 bg-brand-sectionBg rounded-full">
-                            <i data-lucide="star" class="w-3 h-3 text-yellow-500 fill-yellow-400"></i>
-                            <span class="text-xs font-bold text-brand-heading font-geist">4.9</span>
-                        </div>
-                    </div>
-
-                    <!-- Nombre -->
-                    <h3 class="text-[18px] font-bold font-funnel text-brand-heading leading-snug">{{ $esp->nombre }}</h3>
-
-                    <!-- Descripción -->
-                    <p class="text-[13px] text-brand-muted leading-[20px] flex-1 line-clamp-2">
-                        {{ $esp->descripcion ?: 'Atención médica especializada y de calidad para tu bienestar.' }}
-                    </p>
-
-                    <!-- Pie -->
-                    <div class="flex items-center justify-between mt-auto pt-1">
-                        <span class="text-[12.5px] text-brand-subtle">
-                            {{ $cnt }} {{ $cnt === 1 ? 'especialista' : 'especialistas' }}
-                        </span>
-                        <a href="{{ route('registro') }}"
-                           class="px-3.5 py-1.5 bg-brand-emerald text-white text-xs font-bold rounded-full hover:bg-emerald-700 transition-colors">
-                            Reservar
-                        </a>
-                    </div>
-                </div>
-                @endforeach
-            </div>
-
-            <!-- Sin resultados de búsqueda -->
-            <div id="no-results" class="hidden text-center py-20">
-                <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-brand-sectionBg flex items-center justify-center">
-                    <i data-lucide="search-x" class="w-8 h-8 text-brand-subtle"></i>
-                </div>
-                <p class="text-lg font-semibold text-brand-heading">Sin resultados</p>
-                <p class="text-sm text-brand-muted mt-1">No encontramos especialidades con ese nombre.</p>
-            </div>
-
-        @else
-            <!-- Estado vacío -->
-            <div class="text-center py-24">
-                <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-brand-sectionBg flex items-center justify-center">
-                    <i data-lucide="stethoscope" class="w-10 h-10 text-brand-subtle"></i>
-                </div>
-                <h3 class="text-xl font-bold text-brand-heading mb-2">Catálogo en construcción</h3>
-                <p class="text-sm text-brand-muted max-w-md mx-auto">
-                    Estamos incorporando nuestras especialidades médicas. Vuelve pronto o contáctanos para más información.
+                <p class="text-sm sm:text-base text-[#C4D6C8] leading-relaxed max-w-lg">
+                    Explora el catálogo completo de especialidades de Vida+. Filtra, compara y reserva tu cita en segundos.
                 </p>
-                <a href="{{ route('landing') }}" class="mt-6 inline-flex items-center gap-2 px-6 py-3 bg-brand-emerald text-white font-semibold rounded-full hover:bg-emerald-700 transition-colors text-sm">
-                    <i data-lucide="arrow-left" class="w-4 h-4"></i>
-                    Volver al inicio
-                </a>
+
+                <!-- Buscador (Diseño y estructura original intacta) -->
+                <div class="w-full max-w-xl flex items-center gap-2 bg-white rounded-full shadow-2xl px-4 py-1.5">
+                    <i data-lucide="search" class="w-5 h-5 text-brand-subtle shrink-0"></i>
+                    <input
+                        id="search-input"
+                        type="text"
+                        placeholder="Busca por especialidad, síntoma o médico"
+                        class="flex-1 text-sm text-brand-heading placeholder-brand-subtle bg-transparent py-2 focus:outline-none"
+                        oninput="filtrarTarjetas(this.value)"
+                    >
+                    <button class="px-4 py-2 bg-brand-emerald text-white text-xs font-bold rounded-full whitespace-nowrap hover:bg-emerald-700 transition-colors">
+                        Buscar
+                    </button>
+                </div>
+
+                <!-- Info rápida de disponibilidad -->
+                <div class="flex items-center gap-4 text-xs text-[#C4D6C8]/80 pt-1">
+                    <span class="flex items-center gap-1.5">
+                        <span class="w-2 h-2 rounded-full bg-[#72D350]"></span>
+                        Atención médica de alta calidad y especialistas certificados
+                    </span>
+                </div>
             </div>
-        @endif
+
+            <!-- Columna Derecha: Imagen de Doctor (gogo.png) - Aumentada de tamaño -->
+            <div class="w-full lg:w-auto shrink-0 flex justify-center lg:justify-end self-end z-0 mt-2 lg:mt-0">
+                <div class="relative max-w-[360px] sm:max-w-[460px] lg:max-w-[540px] xl:max-w-[580px] flex items-end">
+                    <img
+                        src="{{ asset('assets/gogo.png') }}"
+                        alt="Especialista Médico Vida+"
+                        class="w-auto max-h-[360px] sm:max-h-[440px] lg:max-h-[500px] xl:max-h-[540px] object-contain object-bottom drop-shadow-2xl pointer-events-none select-none -mb-1"
+                    >
+                </div>
+            </div>
+        </div>
     </section>
 
     <!-- ============================================================
-         DESTACADAS — Popular entre los pacientes
+         CATÁLOGO COMPLETO
     ============================================================ -->
-    @if($destacadas->count() > 0)
-    <section class="w-full bg-brand-bg px-4 sm:px-10 lg:px-14 pt-6 pb-16 border-t border-brand-border/40">
-        <div class="flex items-end justify-between mb-7">
-            <div>
-                <p class="text-xs font-bold text-brand-emerald tracking-[2px] uppercase mb-1">MÁS DEMANDADAS</p>
-                <h2 class="text-3xl sm:text-4xl font-bold font-funnel text-brand-heading">Popular entre los pacientes</h2>
-            </div>
-        </div>
+    <section id="catalogo" class="w-full bg-brand-bg px-4 sm:px-10 lg:px-14 py-12">
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            @php
-                $featBg = ['#E4F5E9', '#FDF6E0', '#E0F2EA', '#EDE8FD', '#E0EEF9', '#FDE8E8'];
-                $featIcons = ['heart', 'apple', 'brain', 'flower-2', 'activity', 'baby'];
-            @endphp
-            @foreach($destacadas as $esp)
-            @php
-                $bgColor  = $featBg[$loop->index % count($featBg)];
-                $iconName = $featIcons[$loop->index % count($featIcons)];
-                $doctCount = $esp->doctores_count ?? $esp->doctores->count();
-            @endphp
-            <div class="feat-card flex items-center gap-5 p-6 rounded-[26px]" style="background-color: {{ $bgColor }};">
-                <div class="w-[76px] h-[76px] shrink-0 flex items-center justify-center bg-white rounded-[22px] shadow-sm">
-                    <i data-lucide="{{ $iconName }}" class="w-9 h-9 text-brand-emerald"></i>
-                </div>
-                <div class="flex-1 min-w-0">
-                    <h3 class="text-xl font-bold font-funnel text-brand-heading truncate">{{ $esp->nombre }}</h3>
-                    <p class="text-sm text-brand-muted mt-1 leading-snug line-clamp-2">
-                        {{ $esp->descripcion ?: 'Atención especializada de alta calidad.' }}
-                    </p>
-                    <p class="text-sm font-semibold text-brand-emerald mt-2">
-                        &#9733; 4.9 &middot; {{ $doctCount }} especialistas
-                    </p>
-                </div>
-                <a href="{{ route('registro') }}"
-                   class="shrink-0 flex items-center gap-2 px-4 py-2.5 bg-brand-dark text-white text-sm font-semibold rounded-full hover:bg-brand-emerald transition-colors whitespace-nowrap">
-                    Reservar
-                    <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
-                </a>
+        <div class="max-w-7xl mx-auto">
+            
+            <!-- Encabezado de Sección -->
+            <div class="mb-8">
+                <p class="text-xs font-bold text-brand-emerald tracking-[2px] uppercase mb-1">CATÁLOGO COMPLETO</p>
+                <h2 class="text-3xl sm:text-4xl font-bold font-funnel text-brand-heading">Explora todas las especialidades</h2>
+                <p class="text-sm text-brand-muted mt-1" id="results-count">
+                    Mostrando especialidades con médicos activos
+                </p>
             </div>
-            @endforeach
+
+            @if($especialidades->count() > 0)
+                <!-- ============================================================
+                     VISTA CUADRÍCULA DE ESPECIALIDADES
+                ============================================================ -->
+                <div id="cards-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+                    @foreach($especialidades as $index => $esp)
+                        @php
+                            $cnt = $esp->doctores_count ?? ($esp->doctores ? $esp->doctores->count() : 0);
+                            $hasDoctors = $cnt > 0;
+                        @endphp
+
+                        <div class="spec-card card-item flex flex-col justify-between p-5 bg-white rounded-2xl border border-brand-border/80 shadow-xs animate-fadeInUp group
+                                    {{ !$hasDoctors ? 'hidden-initially' : '' }}"
+                             style="{{ !$hasDoctors ? 'display: none;' : '' }} animation-delay: {{ min($index * 40, 400) }}ms;"
+                             data-nombre="{{ strtolower($esp->nombre) }}"
+                             data-desc="{{ strtolower($esp->descripcion ?? '') }}"
+                             data-has-doctors="{{ $hasDoctors ? '1' : '0' }}">
+
+                            <div>
+                                <!-- Encabezado de Tarjeta: Estado de Médicos -->
+                                <div class="flex items-center justify-end mb-2.5">
+                                    @if($hasDoctors)
+                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/60">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                            {{ $cnt }} {{ $cnt === 1 ? 'médico' : 'médicos' }}
+                                        </span>
+                                    @else
+                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-zinc-50 text-zinc-500 border border-zinc-200/60">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-zinc-300"></span>
+                                            Próximamente
+                                        </span>
+                                    @endif
+                                </div>
+
+                                <!-- Nombre de la Especialidad -->
+                                <h3 class="text-lg font-bold font-funnel text-brand-heading leading-snug group-hover:text-brand-emerald transition-colors">
+                                    {{ $esp->nombre }}
+                                </h3>
+
+                                <!-- Descripción -->
+                                <p class="text-xs text-brand-muted leading-relaxed mt-2 line-clamp-3">
+                                    {{ $esp->descripcion ?: 'Atención médica especializada, diagnóstico clínico y seguimiento para tu bienestar integral.' }}
+                                </p>
+                            </div>
+
+                            <!-- Pie de Tarjeta: Información -->
+                            <div class="mt-4 pt-3 border-t border-brand-border/60 text-xs text-brand-subtle">
+                                <span class="text-[11.5px] font-medium text-brand-muted">
+                                    {{ $hasDoctors ? 'Atención disponible' : 'En incorporación' }}
+                                </span>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+
+                <!-- Sin resultados de búsqueda -->
+                <div id="no-results" class="hidden text-center py-16 bg-white rounded-2xl border border-brand-border">
+                    <div class="w-14 h-14 mx-auto mb-4 rounded-full bg-brand-sectionBg flex items-center justify-center text-brand-emerald">
+                        <i data-lucide="search-x" class="w-7 h-7"></i>
+                    </div>
+                    <p class="text-lg font-bold text-brand-heading">No encontramos resultados</p>
+                    <p class="text-xs sm:text-sm text-brand-muted mt-1 max-w-sm mx-auto">
+                        Intenta con otro término o borra el texto del buscador para ver el catálogo completo.
+                    </p>
+                    <button
+                        type="button"
+                        onclick="limpiarBuscador()"
+                        class="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-brand-emerald text-white text-xs font-semibold rounded-full hover:bg-emerald-700 transition-colors"
+                    >
+                        Ver todas las especialidades
+                    </button>
+                </div>
+
+            @else
+                <!-- Estado vacío -->
+                <div class="text-center py-20 bg-white rounded-2xl border border-brand-border">
+                    <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-brand-sectionBg flex items-center justify-center text-brand-emerald">
+                        <i data-lucide="stethoscope" class="w-8 h-8"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-brand-heading mb-2">Catálogo en construcción</h3>
+                    <p class="text-sm text-brand-muted max-w-md mx-auto">
+                        Estamos incorporando nuestras especialidades médicas. Vuelve pronto o contáctanos para más información.
+                    </p>
+                    <a href="{{ route('landing') }}" class="mt-6 inline-flex items-center gap-2 px-6 py-2.5 bg-brand-emerald text-white font-semibold rounded-full hover:bg-emerald-700 transition-colors text-xs">
+                        <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                        Volver al inicio
+                    </a>
+                </div>
+            @endif
         </div>
     </section>
-    @endif
+
+
 
     <!-- ============================================================
          CTA — Reserva tu cita
@@ -309,7 +291,9 @@
     ============================================================ -->
     @include('components.landing-footer')
 
-    <!-- Scripts -->
+    <!-- ============================================================
+         SCRIPTS
+    ============================================================ -->
     <script>
         if (window.lucide) lucide.createIcons();
 
@@ -319,23 +303,65 @@
             mobileMenuBtn.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
         }
 
-        function filtrarTarjetas(query) {
-            const q     = query.trim().toLowerCase();
-            const cards = document.querySelectorAll('.card-item');
-            const grid  = document.getElementById('cards-grid');
-            const noRes = document.getElementById('no-results');
-            let visible = 0;
+        function aplicarFiltros() {
+            const searchInput = document.getElementById('search-input');
+            const query       = (searchInput ? searchInput.value : '').trim().toLowerCase();
+            const cards       = document.querySelectorAll('.card-item');
+            const noRes       = document.getElementById('no-results');
+            const grid        = document.getElementById('cards-grid');
+            const resultsCount= document.getElementById('results-count');
+
+            const isSearching = query.length > 0;
+            let visibleCount  = 0;
 
             cards.forEach(card => {
-                const nombre = card.dataset.nombre || '';
-                const match  = nombre.includes(q);
+                const nombre    = card.dataset.nombre || '';
+                const desc      = card.dataset.desc || '';
+                const hasDoctor = card.dataset.hasDoctors === '1';
+
+                // 1. Coincidencia de texto
+                const textMatch = !isSearching || nombre.includes(query) || desc.includes(query);
+
+                // 2. Regla de visualización de médicos:
+                // - Si el usuario BUSCA texto: se buscan todas (incluso las de 0 médicos)
+                // - Si el usuario NO busca texto: solo se muestran las que SÍ tienen médicos (hasDoctor === true)
+                const doctorMatch = isSearching ? true : hasDoctor;
+
+                const match = textMatch && doctorMatch;
                 card.style.display = match ? '' : 'none';
-                if (match) visible++;
+                if (match) visibleCount++;
             });
 
-            if (noRes) noRes.classList.toggle('hidden', visible > 0);
-            if (grid)  grid.classList.toggle('hidden', visible === 0);
+            // Visibilidad de contenedores
+            if (noRes) noRes.classList.toggle('hidden', visibleCount > 0);
+            if (grid)  grid.classList.toggle('hidden', visibleCount === 0);
+
+            // Contador de resultados
+            if (resultsCount) {
+                if (isSearching) {
+                    resultsCount.textContent = `${visibleCount} ${visibleCount === 1 ? 'especialidad encontrada' : 'especialidades encontradas'} para "${query}"`;
+                } else {
+                    resultsCount.textContent = `Mostrando ${visibleCount} especialidades con médicos activos`;
+                }
+            }
         }
+
+        function filtrarTarjetas(query) {
+            aplicarFiltros();
+        }
+
+        function limpiarBuscador() {
+            const searchInput = document.getElementById('search-input');
+            if (searchInput) {
+                searchInput.value = '';
+            }
+            aplicarFiltros();
+        }
+
+        // Ejecutar filtro inicial al cargar la página
+        document.addEventListener('DOMContentLoaded', () => {
+            aplicarFiltros();
+        });
     </script>
 </body>
 </html>
