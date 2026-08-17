@@ -5,7 +5,7 @@
 <style>
     .calendar-grid-wrapper {
         display: grid;
-        grid-template-columns: 65px repeat(7, 1fr);
+        grid-template-columns: 65px {{ ($vista ?? 'semana') === 'dia' ? '1fr' : 'repeat(7, 1fr)' }};
     }
     .time-slot-line {
         height: 48px;
@@ -173,14 +173,17 @@
 
                 @for($i = 0; $i < $numCols; $i++)
                     @php
-                        $dayDate = $startOfWeek->copy()->addDays($i);
-                        $isToday = $dayDate->isToday();
+                        $colDate = ($vista === 'dia') ? $fechaRef : $startOfWeek->copy()->addDays($i);
+                        $isToday = $colDate->isToday();
+                        $nombreDia = ($vista === 'dia')
+                            ? strtoupper($colDate->isoFormat('dddd'))
+                            : ['LUN', 'MAR', 'MIÉ', 'JUE', 'VIE', 'SÁB', 'DOM'][$i];
                     @endphp
                     <div class="h-10 flex flex-col items-center justify-center border-r border-border last:border-r-0 {{ $isToday ? 'bg-primary/10 text-primary' : 'text-text-primary' }}">
                         <span class="text-[9px] uppercase font-bold tracking-wider {{ $isToday ? 'text-primary' : 'text-text-secondary' }}">
-                            {{ ['LUN', 'MAR', 'MIÉ', 'JUE', 'VIE', 'SÁB', 'DOM'][$i] }}
+                            {{ $nombreDia }}
                         </span>
-                        <span class="text-[11px] font-bold leading-none">{{ $dayDate->format('d/m') }}</span>
+                        <span class="text-[11px] font-bold leading-none">{{ $colDate->format('d/m') }}</span>
                     </div>
                 @endfor
             </div>
@@ -200,7 +203,8 @@
                     <!-- Grid Slots & Appointment Blocks -->
                     @for($i = 0; $i < $numCols; $i++)
                         @php
-                            $currentColDate = $startOfWeek->copy()->addDays($i)->format('Y-m-d');
+                            $colDate = ($vista === 'dia') ? $fechaRef : $startOfWeek->copy()->addDays($i);
+                            $currentColDate = $colDate->format('Y-m-d');
                         @endphp
                         <div class="relative border-r border-border last:border-r-0">
                             @for($h = 8; $h <= 18; $h++)
