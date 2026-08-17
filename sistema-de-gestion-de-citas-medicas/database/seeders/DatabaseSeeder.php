@@ -13,6 +13,7 @@ class DatabaseSeeder extends Seeder
             EspecialidadesSeeder::class,
             UsuariosPruebaSeeder::class,
             DoctorGoGoSeeder::class,
+            UsuariosMasivosSeeder::class,
         ]);
     }
 }
