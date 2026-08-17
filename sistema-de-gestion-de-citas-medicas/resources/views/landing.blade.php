@@ -130,22 +130,6 @@
                             <span>Portal Paciente / Registro</span>
                         </a>
                     </div>
-
-                    <!-- Garantías / Badges -->
-                    <div class="flex flex-wrap items-center gap-6 pt-4 text-xs font-medium text-brand-muted">
-                        <div class="flex items-center gap-2">
-                            <i data-lucide="shield-check" class="w-4 h-4 text-brand-emerald"></i>
-                            <span>Acceso seguro SSL</span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <i data-lucide="clock" class="w-4 h-4 text-brand-emerald"></i>
-                            <span>Confirmación al instante</span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <i data-lucide="activity" class="w-4 h-4 text-brand-emerald"></i>
-                            <span>Disponible 24/7</span>
-                        </div>
-                    </div>
                 </div>
 
                 <!-- Columna Derecha: Mockup de Celular usando la Imagen del usuario con borde redondo -->
@@ -641,10 +625,10 @@
     ============================================================ -->
     <footer id="nosotros" class="bg-[#091710] text-zinc-400 text-xs sm:text-sm border-t border-emerald-950">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-10">
+            <div class="flex flex-col md:flex-row items-start justify-between gap-10">
                 
                 <!-- Columna Marca -->
-                <div class="space-y-4 md:col-span-1">
+                <div class="space-y-4 max-w-md">
                     <a href="{{ route('landing') }}" class="flex items-center gap-2.5 group">
                         <div class="w-10 h-10 rounded-xl bg-emerald-950/80 border border-emerald-800/60 p-1.5 flex items-center justify-center transition-transform group-hover:scale-105">
                             <svg viewBox="0 0 38.717 33.301" class="w-7 h-7 overflow-visible">
@@ -661,28 +645,6 @@
                     </p>
                 </div>
 
-                <!-- Columna Enlaces Rápidos -->
-                <div class="space-y-3">
-                    <h4 class="text-xs font-bold text-white uppercase tracking-wider">Servicios</h4>
-                    <ul class="space-y-2 text-xs">
-                        <li><a href="{{ route('registro') }}" class="hover:text-brand-light transition-colors">Reserva de Citas</a></li>
-                        <li><a href="#caracteristicas" class="hover:text-brand-light transition-colors">Telemedicina</a></li>
-                        <li><a href="#caracteristicas" class="hover:text-brand-light transition-colors">Recordatorios Inteligentes</a></li>
-                        <li><a href="#caracteristicas" class="hover:text-brand-light transition-colors">Recetas Médicas</a></li>
-                    </ul>
-                </div>
-
-                <!-- Columna Especialidades -->
-                <div class="space-y-3">
-                    <h4 class="text-xs font-bold text-white uppercase tracking-wider">Especialidades</h4>
-                    <ul class="space-y-2 text-xs">
-                        <li><a href="{{ route('especialidades.publicas') }}" class="hover:text-brand-light transition-colors">Cardiología</a></li>
-                        <li><a href="{{ route('especialidades.publicas') }}" class="hover:text-brand-light transition-colors">Pediatría</a></li>
-                        <li><a href="{{ route('especialidades.publicas') }}" class="hover:text-brand-light transition-colors">Nutrición & Dietética</a></li>
-                        <li><a href="{{ route('especialidades.publicas') }}" class="hover:text-brand-light transition-colors">Ver todas →</a></li>
-                    </ul>
-                </div>
-
                 <!-- Columna Accesos Directos -->
                 <div class="space-y-3">
                     <h4 class="text-xs font-bold text-white uppercase tracking-wider">Acceso al Sistema</h4>
@@ -690,7 +652,6 @@
                         <li><a href="{{ route('login') }}" class="hover:text-brand-light transition-colors">Iniciar Sesión</a></li>
                         <li><a href="{{ route('registro') }}" class="hover:text-brand-light transition-colors">Registro Pacientes</a></li>
                         <li><a href="{{ route('registro.doctor') }}" class="hover:text-brand-light transition-colors">Solicitud Registro Doctor</a></li>
-                        <li><a href="{{ route('login') }}" class="hover:text-brand-light transition-colors">Portal Recepción & Admin</a></li>
                     </ul>
                 </div>
 

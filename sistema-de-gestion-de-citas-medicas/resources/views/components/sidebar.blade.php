@@ -43,13 +43,13 @@
         @endif
 
         @if(Auth::user()->rol === 'doctor')
-            <a href="{{ route('doctor.agenda') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all {{ request()->routeIs('doctor.*') ? 'sidebar-item-active text-white' : 'text-white/80 hover:text-white hover:bg-white/10' }}">
+            <a href="{{ route('doctor.agenda') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all {{ request()->routeIs('doctor.agenda') || request()->routeIs('doctor.diagnostico') ? 'sidebar-item-active text-white' : 'text-white/80 hover:text-white hover:bg-white/10' }}">
                 <span class="material-symbols-outlined text-xl">calendar_today</span>
                 <span>Mi Agenda</span>
             </a>
-            <a href="{{ route('citas.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all {{ request()->routeIs('citas.*') ? 'sidebar-item-active text-white' : 'text-white/80 hover:text-white hover:bg-white/10' }}">
-                <span class="material-symbols-outlined text-xl">calendar_month</span>
-                <span>Calendario</span>
+            <a href="{{ route('doctor.horario') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all {{ request()->routeIs('doctor.horario*') ? 'sidebar-item-active text-white' : 'text-white/80 hover:text-white hover:bg-white/10' }}">
+                <span class="material-symbols-outlined text-xl">schedule</span>
+                <span>Mi Horario</span>
             </a>
         @endif
 

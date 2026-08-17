@@ -1159,5 +1159,5 @@ sistema-de-gestion-de-citas-medicas/
 
 ---
 
-> **Módulo anterior:** [03 - Especialidades](./03-Especialidades.md)  
+> **Módulo anterior:** [02 - Gestión de Doctores y Especialidades](./02-Gestion-de-Doctores.md)  
 > **Siguiente módulo:** [05 - Gestión de Citas](./05-Gestion-de-Citas.md)

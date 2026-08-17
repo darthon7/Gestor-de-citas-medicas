@@ -13,6 +13,10 @@ class NotaConsulta extends Model
 
     protected $fillable = [
         'cita_id',
+        'presion_arterial',
+        'frecuencia_cardiaca',
+        'temperatura',
+        'peso',
         'diagnostico',
         'tratamiento',
         'notas_adicionales',

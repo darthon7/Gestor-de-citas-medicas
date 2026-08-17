@@ -13,9 +13,13 @@ class StoreNotaConsultaRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'diagnostico'       => 'required|string',
-            'tratamiento'       => 'required|string',
-            'notas_adicionales' => 'nullable|string',
+            'presion_arterial'    => 'nullable|string|max:20',
+            'frecuencia_cardiaca' => 'nullable|integer|min:20|max:300',
+            'temperatura'         => 'nullable|string|max:10',
+            'peso'                => 'nullable|string|max:10',
+            'diagnostico'         => 'required|string',
+            'tratamiento'         => 'required|string',
+            'notas_adicionales'   => 'nullable|string',
         ];
     }
 
@@ -29,9 +33,16 @@ class StoreNotaConsultaRequest extends FormRequest
 
     protected function failedValidation(Validator $validator)
     {
-        throw new HttpResponseException(response()->json([
-            'msj'    => 'Error de validación',
-            'errors' => $validator->errors(),
-        ], 422));
+        if ($this->expectsJson()) {
+            throw new HttpResponseException(response()->json([
+                'msj'    => 'Error de validación',
+                'errors' => $validator->errors(),
+            ], 422));
+        }
+
+        $error = $validator->errors()->first();
+        throw new HttpResponseException(
+            redirect()->back()->withInput()->with('error', $error ?: 'Datos de la nota no válidos.')
+        );
     }
 }

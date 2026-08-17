@@ -1,6 +1,6 @@
 # 👨‍⚕️ Módulo 2: Gestión de Doctores y Especialidades
 
-> **Sistema de Gestión de Citas Médicas — Documentación Técnica Backend**
+> **Sistema de Gestión de Citas Médicas — Documentación Técnica Backend**  
 > Última actualización: Julio 2026
 
 ---
@@ -11,131 +11,183 @@
 2. [Diagrama de Arquitectura](#2-diagrama-de-arquitectura)
 3. [Modelo de Datos Relacional](#3-modelo-de-datos-relacional)
 4. [Capa de Base de Datos — Migraciones](#4-capa-de-base-de-datos--migraciones)
+   - 4.1 [Tabla `especialidades`](#41-tabla-especialidades)
+   - 4.2 [Tabla `perfiles_doctor`](#42-tabla-perfiles_doctor)
+   - 4.3 [Tabla Pivote `doctor_especialidad`](#43-tabla-pivote-doctor_especialidad)
 5. [Capa de Modelos (Eloquent ORM)](#5-capa-de-modelos-eloquent-orm)
+   - 5.1 [Modelo `PerfilDoctor`](#51-modelo-perfildoctor)
+   - 5.2 [Modelo `Especialidad`](#52-modelo-especialidad)
 6. [Capa de Repositorios (Lógica de Negocio)](#6-capa-de-repositorios-lógica-de-negocio)
-7. [Capa de Form Requests (Validación)](#7-capa-de-form-requests-validación)
-8. [Capa de Controladores](#8-capa-de-controladores)
-9. [Rutas (API y Web)](#9-rutas-api-y-web)
-10. [Seeders (Datos Iniciales)](#10-seeders-datos-iniciales)
-11. [Flujos Completos de Operación](#11-flujos-completos-de-operación)
-12. [Relación con Otros Módulos](#12-relación-con-otros-módulos)
+   - 6.1 [`DoctoresRepository`](#61-doctoresrepository)
+   - 6.2 [`EspecialidadesRepository`](#62-especialidadesrepository)
+7. [Capa de Validaciones (Form Requests y Validación Inline)](#7-capa-de-validaciones-form-requests-y-validación-inline)
+   - 7.1 [`StoreDoctorRequest`](#71-storedoctorrequest)
+   - 7.2 [Validación Inline en `EspecialidadesWebController`](#72-validación-inline-en-especialidadeswebcontroller)
+8. [Capa de Controladores (API REST vs Blade SSR)](#8-capa-de-controladores-api-rest-vs-blade-ssr)
+   - 8.1 [`DoctoresController` (API REST)](#81-doctorescontroller-api-rest)
+   - 8.2 [`EspecialidadesController` (API REST)](#82-especialidadescontroller-api-rest)
+   - 8.3 [`DoctoresWebController` (Web Blade SSR)](#83-doctoreswebcontroller-web-blade-ssr)
+   - 8.4 [`EspecialidadesWebController` (Web Blade SSR)](#84-especialidadeswebcontroller-web-blade-ssr)
+9. [Capa de Vistas (Blade SSR UI y Componentes)](#9-capa-de-vistas-blade-ssr-ui-y-componentes)
+   - 9.1 [Panel de Gestión de Doctores (`doctores/index.blade.php`)](#91-panel-de-gestión-de-doctores-doctoresindexbladephp)
+   - 9.2 [Gestión de Horarios y Bloqueos (`doctores/horarios.blade.php`)](#92-gestión-de-horarios-y-bloqueos-doctoreshorariosbladephp)
+   - 9.3 [Catálogo de Especialidades (`especialidades/index.blade.php`)](#93-catálogo-de-especialidades-especialidadesindexbladephp)
+10. [Rutas (API y Web)](#10-rutas-api-y-web)
+   - 10.1 [Rutas API (`routes/api.php`)](#101-rutas-api-routesapiphp)
+   - 10.2 [Rutas Web (`routes/web.php`)](#102-rutas-web-routeswebphp)
+11. [Seeders (Datos Iniciales y Carga Idempotente)](#11-seeders-datos-iniciales-y-carga-idempotente)
+   - 11.1 [`EspecialidadesSeeder`](#111-especialidadesseeder)
+12. [Flujos Completos de Operación](#12-flujos-completos-de-operación)
+   - 12.1 [Flujo de Registro y Validación de Doctor (Web Admin)](#121-flujo-de-registro-y-validación-de-doctor-web-admin)
+   - 12.2 [Flujo de Consulta Pública de Doctores con Filtros (API REST / Móvil)](#122-flujo-de-consulta-pública-de-doctores-con-filtros-api-rest--móvil)
+   - 12.3 [Flujo de Consulta Pública de Especialidades (API REST)](#123-flujo-de-consulta-pública-de-especialidades-api-rest)
+   - 12.4 [Flujo de Creación de Nueva Especialidad (Web Admin)](#124-flujo-de-creación-de-nueva-especialidad-web-admin)
+   - 12.5 [Flujo de Gestión Integrada de Horarios y Bloqueos (Web Admin)](#125-flujo-de-gestión-integrada-de-horarios-y-bloqueos-web-admin)
+13. [Relación con Otros Módulos](#13-relación-con-otros-módulos)
+14. [Mapa de Archivos del Módulo](#14-mapa-de-archivos-del-módulo)
 
 ---
 
 ## 1. Visión General del Módulo
 
-El módulo de **Gestión de Doctores y Especialidades** administra el ciclo de vida completo de los médicos dentro del sistema: desde su registro y validación hasta la asignación de especialidades médicas. Este módulo está estrechamente ligado al de Autenticación (registro de médicos) y al de Horarios/Citas (disponibilidad).
+El módulo de **Gestión de Doctores y Especialidades** administra el ciclo de vida completo del personal médico dentro del sistema, así como el catálogo maestro de especialidades de la institución médica: desde el registro y perfilamiento profesional del médico, la aprobación o rechazo con trazabilidad de auditoría, hasta la asignación multidireccional de especialidades médicas (relación Many-to-Many) y la consulta pública de facultativos.
 
-### Responsabilidades principales
+Este módulo se encuentra estrechamente integrado con el de **Autenticación y Seguridad** (control de estado de cuenta y login condicionado), el de **Horarios y Bloqueos** (definición de jornada laboral y excepciones) y el de **Gestión de Citas** (enrutamiento de consultas por especialidad).
 
-| Responsabilidad | Descripción |
+### Responsabilidades Principales
+
+| Responsabilidad | Descripción Técnica |
 |---|---|
-| **Registro de doctores** | Crear cuentas de médicos desde el panel de administración (diferente al auto-registro del módulo de Auth) |
-| **Validación de doctores** | Flujo de aprobación/rechazo por parte del administrador con trazabilidad |
-| **Catálogo de especialidades** | Gestión del catálogo maestro de especialidades médicas |
-| **Asignación doctor-especialidad** | Relación Many-to-Many entre doctores y especialidades |
-| **Consulta pública de doctores** | Endpoints públicos para que los pacientes busquen médicos disponibles |
-| **Gestión de horarios y bloqueos** | El web controller centraliza la gestión de horarios (orquestando repositorios externos) |
+| **Registro de doctores (Admin)** | Alta administrativa de cuentas médicas con generación opcional de contraseña por defecto, asignación directa de cédulas y vinculación múltiple de especialidades. |
+| **Validación de facultativos** | Flujo de auditoría formal (`pendiente` → `validado` / `rechazado`) realizado por el Administrador con registro de fecha (`validado_en`), ID del auditor (`validado_por`) y notas explicativas. |
+| **Efecto cascada en acceso** | Sincronización automática con la tabla `usuarios`: el rechazo de un médico conmuta su cuenta a `estado = 'inactivo'`, bloqueando el acceso vía middleware `CheckAccountStatus`. |
+| **Catálogo maestro de especialidades** | Administración centralizada de las ramas médicas con control de activación lógica (*soft-toggle*) mediante el flag booleano `activa`. |
+| **Asignación doctor-especialidad** | Asociación Muchos a Muchos implementada con la tabla pivote `doctor_especialidad` y sincronización atómica mediante `$doctor->especialidades()->sync()`. |
+| **Consulta pública sin autenticación** | Endpoints de catálogo abiertos (`GET /api/obtenerDoctores` y `GET /api/obtenerEspecialidades`) para consumo de la aplicación móvil Android y pacientes no registrados. |
+| **Centralización de agenda médica** | Interfaz web unificada (`DoctoresWebController@horarios`) que orquesta repositorios de horarios y bloqueos para gestionar turnos semanales y ausencias programadas. |
 
-### Roles que interactúan con este módulo
+### Roles que Interactúan con este Módulo
 
-| Rol | Permisos |
-|---|---|
-| **Admin** | CRUD completo de doctores, validación, gestión de especialidades, horarios y bloqueos |
-| **Público (sin auth)** | Consultar listado de doctores y detalle individual |
-| **Paciente** | Consultar doctores al agendar cita (vía el módulo de Disponibilidad) |
+| Rol | Vía de Acceso | Capacidades y Permisos |
+|---|---|---|
+| **Administrador (`admin`)** | Web SSR / API | CRUD integral de médicos, validación/rechazo de perfiles, alta de especialidades en el catálogo, configuración de horarios semanales y registro de bloqueos. |
+| **Médico (`doctor`)** | Web SSR / API | Visualización de perfil profesional propio, consulta de agenda asignada y turnos de consulta. |
+| **Recepcionista (`recepcionista`)** | Web SSR | Consulta de médicos en catálogo y disponibilidad para canalizar citas de pacientes presenciales. |
+| **Paciente (`paciente`)** | Móvil Android / Web | Búsqueda y filtrado de doctores por especialidad, nombre o disponibilidad de agenda. |
+| **Público (Sin Auth)** | API REST Pública | Consulta libre del catálogo maestro de especialidades y listado de facultativos acreditados. |
+
+### Estrategia de Acceso Dual (API REST vs Blade SSR)
+
+1. **API REST (JSON):** Diseñada para consumo por parte de la aplicación móvil Android (Kotlin + Volley) y clientes desacoplados. Retorna respuestas HTTP estructuradas en formato JSON (`{ "mensaje": "...", "data": [...] }`).
+2. **Web SSR (Laravel Blade + Tailwind CSS):** Diseñada para el panel de control administrativo de escritorio. Utiliza validación inline y Form Requests, redirecciones con mensajes flash (`with('success', ...)`), y renderizado del lado del servidor con modales interactivos.
 
 ---
 
 ## 2. Diagrama de Arquitectura
 
 ```
-┌──────────────────────────────────────────────────────────────────────┐
-│                        PETICIÓN HTTP                                 │
-│              API (Móvil/Público)  │  Web (Panel Admin)               │
-└────────────────────┬─────────────────────────┬───────────────────────┘
-                     │                         │
-                     ▼                         ▼
-        ┌────────────────────┐    ┌──────────────────────────┐
-        │  DoctoresController│    │  DoctoresWebController   │
-        │  EspecialidadesCtrl│    │  EspecialidadesWebCtrl   │
-        │    (API JSON)      │    │  (Blade + Redirect)      │
-        └────────┬───────────┘    └──────────┬───────────────┘
-                 │                           │
-                 │    ┌──────────────────┐   │
-                 └───►│ StoreDoctorReq   │◄──┘
-                      │ (Validación)     │
-                      └───────┬──────────┘
-                              │
-              ┌───────────────┼───────────────┐
-              ▼                               ▼
-┌──────────────────────┐        ┌──────────────────────────┐
-│  DoctoresRepository  │        │ EspecialidadesRepository │
-│  • obtenerDoctores   │        │ • obtenerEspecialidades  │
-│  • registrarDoctor   │        │ • registrarEspecialidad  │
-│  • obtenerDoctor     │        │ • obtenerEspecialidad    │
-│  • actualizarDoctor  │        └───────────┬──────────────┘
-│  • validarDoctor     │                    │
-└──────────┬───────────┘                    │
-           │                                │
-           ▼                                ▼
-┌──────────────────────────────────────────────────────┐
-│                    MODELOS ELOQUENT                   │
-│  ┌──────────┐   ┌───────────────┐   ┌──────────────┐│
-│  │ Usuario  │◄──│ PerfilDoctor  │──►│ Especialidad ││
-│  │  (base)  │   │ (1:1)        │   │  (M:N pivot) ││
-│  └──────────┘   └───────────────┘   └──────────────┘│
-│                        │                             │
-│           ┌────────────┼────────────┐                │
-│           ▼            ▼            ▼                │
-│  ┌──────────────┐ ┌─────────┐ ┌──────────┐          │
-│  │HorarioDoctor│ │Bloqueo  │ │  Cita    │          │
-│  │   (1:N)     │ │Horario  │ │  (1:N)   │          │
-│  └──────────────┘ │ (1:N)  │ └──────────┘          │
-│                   └─────────┘                        │
-└──────────────────────────────────────────────────────┘
-           │
-           ▼
-    ┌──────────────┐
-    │   Database   │
-    │   (SQLite)   │
-    └──────────────┘
+┌────────────────────────────────────────────────────────────────────────────────────────┐
+│                                   PETICIÓN CLIENTE                                     │
+│          API REST (App Móvil / Público)           │       Web SSR (Panel Admin Blade)  │
+└───────────────────────────┬───────────────────────┴────────────────────────┬───────────┘
+                            │                                                │
+                            ▼                                                ▼
+               ┌──────────────────────────┐                     ┌──────────────────────────┐
+               │    DoctoresController    │                     │   DoctoresWebController  │
+               │ EspecialidadesController │                     │EspecialidadesWebControl. │
+               │        (API JSON)        │                     │   (Blade SSR + Redirect) │
+               └────────────┬─────────────┘                     └────────────┬─────────────┘
+                            │                                                │
+                            │           ┌────────────────────────┐           │
+                            └──────────►│   StoreDoctorRequest   │◄──────────┘
+                                        │   Validación Inline    │
+                                        └───────────┬────────────┘
+                                                    │
+                             ┌──────────────────────┴──────────────────────┐
+                             ▼                                             ▼
+               ┌──────────────────────────┐                  ┌──────────────────────────┐
+               │    DoctoresRepository    │                  │ EspecialidadesRepository │
+               │  • obtenerDoctores()     │                  │  • obtenerEspecialidades()│
+               │  • registrarDoctor()     │                  │  • registrarEspecialidad()│
+               │  • obtenerDoctor()       │                  │  • obtenerEspecialidad() │
+               │  • actualizarDoctor()    │                  └─────────────┬────────────┘
+               │  • validarDoctor()       │                                │
+               └────────────┬─────────────┘                                │
+                            │                                              │
+                            ▼                                              ▼
+┌────────────────────────────────────────────────────────────────────────────────────────┐
+│                                   MODELOS ELOQUENT ORM                                 │
+│                                                                                        │
+│   ┌──────────────┐          ┌──────────────────┐          ┌────────────────────────┐   │
+│   │   Usuario    │◄─────────│   PerfilDoctor   │─────────►│      Especialidad      │   │
+│   │    (base)    │  (1:1)   │   (profesional)  │  (M:N)   │       (catálogo)       │   │
+│   └──────────────┘          └────────┬─────────┘          └───────────┬────────────┘   │
+│                                      │                                │                │
+│                         ┌────────────┼────────────┐                   │ (1:N)          │
+│                         ▼            ▼            ▼                   ▼                │
+│                ┌───────────────┐┌─────────┐┌──────────────┐    ┌──────────────────┐    │
+│                │ HorarioDoctor ││ Bloqueo ││     Cita     │    │       Cita       │    │
+│                │     (1:N)     ││  (1:N)  ││    (1:N)     │    │  (especialidad)  │    │
+│                └───────────────┘└─────────┘└──────────────┘    └──────────────────┘    │
+└──────────────────────────────────────────┬─────────────────────────────────────────────┘
+                                           │
+                                           ▼
+                                ┌─────────────────────┐
+                                │   Base de Datos     │
+                                │      (MySQL)        │
+                                └─────────────────────┘
 ```
 
 ---
 
 ## 3. Modelo de Datos Relacional
 
-Este módulo involucra una relación **Many-to-Many** entre doctores y especialidades, implementada mediante una tabla pivot.
+El módulo se estructura alrededor de tres tablas principales (`usuarios`, `perfiles_doctor`, `especialidades`) y la tabla de unión (`doctor_especialidad`), articulando relaciones One-to-One, Many-to-Many, One-to-Many y Many-to-One:
 
 ```
-┌──────────────┐       ┌──────────────────┐       ┌─────────────────────┐
-│   usuarios   │       │ perfiles_doctor  │       │  doctor_especialidad│
-│──────────────│       │──────────────────│       │  (tabla pivot)      │
-│ id (PK)      │◄──┐   │ id (PK)          │◄──┐   │─────────────────────│
-│ nombre       │   │   │ usuario_id (FK)  │───┘   │ perfil_doctor_id(FK)│───►perfiles_doctor.id
-│ email        │   │   │ cedula_profesion.│       │ especialidad_id(FK) │───►especialidades.id
-│ password     │   │   │ cedula_especial. │       │ PRIMARY KEY(ambas)  │
-│ rol='doctor' │   │   │ estado_validac.  │       └─────────────────────┘
-│ ...          │   │   │ notas_validac.   │
-└──────────────┘   │   │ validado_por(FK) │───►usuarios.id (admin que validó)
-                   │   │ validado_en      │
-                   │   └──────────────────┘
-                   │
-                   │   ┌──────────────────┐
-                   │   │  especialidades  │
-                   │   │──────────────────│
-                   │   │ id (PK)          │
-                   │   │ nombre (UNIQUE)  │
-                   └───│ descripcion      │
-                       │ activa           │
-                       └──────────────────┘
+┌─────────────────────┐       ┌────────────────────────┐       ┌─────────────────────────┐
+│      usuarios       │       │    perfiles_doctor     │       │   doctor_especialidad   │
+│─────────────────────│       │────────────────────────│       │   (Tabla Pivote M:N)    │
+│ id (PK)             │◄──┐   │ id (PK)                │◄──┐   │─────────────────────────│
+│ nombre              │   │   │ usuario_id (FK)        │───┘   │ perfil_doctor_id (FK)   │───►perfiles_doctor.id
+│ email (UNIQUE)      │   │   │ cedula_profesional(UNQ)│       │ especialidad_id (FK)    │───►especialidades.id
+│ password            │   │   │ cedula_especialidad    │       │ PRIMARY KEY (ambas FKs) │
+│ curp                │   │   │ estado_validacion (ENM)│       └─────────────────────────┘
+│ telefono            │   │   │ notas_validacion       │
+│ rol ('doctor')      │   │   │ validado_por (FK) ──┐  │       ┌─────────────────────────┐
+│ estado ('activo')   │   │   │ validado_en            │  │       │     especialidades      │
+└─────────────────────┘   │   └────────────────────────┘  │       │─────────────────────────│
+                          │                               │       │ id (PK)                 │
+                          └───────────────────────────────┼───────│ nombre (VARCHAR UNIQUE) │
+                                                          │       │ descripcion (TEXT NULL) │
+                                                          │       │ activa (BOOLEAN DEFAULT)│
+                                                          │       │ timestamps              │
+                                                          │       └────────────┬────────────┘
+                                                          ▼                    │
+                                                usuarios.id (Admin validador)  │ (1:N)
+                                                                               ▼
+                                                                  ┌─────────────────────────┐
+                                                                  │          citas          │
+                                                                  │─────────────────────────│
+                                                                  │ id (PK)                 │
+                                                                  │ perfil_doctor_id (FK)   │
+                                                                  │ especialidad_id (FK) ───┘
+                                                                  │ fecha_cita / hora_cita  │
+                                                                  │ ...                     │
+                                                                  └─────────────────────────┘
 ```
 
-**Relaciones clave:**
-- `usuarios` → `perfiles_doctor`: **One-to-One** (un usuario con rol doctor tiene exactamente un perfil)
-- `perfiles_doctor` → `especialidades`: **Many-to-Many** (un doctor puede tener varias especialidades y una especialidad puede pertenecer a varios doctores)
-- `perfiles_doctor.validado_por` → `usuarios`: **Many-to-One** (trazabilidad de qué admin validó al doctor)
+### Detalle de Relaciones Relacionales
+
+| Entidad Origen | Entidad Destino | Cardinalidad | Clave Foránea | Comportamiento en Cascada |
+|---|---|---|---|---|
+| `usuarios` | `perfiles_doctor` | 1 : 1 | `perfiles_doctor.usuario_id` | `ON DELETE CASCADE` (Al borrar usuario, se elimina el perfil). |
+| `perfiles_doctor` | `especialidades` | M : N | `doctor_especialidad.perfil_doctor_id` + `especialidad_id` | `ON DELETE CASCADE` en ambos lados de la tabla pivote. |
+| `usuarios` (Admin) | `perfiles_doctor` | 1 : N | `perfiles_doctor.validado_por` | `ON DELETE SET NULL` (Si el admin se borra, el registro del doctor conserva su validez). |
+| `perfiles_doctor` | `horarios_doctor` | 1 : N | `horarios_doctor.perfil_doctor_id` | `ON DELETE CASCADE` |
+| `perfiles_doctor` | `bloqueos_horario`| 1 : N | `bloqueos_horario.perfil_doctor_id`| `ON DELETE CASCADE` |
+| `perfiles_doctor` | `citas` | 1 : N | `citas.perfil_doctor_id` | `ON DELETE RESTRICT` (Protección de historial clínico). |
+| `especialidades` | `citas` | 1 : N | `citas.especialidad_id` | `ON DELETE RESTRICT` (Protección de citas agendadas). |
 
 ---
 
@@ -145,25 +197,44 @@ Este módulo involucra una relación **Many-to-Many** entre doctores y especiali
 
 **Archivo:** `database/migrations/2026_01_01_000002_crear_tabla_especialidades.php`
 
-Es un **catálogo maestro** de especialidades médicas. Se crea en la migración #2 porque es referenciada por la tabla pivot que se crea después.
+Catálogo maestro de especialidades médicas. Se ejecuta como migración #2 para permitir que las tablas posteriores referencien su clave primaria.
 
 ```php
-Schema::create('especialidades', function (Blueprint $table) {
-    $table->id();                              // PK autoincremental
-    $table->string('nombre')->unique();        // Nombre de la especialidad (UNIQUE)
-    $table->text('descripcion')->nullable();   // Descripción libre de la especialidad
-    $table->boolean('activa')->default(true);  // Soft-toggle de visibilidad
-    $table->timestamps();                      // created_at, updated_at
-});
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('especialidades', function (Blueprint $table) {
+            $table->id();                              // PK autoincremental BIGINT UNSIGNED
+            $table->string('nombre')->unique();        // Nombre único de la rama médica
+            $table->text('descripcion')->nullable();   // Descripción clínica detallada
+            $table->boolean('activa')->default(true);  // Soft-toggle de disponibilidad
+            $table->timestamps();                      // created_at y updated_at
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('especialidades');
+    }
+};
 ```
 
-**Aspectos técnicos:**
+**Análisis técnico de columnas:**
 
-| Campo | Detalle técnico |
-|---|---|
-| `nombre` con `unique()` | Impide duplicados a nivel de BD. Si intentas insertar "Cardiología" dos veces, la BD lanzará una excepción `QueryException` con código de violación de constraint UNIQUE. |
-| `activa` como `boolean` | Implementa un **soft-toggle**: en vez de eliminar especialidades (lo que rompería FKs existentes), se marcan como `activa = false`. El repositorio filtra con `where('activa', true)` para solo mostrar las vigentes. |
-| `text('descripcion')` | Se usa `text` en vez de `string` porque la descripción puede ser larga. `string` genera un `VARCHAR(255)` mientras que `text` genera un `TEXT` sin límite práctico. |
+| Campo | Tipo SQL | Restricción | Explicación Técnica |
+|---|---|---|---|
+| `id` | `BIGINT UNSIGNED` | `PRIMARY KEY AUTO_INCREMENT` | Identificador único numérico para la especialidad. |
+| `nombre` | `VARCHAR(255)` | `UNIQUE INDEX` | Impide duplicados en BD (ej. evita dos registros para "Cardiología"). Genera un índice B-Tree que acelera las búsquedas al agendar citas. |
+| `descripcion` | `TEXT` | `NULLABLE` | Almacena textos explicativos largos sin el límite de 255 caracteres de `VARCHAR`. |
+| `activa` | `TINYINT(1)` / `BOOLEAN` | `DEFAULT 1 (true)` | Implementa un **soft-toggle**: en vez de ejecutar `DELETE` (lo que violaría restricciones de clave foránea en citas históricas), se marca `activa = false` para ocultarla en nuevos agendamientos. |
+| `timestamps` | `TIMESTAMP` | `NULLABLE` | Auditoría de creación y última actualización automática vía Eloquent. |
 
 ---
 
@@ -171,74 +242,88 @@ Schema::create('especialidades', function (Blueprint $table) {
 
 **Archivo:** `database/migrations/2026_01_01_000003_crear_tabla_perfiles_doctor.php`
 
-Extiende la tabla `usuarios` con datos específicos del rol médico. Es la tabla más rica del módulo.
+Extiende la tabla `usuarios` con información profesional, cédulas de ejercicio y trazabilidad del proceso de validación.
 
 ```php
-Schema::create('perfiles_doctor', function (Blueprint $table) {
-    $table->id();
-    $table->foreignId('usuario_id')->constrained('usuarios')->onDelete('cascade');
-    $table->string('cedula_profesional')->unique();
-    $table->string('cedula_especialidad')->nullable();
-    $table->enum('estado_validacion', ['pendiente', 'validado', 'rechazado'])->default('pendiente');
-    $table->text('notas_validacion')->nullable();
-    $table->foreignId('validado_por')->nullable()->constrained('usuarios')->onDelete('set null');
-    $table->timestamp('validado_en')->nullable();
-    $table->timestamps();
-});
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('perfiles_doctor', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('usuario_id')->constrained('usuarios')->onDelete('cascade');
+            $table->string('cedula_profesional')->unique();
+            $table->string('cedula_especialidad')->nullable();
+            $table->enum('estado_validacion', ['pendiente', 'validado', 'rechazado'])->default('pendiente');
+            $table->text('notas_validacion')->nullable();
+            $table->foreignId('validado_por')->nullable()->constrained('usuarios')->onDelete('set null');
+            $table->timestamp('validado_en')->nullable();
+            $table->timestamps();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('perfiles_doctor');
+    }
+};
 ```
 
-**Análisis campo por campo:**
+**Análisis técnico de columnas y políticas de eliminación:**
 
-| Campo | Tipo | Constraint | Explicación técnica |
+| Campo | Tipo | Restricción / FK | Explicación Técnica |
 |---|---|---|---|
-| `usuario_id` | `foreignId` | `constrained('usuarios')->onDelete('cascade')` | FK hacia la tabla `usuarios`. `constrained()` es un shortcut de Laravel que genera automáticamente `FOREIGN KEY ... REFERENCES usuarios(id)`. La política `cascade` significa: si se elimina el usuario, su perfil de doctor se elimina automáticamente. |
-| `cedula_profesional` | `string` | `unique()` | Cada cédula profesional es única en el sistema. Esto previene que dos perfiles usen la misma cédula. |
-| `cedula_especialidad` | `string` | `nullable()` | Cédula opcional de especialidad médica (adicional a la profesional). No todos los médicos tienen una especialidad formal certificada. |
-| `estado_validacion` | `enum` | `default('pendiente')` | Los tres estados del ciclo de vida de validación: `pendiente` (recién registrado), `validado` (aprobado por admin), `rechazado` (rechazado por admin). |
-| `notas_validacion` | `text` | `nullable()` | Comentarios del administrador al validar/rechazar. Útil para auditoría y para informar al médico el motivo de rechazo. |
-| `validado_por` | `foreignId` | `nullable()->constrained('usuarios')->onDelete('set null')` | FK al administrador que realizó la validación. Usa `set null` en vez de `cascade` porque si el admin se elimina, queremos mantener el registro del doctor pero sin la referencia al admin. |
-| `validado_en` | `timestamp` | `nullable()` | Fecha y hora exacta de la validación. Se registra con `now()` al momento de validar. |
-
-**Diferencia entre `onDelete('cascade')` y `onDelete('set null')`:**
-
-```
-onDelete('cascade'):
-  Si se elimina el usuario → se elimina el perfil_doctor automáticamente
-  Razón: El perfil no tiene sentido sin su usuario base
-
-onDelete('set null'):
-  Si se elimina el admin validador → validado_por se pone en NULL
-  Razón: El doctor sigue siendo válido aunque el admin ya no exista
-```
+| `usuario_id` | `BIGINT UNSIGNED` | `constrained('usuarios')->onDelete('cascade')` | FK hacia `usuarios`. Política `cascade`: al eliminar la cuenta de usuario, su perfil médico se elimina en cascada. |
+| `cedula_profesional` | `VARCHAR(255)` | `UNIQUE` | Garantiza que ninguna cédula médica pueda duplicarse en el sistema. |
+| `cedula_especialidad` | `VARCHAR(255)` | `NULLABLE` | Cédula opcional de grado o subespecialidad médica. |
+| `estado_validacion` | `ENUM` | `default('pendiente')` | Estados del ciclo de vida: `pendiente` (recién registrado), `validado` (aprobado por admin), `rechazado` (rechazado). |
+| `notas_validacion` | `TEXT` | `NULLABLE` | Motivo de aprobación o rechazo registrado por el administrador. |
+| `validado_por` | `BIGINT UNSIGNED` | `nullable()->constrained('usuarios')->onDelete('set null')` | FK hacia el administrador que dictaminó la validación. Usa `set null` para preservar la validez del doctor aunque el usuario administrador sea eliminado. |
+| `validado_en` | `TIMESTAMP` | `NULLABLE` | Fecha y hora exacta de la aprobación/rechazo (`now()`). |
 
 ---
 
-### 4.3 Tabla `doctor_especialidad` (Pivot)
+### 4.3 Tabla Pivote `doctor_especialidad`
 
 **Archivo:** `database/migrations/2026_01_01_000006_crear_tabla_doctor_especialidad.php`
 
-Tabla pivot que implementa la relación **Many-to-Many** entre `perfiles_doctor` y `especialidades`.
+Implementa la relación de unión Muchos a Muchos entre `perfiles_doctor` y `especialidades`.
 
 ```php
-Schema::create('doctor_especialidad', function (Blueprint $table) {
-    $table->foreignId('perfil_doctor_id')->constrained('perfiles_doctor')->onDelete('cascade');
-    $table->foreignId('especialidad_id')->constrained('especialidades')->onDelete('cascade');
-    $table->primary(['perfil_doctor_id', 'especialidad_id']);
-});
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('doctor_especialidad', function (Blueprint $table) {
+            $table->foreignId('perfil_doctor_id')->constrained('perfiles_doctor')->onDelete('cascade');
+            $table->foreignId('especialidad_id')->constrained('especialidades')->onDelete('cascade');
+            $table->primary(['perfil_doctor_id', 'especialidad_id']);
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('doctor_especialidad');
+    }
+};
 ```
 
-**Anatomía de la tabla pivot:**
-
-| Aspecto | Detalle técnico |
-|---|---|
-| **No tiene `id` propio** | A diferencia de las tablas regulares, esta tabla pivot no usa `$table->id()`. Esto es una práctica común para tablas pivot simples. |
-| **No tiene `timestamps`** | No necesita `created_at` ni `updated_at` porque las relaciones se gestionan con `sync()` que reemplaza todo el conjunto. |
-| **Clave primaria compuesta** | `primary(['perfil_doctor_id', 'especialidad_id'])` garantiza que un doctor no pueda tener la misma especialidad dos veces. Es más eficiente que un índice UNIQUE porque la clave primaria ya incluye un índice. |
-| **Doble `cascade`** | Si se elimina el doctor O la especialidad, se eliminan los registros correspondientes en la pivot. |
-
-**¿Por qué se llama `doctor_especialidad` y no `perfil_doctor_especialidad`?**
-
-Laravel tiene una convención para nombrar tablas pivot: nombres de los modelos en **singular**, en **orden alfabético**, separados por `_`. Sin embargo, en este proyecto se usa un nombre personalizado que se declara explícitamente en la relación `belongsToMany` del modelo (tercer parámetro).
+**Propiedades de diseño de la tabla pivote:**
+1. **Sin clave autoincremental (`id`) ni `timestamps`:** Al ser una tabla de unión pura, se optimiza almacenamiento y velocidad en consultas `JOIN`.
+2. **Clave Primaria Compuesta:** `primary(['perfil_doctor_id', 'especialidad_id'])` previene a nivel de motor de base de datos la inserción duplicada de una misma especialidad en un perfil médico.
+3. **Doble `onDelete('cascade')`:** Al eliminar un doctor o una especialidad, los registros asociados en la tabla de unión se limpian automáticamente.
 
 ---
 
@@ -248,9 +333,16 @@ Laravel tiene una convención para nombrar tablas pivot: nombres de los modelos 
 
 **Archivo:** `app/Models/PerfilDoctor.php`
 
-Este es el modelo central del módulo. Representa el perfil profesional de un médico y gestiona múltiples relaciones.
+Representa el perfil profesional del médico y articula 6 relaciones de negocio:
 
 ```php
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
 class PerfilDoctor extends Model
 {
     use HasFactory;
@@ -270,152 +362,83 @@ class PerfilDoctor extends Model
     protected $casts = [
         'validado_en' => 'datetime',
     ];
-```
 
-**`$table = 'perfiles_doctor'`:** Es obligatorio declarar esto porque Laravel inferiría `perfil_doctors` (siguiendo la convención inglesa de pluralización). Como el proyecto usa nombres en español, debemos indicar el nombre real de la tabla.
+    /**
+     * Relación 1: Inversa One-to-One con Usuario (cuenta base)
+     */
+    public function usuario()
+    {
+        return $this->belongsTo(Usuario::class, 'usuario_id');
+    }
 
-**`'validado_en' => 'datetime'`:** Convierte el timestamp almacenado en BD a un objeto `Carbon`, permitiendo operaciones como `$doctor->validado_en->format('d/m/Y H:i')` o `$doctor->validado_en->diffForHumans()`.
+    /**
+     * Relación 2: Many-to-Many con Especialidad vía tabla pivote
+     */
+    public function especialidades()
+    {
+        return $this->belongsToMany(
+            Especialidad::class,
+            'doctor_especialidad',
+            'perfil_doctor_id',
+            'especialidad_id'
+        );
+    }
 
----
+    /**
+     * Relación 3: One-to-Many con HorarioDoctor (jornadas semanales)
+     */
+    public function horarios()
+    {
+        return $this->hasMany(HorarioDoctor::class, 'perfil_doctor_id');
+    }
 
-**Relaciones del modelo (6 en total):**
+    /**
+     * Relación 4: One-to-Many con BloqueoHorario (excepciones y vacaciones)
+     */
+    public function bloqueos()
+    {
+        return $this->hasMany(BloqueoHorario::class, 'perfil_doctor_id');
+    }
 
-```php
-// ═══════════════════════════════════════════
-// RELACIÓN 1: Inversa One-to-One con Usuario
-// ═══════════════════════════════════════════
-public function usuario()
-{
-    return $this->belongsTo(Usuario::class, 'usuario_id');
+    /**
+     * Relación 5: One-to-Many con Cita (consultas agendadas)
+     */
+    public function citas()
+    {
+        return $this->hasMany(Cita::class, 'perfil_doctor_id');
+    }
+
+    /**
+     * Relación 6: Many-to-One con Usuario (Administrador que dictaminó la validación)
+     */
+    public function validadoPor()
+    {
+        return $this->belongsTo(Usuario::class, 'validado_por');
+    }
 }
 ```
 
-**`belongsTo`** es la inversa de `hasOne`. Mientras que en `Usuario` definimos `hasOne(PerfilDoctor)`, aquí definimos `belongsTo(Usuario)`. El segundo parámetro `'usuario_id'` indica qué columna de `perfiles_doctor` almacena la FK. Aunque Laravel podría inferirlo (buscaría `usuario_id` automáticamente), es buena práctica explicitarlo.
-
-**Uso práctico:**
-```php
-$doctor = PerfilDoctor::find(1);
-$doctor->usuario->nombre;  // "Dr. Juan Carlos López"
-$doctor->usuario->email;   // "dr.lopez@email.com"
-```
-
----
+**Operaciones sobre la relación Many-to-Many `especialidades()`:**
 
 ```php
-// ═══════════════════════════════════════════
-// RELACIÓN 2: Many-to-Many con Especialidad
-// ═══════════════════════════════════════════
-public function especialidades()
-{
-    return $this->belongsToMany(
-        Especialidad::class,       // Modelo relacionado
-        'doctor_especialidad',     // Nombre de la tabla pivot
-        'perfil_doctor_id',        // FK en la pivot que apunta a ESTE modelo
-        'especialidad_id'          // FK en la pivot que apunta al modelo RELACIONADO
-    );
-}
-```
+// 1. Obtener colección de especialidades vinculadas
+$especialidades = $doctor->especialidades;
 
-**`belongsToMany` — Parámetros explicados:**
-
-| Parámetro | Valor | Por qué se especifica |
-|---|---|---|
-| 1° (Modelo) | `Especialidad::class` | El modelo del otro lado de la relación |
-| 2° (Tabla pivot) | `'doctor_especialidad'` | Nombre personalizado de la tabla pivot (no sigue la convención de Laravel) |
-| 3° (FK local) | `'perfil_doctor_id'` | Columna en la pivot que referencia a `perfiles_doctor.id` |
-| 4° (FK relacionada) | `'especialidad_id'` | Columna en la pivot que referencia a `especialidades.id` |
-
-**Operaciones principales sobre esta relación:**
-
-```php
-// Consultar especialidades de un doctor
-$doctor->especialidades;
-// → Collection [Especialidad{nombre: "Cardiología"}, Especialidad{nombre: "Medicina General"}]
-
-// Asignar especialidades (reemplaza todas las existentes)
+// 2. Sincronización atómica (reemplaza las actuales por el array especificado)
 $doctor->especialidades()->sync([1, 3, 5]);
-// Resultado: Elimina relaciones anteriores y crea las nuevas con IDs 1, 3, 5
 
-// Agregar una especialidad sin eliminar las existentes
+// 3. Vincular una especialidad adicional sin alterar las previas
 $doctor->especialidades()->attach(7);
 
-// Quitar una especialidad específica
+// 4. Desvincular una especialidad puntual
 $doctor->especialidades()->detach(3);
 ```
 
-**Diferencia entre `sync()`, `attach()` y `detach()`:**
-
-| Método | Comportamiento | Uso típico |
+| Método | Comportamiento | Escenario de Uso |
 |---|---|---|
-| `sync([1,3,5])` | Elimina todas las relaciones que NO están en el array y agrega las que faltan | Actualización completa desde un formulario |
-| `attach(7)` | Agrega una nueva relación SIN tocar las existentes | Agregar una especialidad individual |
-| `detach(3)` | Elimina una relación específica SIN tocar las demás | Quitar una especialidad individual |
-| `detach()` (sin args) | Elimina TODAS las relaciones | Limpiar antes de reasignar |
-
----
-
-```php
-// ═══════════════════════════════════════════
-// RELACIÓN 3: One-to-Many con HorarioDoctor
-// ═══════════════════════════════════════════
-public function horarios()
-{
-    return $this->hasMany(HorarioDoctor::class, 'perfil_doctor_id');
-}
-```
-
-Un doctor puede tener **múltiples horarios** (uno por cada día de la semana, o múltiples turnos en un mismo día). Esta relación es utilizada por el módulo de Horarios (Módulo 4).
-
----
-
-```php
-// ═══════════════════════════════════════════
-// RELACIÓN 4: One-to-Many con BloqueoHorario
-// ═══════════════════════════════════════════
-public function bloqueos()
-{
-    return $this->hasMany(BloqueoHorario::class, 'perfil_doctor_id');
-}
-```
-
-Un doctor puede tener **múltiples bloqueos** (vacaciones, permisos, días festivos). Los bloqueos anulan la disponibilidad del horario regular.
-
----
-
-```php
-// ═══════════════════════════════════════════
-// RELACIÓN 5: One-to-Many con Cita
-// ═══════════════════════════════════════════
-public function citas()
-{
-    return $this->hasMany(Cita::class, 'perfil_doctor_id');
-}
-```
-
-Todas las citas asignadas a este doctor.
-
----
-
-```php
-// ═══════════════════════════════════════════
-// RELACIÓN 6: Many-to-One con Usuario (Admin validador)
-// ═══════════════════════════════════════════
-public function validadoPor()
-{
-    return $this->belongsTo(Usuario::class, 'validado_por');
-}
-```
-
-**`'validado_por'`** como segundo parámetro es **crucial** aquí. Sin él, Laravel buscaría una columna llamada `usuario_id` (inferida del nombre del modelo `Usuario`), pero la columna real se llama `validado_por`. Este es un caso donde el mismo modelo (`Usuario`) tiene dos relaciones `belongsTo` desde `PerfilDoctor`:
-1. `usuario()` → El médico (vía `usuario_id`)
-2. `validadoPor()` → El administrador que validó (vía `validado_por`)
-
-**Uso práctico:**
-```php
-$doctor = PerfilDoctor::with('validadoPor')->find(1);
-$doctor->validadoPor->nombre;  // "Administrador Principal"
-$doctor->validado_en->format('d/m/Y');  // "29/07/2026"
-```
+| `sync([1, 3, 5])` | Borra las relaciones ausentes en el array y agrega las nuevas | Formularios web de edición y registro |
+| `attach($id)` | Inserta una relación individual preservando las existentes | Asignación incremental |
+| `detach($id)` | Remueve una relación específica | Revocación puntual de especialidad |
 
 ---
 
@@ -423,27 +446,48 @@ $doctor->validado_en->format('d/m/Y');  // "29/07/2026"
 
 **Archivo:** `app/Models/Especialidad.php`
 
+Representa cada registro del catálogo maestro y gestiona sus relaciones inversas:
+
 ```php
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
 class Especialidad extends Model
 {
     use HasFactory;
 
     protected $table = 'especialidades';
 
-    protected $fillable = ['nombre', 'descripcion', 'activa'];
+    protected $fillable = [
+        'nombre',
+        'descripcion',
+        'activa',
+    ];
 
-    protected $casts = ['activa' => 'boolean'];
+    protected $casts = [
+        'activa' => 'boolean',
+    ];
 
+    /**
+     * Relación Muchos a Muchos inversa con PerfilDoctor
+     */
     public function doctores()
     {
         return $this->belongsToMany(
             PerfilDoctor::class,
             'doctor_especialidad',
-            'especialidad_id',      // FK que apunta a ESTE modelo
-            'perfil_doctor_id'      // FK que apunta al modelo RELACIONADO
+            'especialidad_id',
+            'perfil_doctor_id'
         );
     }
 
+    /**
+     * Relación Uno a Muchos con Cita
+     */
     public function citas()
     {
         return $this->hasMany(Cita::class, 'especialidad_id');
@@ -451,26 +495,9 @@ class Especialidad extends Model
 }
 ```
 
-**Relación `doctores()` — Lado inverso del M:N:**
-
-Esta es la **misma relación** que `PerfilDoctor::especialidades()`, pero vista desde el otro lado. Los parámetros de FK se invierten:
-
-| Relación | FK local | FK relacionada |
-|---|---|---|
-| `PerfilDoctor::especialidades()` | `perfil_doctor_id` | `especialidad_id` |
-| `Especialidad::doctores()` | `especialidad_id` | `perfil_doctor_id` |
-
-**Uso práctico:**
-```php
-$cardiologia = Especialidad::find(3);
-$cardiologia->doctores;
-// → Collection de PerfilDoctor que tienen Cardiología como especialidad
-
-$cardiologia->doctores()->count();
-// → Número de doctores con esta especialidad
-```
-
-**`'activa' => 'boolean'`:** El cast asegura que `$especialidad->activa` retorne `true`/`false` en PHP, en vez de `1`/`0` que es como SQLite almacena booleanos.
+**Puntos técnicos del modelo:**
+- `'activa' => 'boolean'`: Casteo nativo que garantiza que `$especialidad->activa` sea siempre evaluado como `true`/`false` en PHP.
+- `doctores()`: Inversa de `PerfilDoctor::especialidades()`, invirtiendo los parámetros de clave foránea en la tabla pivote (`especialidad_id` como local, `perfil_doctor_id` como relacionada).
 
 ---
 
@@ -480,338 +507,184 @@ $cardiologia->doctores()->count();
 
 **Archivo:** `app/Http/Repository/DoctoresRepository.php`
 
-Contiene 5 métodos que cubren el CRUD completo de doctores más la validación administrativa.
-
----
-
-#### 6.1.1 Método `obtenerDoctores(array $filtros = [])`
-
-**Propósito:** Listar doctores con filtros dinámicos y paginación.
+Encapsula el CRUD de facultativos, búsquedas dinámicas con Eager Loading y el flujo crítico de validación administrativa:
 
 ```php
-public function obtenerDoctores(array $filtros = [])
+<?php
+
+namespace App\Http\Repository;
+
+use App\Models\PerfilDoctor;
+use App\Models\Usuario;
+use Exception;
+
+class DoctoresRepository
 {
-    try {
-        // Inicia el query con eager loading de relaciones
-        $query = PerfilDoctor::with(['usuario', 'especialidades']);
+    /**
+     * Obtiene el listado de doctores con filtros dinámicos y paginación.
+     */
+    public function obtenerDoctores(array $filtros = [])
+    {
+        try {
+            $query = PerfilDoctor::with(['usuario', 'especialidades']);
 
-        // Filtro 1: Por especialidad
-        if (!empty($filtros['especialidad_id'])) {
-            $query->whereHas('especialidades', function ($q) use ($filtros) {
-                $q->where('especialidades.id', $filtros['especialidad_id']);
-            });
+            if (!empty($filtros['especialidad_id'])) {
+                $query->whereHas('especialidades', function ($q) use ($filtros) {
+                    $q->where('especialidades.id', $filtros['especialidad_id']);
+                });
+            }
+
+            if (!empty($filtros['estado_validacion'])) {
+                $query->where('estado_validacion', $filtros['estado_validacion']);
+            }
+
+            if (!empty($filtros['buscar'])) {
+                $buscar = $filtros['buscar'];
+                $query->whereHas('usuario', function ($q) use ($buscar) {
+                    $q->where('nombre', 'like', "%$buscar%");
+                });
+            }
+
+            $doctores = $query->paginate($filtros['por_pagina'] ?? 15);
+
+            return [
+                'mensaje' => 'Doctores obtenidos correctamente',
+                'data'    => $doctores,
+            ];
+        } catch (Exception $e) {
+            return ['mensaje' => $e->getMessage()];
         }
+    }
 
-        // Filtro 2: Por estado de validación
-        if (!empty($filtros['estado_validacion'])) {
-            $query->where('estado_validacion', $filtros['estado_validacion']);
+    /**
+     * Registra un nuevo médico desde el panel administrativo.
+     */
+    public function registrarDoctor(array $data)
+    {
+        try {
+            $usuario = Usuario::create([
+                'nombre'   => $data['nombre'],
+                'email'    => $data['email'],
+                'password' => bcrypt($data['password'] ?? 'Doctor1234!'),
+                'curp'     => isset($data['curp']) ? strtoupper($data['curp']) : null,
+                'telefono' => $data['telefono'] ?? null,
+                'rol'      => 'doctor',
+                'estado'   => 'activo',
+            ]);
+
+            $perfilDoctor = PerfilDoctor::create([
+                'usuario_id'          => $usuario->id,
+                'cedula_profesional'  => $data['cedula_profesional'],
+                'cedula_especialidad' => $data['cedula_especialidad'] ?? null,
+                'estado_validacion'   => $data['estado_validacion'] ?? 'pendiente',
+            ]);
+
+            if (!empty($data['especialidades'])) {
+                $perfilDoctor->especialidades()->sync($data['especialidades']);
+            }
+
+            return [
+                'mensaje' => 'Doctor registrado correctamente',
+                'data'    => $perfilDoctor->load(['usuario', 'especialidades']),
+            ];
+        } catch (Exception $e) {
+            return ['mensaje' => $e->getMessage()];
         }
+    }
 
-        // Filtro 3: Búsqueda por nombre
-        if (!empty($filtros['buscar'])) {
-            $buscar = $filtros['buscar'];
-            $query->whereHas('usuario', function ($q) use ($buscar) {
-                $q->where('nombre', 'like', "%$buscar%");
-            });
+    /**
+     * Consulta el detalle individual de un médico.
+     */
+    public function obtenerDoctor(int $id)
+    {
+        try {
+            $doctor = PerfilDoctor::with(['usuario', 'especialidades', 'horarios'])->find($id);
+
+            if (!$doctor) {
+                return ['mensaje' => 'Doctor no encontrado'];
+            }
+
+            return [
+                'mensaje' => 'Doctor obtenido correctamente',
+                'data'    => $doctor,
+            ];
+        } catch (Exception $e) {
+            return ['mensaje' => $e->getMessage()];
         }
+    }
 
-        // Paginación con 15 resultados por defecto
-        $doctores = $query->paginate($filtros['por_pagina'] ?? 15);
+    /**
+     * Actualiza los datos del usuario y perfil médico.
+     */
+    public function actualizarDoctor(int $id, array $data)
+    {
+        try {
+            $doctor = PerfilDoctor::find($id);
+            if (!$doctor) {
+                return ['mensaje' => 'Doctor no encontrado'];
+            }
 
-        return [
-            'mensaje' => 'Doctores obtenidos correctamente',
-            'data'    => $doctores,
-        ];
-    } catch (Exception $e) {
-        return ['mensaje' => $e->getMessage()];
+            $doctor->usuario->update([
+                'nombre'   => $data['nombre']   ?? $doctor->usuario->nombre,
+                'email'    => $data['email']     ?? $doctor->usuario->email,
+                'telefono' => $data['telefono']  ?? $doctor->usuario->telefono,
+            ]);
+
+            $doctor->update([
+                'cedula_profesional'  => $data['cedula_profesional']  ?? $doctor->cedula_profesional,
+                'cedula_especialidad' => $data['cedula_especialidad'] ?? $doctor->cedula_especialidad,
+            ]);
+
+            if (!empty($data['especialidades'])) {
+                $doctor->especialidades()->sync($data['especialidades']);
+            }
+
+            return [
+                'mensaje' => 'Doctor actualizado correctamente',
+                'data'    => $doctor->load(['usuario', 'especialidades']),
+            ];
+        } catch (Exception $e) {
+            return ['mensaje' => $e->getMessage()];
+        }
+    }
+
+    /**
+     * Dictamina la validación o rechazo del médico con efecto cascada en su cuenta.
+     */
+    public function validarDoctor(int $id, array $data, int $adminId)
+    {
+        try {
+            $doctor = PerfilDoctor::find($id);
+            if (!$doctor) {
+                return ['mensaje' => 'Doctor no encontrado'];
+            }
+
+            $doctor->update([
+                'estado_validacion' => $data['estado_validacion'],
+                'notas_validacion'  => $data['notas_validacion'] ?? null,
+                'validado_por'      => $adminId,
+                'validado_en'       => now(),
+            ]);
+
+            // Efecto cascada sobre el estado de la cuenta base
+            $estadoUsuario = $data['estado_validacion'] === 'rechazado' ? 'inactivo' : 'activo';
+            $doctor->usuario->update(['estado' => $estadoUsuario]);
+
+            return [
+                'mensaje' => 'Estado de validación actualizado',
+                'data'    => $doctor->load('usuario'),
+            ];
+        } catch (Exception $e) {
+            return ['mensaje' => $e->getMessage()];
+        }
     }
 }
 ```
 
-**Conceptos técnicos explicados:**
-
-**`with(['usuario', 'especialidades'])` — Eager Loading:**
-
-Sin `with()`, cada vez que accediéramos a `$doctor->usuario` o `$doctor->especialidades` en una iteración, Laravel haría una consulta SQL adicional. Esto se conoce como el problema **N+1**:
-
-```
-Sin eager loading (N+1 problem):
-  SELECT * FROM perfiles_doctor;         -- 1 consulta
-  SELECT * FROM usuarios WHERE id = 1;   -- +1 por cada doctor
-  SELECT * FROM usuarios WHERE id = 2;   -- +1 por cada doctor
-  ... (N consultas adicionales)
-
-Con eager loading:
-  SELECT * FROM perfiles_doctor;                                    -- 1 consulta
-  SELECT * FROM usuarios WHERE id IN (1, 2, 3, ...);              -- 1 consulta
-  SELECT * FROM especialidades                                     -- 1 consulta
-    JOIN doctor_especialidad ON ...
-    WHERE perfil_doctor_id IN (1, 2, 3, ...);
-```
-
-Con `with()`, sin importar cuántos doctores haya, siempre se ejecutan exactamente **3 consultas SQL**.
-
----
-
-**`whereHas()` — Filtrado por relación:**
-
-```php
-$query->whereHas('especialidades', function ($q) use ($filtros) {
-    $q->where('especialidades.id', $filtros['especialidad_id']);
-});
-```
-
-`whereHas()` genera una subconsulta SQL `EXISTS` que filtra los doctores que **tienen al menos una** especialidad que coincida:
-
-```sql
-SELECT * FROM perfiles_doctor
-WHERE EXISTS (
-    SELECT 1 FROM doctor_especialidad
-    INNER JOIN especialidades ON especialidades.id = doctor_especialidad.especialidad_id
-    WHERE doctor_especialidad.perfil_doctor_id = perfiles_doctor.id
-    AND especialidades.id = ?
-)
-```
-
-**`use ($filtros)` — Closures y scope de variables:**
-
-En PHP, las funciones anónimas (closures) no heredan automáticamente las variables del scope padre. La cláusula `use ($filtros)` importa explícitamente la variable `$filtros` al scope de la closure. Sin esto, `$filtros` no sería accesible dentro de la función anónima.
-
----
-
-**`paginate()` — Paginación automática:**
-
-```php
-$doctores = $query->paginate($filtros['por_pagina'] ?? 15);
-```
-
-`paginate(15)` ejecuta internamente **dos consultas**:
-1. `SELECT COUNT(*) FROM perfiles_doctor WHERE ...` — Total de registros
-2. `SELECT * FROM perfiles_doctor WHERE ... LIMIT 15 OFFSET 0` — Página actual
-
-Retorna un objeto `LengthAwarePaginator` que incluye:
-```json
-{
-    "data": [...],           // Los 15 doctores de la página actual
-    "current_page": 1,
-    "last_page": 3,
-    "per_page": 15,
-    "total": 42,
-    "next_page_url": "/api/obtenerDoctores?page=2",
-    "prev_page_url": null
-}
-```
-
----
-
-#### 6.1.2 Método `registrarDoctor(array $data)`
-
-**Propósito:** Crear un doctor desde el panel admin (diferente al auto-registro del AuthRepository).
-
-```php
-public function registrarDoctor(array $data)
-{
-    try {
-        // 1. Crear usuario base con rol doctor
-        $usuario = Usuario::create([
-            'nombre'   => $data['nombre'],
-            'email'    => $data['email'],
-            'password' => bcrypt($data['password'] ?? 'Doctor1234!'),
-            'curp'     => isset($data['curp']) ? strtoupper($data['curp']) : null,
-            'telefono' => $data['telefono'] ?? null,
-            'rol'      => 'doctor',
-            'estado'   => 'activo',
-        ]);
-
-        // 2. Crear perfil profesional
-        $perfilDoctor = PerfilDoctor::create([
-            'usuario_id'          => $usuario->id,
-            'cedula_profesional'  => $data['cedula_profesional'],
-            'cedula_especialidad' => $data['cedula_especialidad'] ?? null,
-            'estado_validacion'   => $data['estado_validacion'] ?? 'pendiente',
-        ]);
-
-        // 3. Asignar especialidades (Many-to-Many)
-        if (!empty($data['especialidades'])) {
-            $perfilDoctor->especialidades()->sync($data['especialidades']);
-        }
-
-        return [
-            'mensaje' => 'Doctor registrado correctamente',
-            'data'    => $perfilDoctor->load(['usuario', 'especialidades']),
-        ];
-    } catch (Exception $e) {
-        return ['mensaje' => $e->getMessage()];
-    }
-}
-```
-
-**Diferencias con `AuthRepository::registrarMedico()`:**
-
-| Aspecto | AuthRepository (auto-registro) | DoctoresRepository (admin) |
-|---|---|---|
-| **Quién lo invoca** | El propio médico desde la app | El administrador desde el panel |
-| **Verificación de cédula** | Sí (contra mock SEP) | No (el admin se responsabiliza) |
-| **Contraseña** | Requerida por el médico | Opcional (default: `Doctor1234!`) |
-| **Estado validación** | Siempre `pendiente` | Configurable (puede ser `validado` directamente) |
-| **Token generado** | No | No |
-| **CURP** | Requerida con regex | Opcional |
-
-**`bcrypt()` vs `Hash::make()`:** Ambos producen el mismo resultado (hash bcrypt). `bcrypt()` es un helper global de Laravel que llama internamente a `Hash::make()`. La diferencia es puramente estilística.
-
----
-
-#### 6.1.3 Método `obtenerDoctor(int $id)`
-
-```php
-public function obtenerDoctor(int $id)
-{
-    try {
-        $doctor = PerfilDoctor::with(['usuario', 'especialidades', 'horarios'])
-            ->find($id);
-
-        if (!$doctor) {
-            return ['mensaje' => 'Doctor no encontrado'];
-        }
-
-        return [
-            'mensaje' => 'Doctor obtenido correctamente',
-            'data'    => $doctor,
-        ];
-    } catch (Exception $e) {
-        return ['mensaje' => $e->getMessage()];
-    }
-}
-```
-
-**Nota:** Aquí se incluye la relación `'horarios'` en el eager loading, lo que no se hacía en `obtenerDoctores()`. Esto es porque al ver el detalle de un doctor individual, es útil ver también sus horarios configurados.
-
-**`find($id)`** vs **`findOrFail($id)`:**
-
-| Método | Si no encuentra |
-|---|---|
-| `find($id)` | Retorna `null` — requiere verificación manual |
-| `findOrFail($id)` | Lanza `ModelNotFoundException` (404 automático) |
-
-En este proyecto se usa `find()` con verificación manual para retornar un mensaje personalizado.
-
----
-
-#### 6.1.4 Método `actualizarDoctor(int $id, array $data)`
-
-```php
-public function actualizarDoctor(int $id, array $data)
-{
-    try {
-        $doctor = PerfilDoctor::find($id);
-        if (!$doctor) {
-            return ['mensaje' => 'Doctor no encontrado'];
-        }
-
-        // Actualiza datos en la tabla usuarios (a través de la relación)
-        $doctor->usuario->update([
-            'nombre'   => $data['nombre']   ?? $doctor->usuario->nombre,
-            'email'    => $data['email']     ?? $doctor->usuario->email,
-            'telefono' => $data['telefono']  ?? $doctor->usuario->telefono,
-        ]);
-
-        // Actualiza datos en la tabla perfiles_doctor
-        $doctor->update([
-            'cedula_profesional'  => $data['cedula_profesional']  ?? $doctor->cedula_profesional,
-            'cedula_especialidad' => $data['cedula_especialidad']  ?? $doctor->cedula_especialidad,
-        ]);
-
-        // Re-sincroniza especialidades si se proporcionan
-        if (!empty($data['especialidades'])) {
-            $doctor->especialidades()->sync($data['especialidades']);
-        }
-
-        return [
-            'mensaje' => 'Doctor actualizado correctamente',
-            'data'    => $doctor->load(['usuario', 'especialidades']),
-        ];
-    } catch (Exception $e) {
-        return ['mensaje' => $e->getMessage()];
-    }
-}
-```
-
-**Actualización en dos tablas:**
-
-Este método es un ejemplo de cómo un solo endpoint puede actualizar **dos tablas simultáneamente** a través de relaciones Eloquent:
-
-1. `$doctor->usuario->update([...])` — Actualiza la tabla `usuarios` mediante la relación `belongsTo`
-2. `$doctor->update([...])` — Actualiza la tabla `perfiles_doctor` directamente
-
-**Patrón de "merge con valores actuales":**
-
-```php
-'nombre' => $data['nombre'] ?? $doctor->usuario->nombre,
-```
-
-El operador `??` (null coalescing) funciona así: si `$data['nombre']` tiene valor, se usa ese. Si es `null` o no existe, se conserva el valor actual (`$doctor->usuario->nombre`). Esto permite **actualizaciones parciales**: el frontend solo envía los campos que quiere cambiar.
-
----
-
-#### 6.1.5 Método `validarDoctor(int $id, array $data, int $adminId)`
-
-**Propósito:** Aprobar o rechazar la cuenta de un médico. Es el método más crítico del módulo.
-
-```php
-public function validarDoctor(int $id, array $data, int $adminId)
-{
-    try {
-        $doctor = PerfilDoctor::find($id);
-        if (!$doctor) {
-            return ['mensaje' => 'Doctor no encontrado'];
-        }
-
-        // 1. Actualizar estado de validación en perfiles_doctor
-        $doctor->update([
-            'estado_validacion' => $data['estado_validacion'],  // 'validado' o 'rechazado'
-            'notas_validacion'  => $data['notas_validacion'] ?? null,
-            'validado_por'      => $adminId,                    // Trazabilidad del admin
-            'validado_en'       => now(),                       // Timestamp de la acción
-        ]);
-
-        // 2. Efecto cascada: actualizar estado del usuario
-        $estadoUsuario = $data['estado_validacion'] === 'rechazado' ? 'inactivo' : 'activo';
-        $doctor->usuario->update(['estado' => $estadoUsuario]);
-
-        return [
-            'mensaje' => 'Estado de validación actualizado',
-            'data'    => $doctor->load('usuario'),
-        ];
-    } catch (Exception $e) {
-        return ['mensaje' => $e->getMessage()];
-    }
-}
-```
-
-**Lógica de efecto cascada:**
-
-Cuando un doctor es rechazado, no solo se marca como `rechazado` en `perfiles_doctor`, sino que **también se desactiva su cuenta** en la tabla `usuarios`:
-
-```
-estado_validacion = 'validado'  →  usuario.estado = 'activo'
-                                    (puede loguearse)
-
-estado_validacion = 'rechazado' →  usuario.estado = 'inactivo'
-                                    (no puede loguearse)
-```
-
-Esto se conecta con el módulo de autenticación: cuando el middleware `CheckAccountStatus` detecta `estado = 'inactivo'`, bloquea el acceso con el mensaje "Tu cuenta está desactivada".
-
-**Trazabilidad completa:**
-
-Después de la validación, el registro queda así:
-```php
-$doctor->estado_validacion;  // "validado"
-$doctor->notas_validacion;   // "Cédula verificada con el sistema SEP"
-$doctor->validado_por;       // 1 (ID del admin)
-$doctor->validado_en;        // "2026-07-29 17:30:00"
-$doctor->validadoPor->nombre; // "Administrador Principal"
-```
+**Análisis de Optimización y Reglas de Negocio:**
+1. **Prevención del problema N+1:** El uso de `with(['usuario', 'especialidades'])` consolida la consulta en 3 queries fijas, evitando ejecutar 1 query SQL por cada doctor iterado en la vista o respuesta JSON.
+2. **Filtrado por subconsulta `whereHas()`:** Permite filtrar facultativos según el nombre de la especialidad o texto de búsqueda en la tabla `usuarios` sin necesidad de realizar `JOIN` manuales.
+3. **Efecto Cascada de Seguridad:** En `validarDoctor()`, si el dictamen es `'rechazado'`, se conmuta automáticamente `usuarios.estado = 'inactivo'`. El middleware global `CheckAccountStatus` intercepta subsecuentes peticiones de login rechazando al usuario.
 
 ---
 
@@ -819,167 +692,194 @@ $doctor->validadoPor->nombre; // "Administrador Principal"
 
 **Archivo:** `app/Http/Repository/EspecialidadesRepository.php`
 
-Repositorio sencillo para el catálogo de especialidades médicas. 3 métodos CRUD básicos.
-
----
-
-#### 6.2.1 Método `obtenerEspecialidades()`
+Encapsula la persistencia y lectura del catálogo maestro:
 
 ```php
-public function obtenerEspecialidades()
+<?php
+
+namespace App\Http\Repository;
+
+use App\Models\Especialidad;
+use Exception;
+
+class EspecialidadesRepository
 {
-    try {
-        $especialidades = Especialidad::where('activa', true)->orderBy('nombre')->get();
-        return [
-            'mensaje' => 'Especialidades obtenidas correctamente',
-            'data'    => $especialidades,
-        ];
-    } catch (Exception $e) {
-        return ['mensaje' => $e->getMessage()];
-    }
-}
-```
+    /**
+     * Retorna todas las especialidades activas ordenadas alfabéticamente.
+     */
+    public function obtenerEspecialidades()
+    {
+        try {
+            $especialidades = Especialidad::where('activa', true)
+                ->orderBy('nombre')
+                ->get();
 
-**Aspectos técnicos:**
-
-- **`where('activa', true)`:** Filtra solo especialidades activas. Esto implementa el soft-toggle: las especialidades "eliminadas" simplemente se marcan como `activa = false` y dejan de aparecer en los listados.
-- **`orderBy('nombre')`:** Ordena alfabéticamente. Esto garantiza un orden consistente para el usuario sin depender del orden de inserción.
-- **`get()` vs `paginate()`:** Se usa `get()` en vez de `paginate()` porque el catálogo de especialidades es pequeño (15 registros) y no requiere paginación.
-
----
-
-#### 6.2.2 Método `registrarEspecialidad(array $data)`
-
-```php
-public function registrarEspecialidad(array $data)
-{
-    try {
-        $especialidad = Especialidad::create([
-            'nombre'      => $data['nombre'],
-            'descripcion' => $data['descripcion'] ?? null,
-            'activa'      => true,  // Siempre se crea como activa
-        ]);
-        return [
-            'mensaje' => 'Especialidad registrada correctamente',
-            'data'    => $especialidad,
-        ];
-    } catch (Exception $e) {
-        return ['mensaje' => $e->getMessage()];
-    }
-}
-```
-
-**¿Qué pasa si se intenta crear una especialidad con nombre duplicado?**
-
-Como la migración define `nombre` con `unique()`, la BD lanzará una `QueryException` que será capturada por el `catch`. Sin embargo, en el web controller se valida primero con `'nombre' => 'unique:especialidades,nombre'`, lo que mostraría un error de validación antes de llegar al repositorio.
-
----
-
-#### 6.2.3 Método `obtenerEspecialidad(int $id)`
-
-```php
-public function obtenerEspecialidad(int $id)
-{
-    try {
-        $especialidad = Especialidad::find($id);
-        if (!$especialidad) {
-            return ['mensaje' => 'Especialidad no encontrada'];
+            return [
+                'mensaje' => 'Especialidades obtenidas correctamente',
+                'data'    => $especialidades,
+            ];
+        } catch (Exception $e) {
+            return ['mensaje' => $e->getMessage()];
         }
-        return [
-            'mensaje' => 'Especialidad obtenida correctamente',
-            'data'    => $especialidad,
-        ];
-    } catch (Exception $e) {
-        return ['mensaje' => $e->getMessage()];
+    }
+
+    /**
+     * Registra una nueva especialidad médica en el catálogo maestro.
+     */
+    public function registrarEspecialidad(array $data)
+    {
+        try {
+            $especialidad = Especialidad::create([
+                'nombre'      => $data['nombre'],
+                'descripcion' => $data['descripcion'] ?? null,
+                'activa'      => true,
+            ]);
+
+            return [
+                'mensaje' => 'Especialidad registrada correctamente',
+                'data'    => $especialidad,
+            ];
+        } catch (Exception $e) {
+            return ['mensaje' => $e->getMessage()];
+        }
+    }
+
+    /**
+     * Consulta una especialidad individual por su ID.
+     */
+    public function obtenerEspecialidad(int $id)
+    {
+        try {
+            $especialidad = Especialidad::find($id);
+
+            if (!$especialidad) {
+                return ['mensaje' => 'Especialidad no encontrada'];
+            }
+
+            return [
+                'mensaje' => 'Especialidad obtenida correctamente',
+                'data'    => $especialidad,
+            ];
+        } catch (Exception $e) {
+            return ['mensaje' => $e->getMessage()];
+        }
     }
 }
 ```
 
-Método de consulta individual. Actualmente se usa internamente; no tiene un endpoint público dedicado.
-
 ---
 
-## 7. Capa de Form Requests (Validación)
+## 7. Capa de Validaciones (Form Requests y Validación Inline)
 
 ### 7.1 `StoreDoctorRequest`
 
 **Archivo:** `app/Http/Requests/StoreDoctorRequest.php`
 
-Valida los datos para el registro de un doctor **desde el panel admin**.
+Valida las peticiones de alta de médicos tanto en el controlador API como en el controlador Web:
 
 ```php
-public function rules(): array
+<?php
+
+namespace App\Http\Requests;
+
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
+
+class StoreDoctorRequest extends FormRequest
 {
-    return [
-        'nombre'              => 'required|string|max:255',
-        'email'               => 'required|email|unique:usuarios,email',
-        'password'            => 'nullable|string|min:8',
-        'curp'                => 'nullable|string|size:18',
-        'telefono'            => 'nullable|string|max:20',
-        'cedula_profesional'  => 'required|string|unique:perfiles_doctor,cedula_profesional',
-        'cedula_especialidad' => 'nullable|string',
-        'especialidades'      => 'nullable|array',
-        'especialidades.*'    => 'exists:especialidades,id',
-        'estado_validacion'   => 'nullable|in:pendiente,validado,rechazado',
-    ];
+    public function authorize(): bool
+    {
+        return true;
+    }
+
+    public function rules(): array
+    {
+        return [
+            'nombre'              => 'required|string|max:255',
+            'email'               => 'required|email|unique:usuarios,email',
+            'password'            => 'nullable|string|min:8',
+            'curp'                => 'nullable|string|size:18',
+            'telefono'            => 'nullable|string|max:20',
+            'cedula_profesional'  => 'required|string|unique:perfiles_doctor,cedula_profesional',
+            'cedula_especialidad' => 'nullable|string',
+            'especialidades'      => 'nullable|array',
+            'especialidades.*'    => 'exists:especialidades,id',
+            'estado_validacion'   => 'nullable|in:pendiente,validado,rechazado',
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'nombre.required'             => 'El nombre es requerido.',
+            'email.required'              => 'El correo electrónico es requerido.',
+            'email.unique'                => 'El correo electrónico ya está registrado.',
+            'cedula_profesional.required' => 'La cédula profesional es requerida.',
+            'cedula_profesional.unique'   => 'La cédula profesional ya está registrada.',
+            'especialidades.*.exists'     => 'Una o más especialidades seleccionadas no son válidas.',
+        ];
+    }
+
+    protected function failedValidation(Validator $validator)
+    {
+        if ($this->expectsJson()) {
+            throw new HttpResponseException(response()->json([
+                'msj'    => 'Error de validación',
+                'errors' => $validator->errors(),
+            ], 422));
+        }
+
+        parent::failedValidation($validator);
+    }
 }
 ```
 
-**Comparación con `StoreRegistroMedicoRequest` (auto-registro):**
+**Diferencias arquitectónicas: Registro Admin vs Auto-Registro:**
 
-| Regla | StoreDoctorRequest (Admin) | StoreRegistroMedicoRequest (Auto-registro) |
+| Aspecto | `StoreDoctorRequest` (Admin) | `StoreRegistroMedicoRequest` (Auto-Registro Público) |
 |---|---|---|
-| `password` | `nullable` (default asignado en repo) | `required\|confirmed\|min:8` |
-| `curp` | `nullable` (sin regex) | `required\|regex:/^[A-Z]{4}...$/` |
-| `estado_validacion` | Acepta cualquier estado | No existe (siempre `pendiente`) |
-
-**¿Por qué el admin tiene reglas más relajadas?**
-
-Porque el administrador es un usuario **de confianza** que opera desde el panel interno. El auto-registro requiere validaciones estrictas porque es un formulario público expuesto a usuarios externos.
-
-**`'estado_validacion' => 'nullable|in:pendiente,validado,rechazado'`:**
-
-La regla `in:` verifica que el valor sea **exactamente** uno de los valores listados. Esto previene inyección de estados inválidos. Si se envía `estado_validacion=superadmin`, la validación fallará con un error 422.
+| **Contexto de Seguridad** | Operado por el Administrador autenticado | Formulario público de registro |
+| **Validación de Cédula** | Se valida unicidad en BD | Se valida existencia contra mock SEP |
+| **Contraseña** | `nullable` (Asigna `'Doctor1234!'` si no se envía) | `required|confirmed|min:8` |
+| **Estado Inicial** | Configurable (`pendiente`, `validado`, `rechazado`) | Forzado a `pendiente` |
 
 ---
 
-### Validación inline en `EspecialidadesWebController`
+### 7.2 Validación Inline en `EspecialidadesWebController`
 
-El controlador web de especialidades usa **validación inline** en vez de Form Request:
+Dado que el catálogo de especialidades consta de 2 campos simples, se utiliza **validación inline** en `EspecialidadesWebController@store` para evitar sobrecarga de clases:
 
 ```php
-public function store(Request $request)
-{
-    $request->validate([
-        'nombre'      => 'required|string|max:100|unique:especialidades,nombre',
-        'descripcion' => 'nullable|string|max:255',
-    ]);
-    // ...
-}
+$request->validate([
+    'nombre'      => 'required|string|max:100|unique:especialidades,nombre',
+    'descripcion' => 'nullable|string|max:255',
+], [
+    'nombre.required' => 'El nombre de la especialidad es obligatorio.',
+    'nombre.unique'   => 'Esta especialidad médica ya se encuentra registrada.',
+    'nombre.max'      => 'El nombre no debe exceder los 100 caracteres.',
+]);
 ```
-
-**¿Cuándo usar validación inline vs Form Request?**
-
-| Criterio | Form Request | Validación inline |
-|---|---|---|
-| Complejidad | Muchas reglas (>5 campos) | Pocas reglas (2-3 campos) |
-| Reutilización | Múltiples controladores usan las mismas reglas | Solo un controlador la usa |
-| Mensajes custom | Se necesitan mensajes personalizados extensos | Mensajes default son suficientes |
-| Testing | Más fácil de testear aisladamente | Se testea con el controlador |
-
-En este caso, la validación de especialidades es tan simple (2 campos) que un Form Request dedicado sería over-engineering.
 
 ---
 
-## 8. Capa de Controladores
+## 8. Capa de Controladores (API REST vs Blade SSR)
 
-### 8.1 `DoctoresController` (API)
+### 8.1 `DoctoresController` (API REST)
 
 **Archivo:** `app/Http/Controllers/DoctoresController.php`
 
-Controlador API delgado con 5 métodos que delegan toda la lógica al repositorio.
+Controlador REST ligero que retorna respuestas en formato JSON para el cliente móvil y servicios externos:
 
 ```php
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Http\Repository\DoctoresRepository;
+use App\Http\Requests\StoreDoctorRequest;
+use Illuminate\Http\Request;
+
 class DoctoresController extends Controller
 {
     protected $doctoresRepository;
@@ -988,48 +888,74 @@ class DoctoresController extends Controller
     {
         $this->doctoresRepository = $doctoresRepository;
     }
-```
 
-**Tabla de métodos:**
+    public function obtenerDoctores(Request $request)
+    {
+        try {
+            $resultado = $this->doctoresRepository->obtenerDoctores($request->all());
+            return response()->json($resultado, 200);
+        } catch (\Exception $e) {
+            return response()->json(['mensaje' => $e->getMessage()], 500);
+        }
+    }
 
-| Método | HTTP | Autenticación | Rol | Form Request | Repositorio |
-|---|---|---|---|---|---|
-| `obtenerDoctores()` | GET | Pública | — | `Request` | `obtenerDoctores()` |
-| `obtenerDoctor($id)` | GET | Pública | — | — | `obtenerDoctor()` |
-| `registrarDoctor()` | POST | `auth:sanctum` | `admin` | `StoreDoctorRequest` | `registrarDoctor()` |
-| `actualizarDoctor($id)` | PUT | `auth:sanctum` | `admin` | `Request` | `actualizarDoctor()` |
-| `validarDoctor($id)` | PATCH | `auth:sanctum` | `admin` | `Request` | `validarDoctor()` |
+    public function registrarDoctor(StoreDoctorRequest $request)
+    {
+        try {
+            $resultado = $this->doctoresRepository->registrarDoctor($request->all());
+            return response()->json($resultado, 200);
+        } catch (\Exception $e) {
+            return response()->json(['mensaje' => $e->getMessage()], 500);
+        }
+    }
 
-**`obtenerDoctores()` y `obtenerDoctor()` son públicos:**
+    public function obtenerDoctor(int $id)
+    {
+        try {
+            $resultado = $this->doctoresRepository->obtenerDoctor($id);
+            return response()->json($resultado, 200);
+        } catch (\Exception $e) {
+            return response()->json(['mensaje' => $e->getMessage()], 500);
+        }
+    }
 
-Estos dos endpoints **no requieren autenticación** porque cualquier persona (incluso sin cuenta) debe poder consultar el listado de médicos disponibles. Esto es fundamental para que los pacientes de la app móvil puedan buscar doctores antes de registrarse.
+    public function actualizarDoctor(Request $request, int $id)
+    {
+        try {
+            $resultado = $this->doctoresRepository->actualizarDoctor($id, $request->all());
+            return response()->json($resultado, 200);
+        } catch (\Exception $e) {
+            return response()->json(['mensaje' => $e->getMessage()], 500);
+        }
+    }
 
-**Método `validarDoctor()` — Extracción del admin ID:**
-
-```php
-public function validarDoctor(Request $request, int $id)
-{
-    try {
-        $adminId   = $request->user()->id;  // Obtiene el ID del admin autenticado
-        $resultado = $this->doctoresRepository->validarDoctor($id, $request->all(), $adminId);
-        return response()->json($resultado, 200);
-    } catch (\Exception $e) {
-        return response()->json(['mensaje' => $e->getMessage()], 500);
+    public function validarDoctor(Request $request, int $id)
+    {
+        try {
+            $adminId   = $request->user()->id;
+            $resultado = $this->doctoresRepository->validarDoctor($id, $request->all(), $adminId);
+            return response()->json($resultado, 200);
+        } catch (\Exception $e) {
+            return response()->json(['mensaje' => $e->getMessage()], 500);
+        }
     }
 }
 ```
 
-`$request->user()` retorna la instancia del modelo `Usuario` del usuario autenticado (el admin, ya que la ruta está protegida por `role:admin`). Se pasa el `$adminId` al repositorio para registrar trazabilidad.
-
 ---
 
-### 8.2 `EspecialidadesController` (API)
+### 8.2 `EspecialidadesController` (API REST)
 
 **Archivo:** `app/Http/Controllers/EspecialidadesController.php`
 
-Controlador mínimo con solo 2 métodos:
-
 ```php
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Http\Repository\EspecialidadesRepository;
+use Illuminate\Http\Request;
+
 class EspecialidadesController extends Controller
 {
     protected $especialidadesRepository;
@@ -1039,23 +965,51 @@ class EspecialidadesController extends Controller
         $this->especialidadesRepository = $especialidadesRepository;
     }
 
-    // GET /api/obtenerEspecialidades (Público)
-    public function obtenerEspecialidades() { ... }
+    public function obtenerEspecialidades()
+    {
+        try {
+            $resultado = $this->especialidadesRepository->obtenerEspecialidades();
+            return response()->json($resultado, 200);
+        } catch (\Exception $e) {
+            return response()->json(['mensaje' => $e->getMessage()], 500);
+        }
+    }
 
-    // POST /api/registrarEspecialidad (Solo admin)
-    public function registrarEspecialidad(Request $request) { ... }
+    public function registrarEspecialidad(Request $request)
+    {
+        try {
+            $resultado = $this->especialidadesRepository->registrarEspecialidad($request->all());
+            return response()->json($resultado, 200);
+        } catch (\Exception $e) {
+            return response()->json(['mensaje' => $e->getMessage()], 500);
+        }
+    }
 }
 ```
 
 ---
 
-### 8.3 `DoctoresWebController` (Web)
+### 8.3 `DoctoresWebController` (Web Blade SSR)
 
 **Archivo:** `app/Http/Controllers/Web/DoctoresWebController.php`
 
-Este es el controlador **más complejo** del módulo. Orquesta **4 repositorios** diferentes y gestiona doctores, horarios y bloqueos desde una sola interfaz web.
+Orquesta 4 repositorios para alimentar las vistas del panel de administración web:
 
 ```php
+<?php
+
+namespace App\Http\Controllers\Web;
+
+use App\Http\Controllers\Controller;
+use App\Http\Repository\BloqueosRepository;
+use App\Http\Repository\DoctoresRepository;
+use App\Http\Repository\EspecialidadesRepository;
+use App\Http\Repository\HorariosRepository;
+use App\Http\Requests\StoreBloqueoRequest;
+use App\Http\Requests\StoreDoctorRequest;
+use App\Http\Requests\StoreHorarioRequest;
+use Illuminate\Http\Request;
+
 class DoctoresWebController extends Controller
 {
     protected $doctoresRepository;
@@ -1074,75 +1028,137 @@ class DoctoresWebController extends Controller
         $this->horariosRepository = $horariosRepository;
         $this->bloqueosRepository = $bloqueosRepository;
     }
-```
 
-**Inyección de 4 dependencias:** Este controlador necesita 4 repositorios porque la vista web de doctores integra toda la gestión (perfil, especialidades, horarios, bloqueos) en una sola interfaz. Laravel resuelve las 4 instancias automáticamente desde el Service Container.
+    public function index(Request $request)
+    {
+        $resDoctores = $this->doctoresRepository->obtenerDoctores([
+            'buscar'            => $request->query('buscar'),
+            'especialidad_id'   => $request->query('especialidad_id'),
+            'estado_validacion' => $request->query('estado_validacion') ?: null,
+        ]);
+        $doctores = isset($resDoctores['data']) ? collect($resDoctores['data']->items()) : collect();
 
-**Tabla completa de métodos:**
+        $resEsp = $this->especialidadesRepository->obtenerEspecialidades();
+        $especialidades = $resEsp['data'] ?? [];
 
-| Método | HTTP | Acción | Vista/Redirect | Repositorio(s) |
-|---|---|---|---|---|
-| `index()` | GET | Listar doctores | `doctores.index` | `doctoresRepo` + `especialidadesRepo` |
-| `store()` | POST | Crear doctor | Redirect a `index` | `doctoresRepo` |
-| `update($id)` | PUT | Actualizar doctor | Redirect a `index` | `doctoresRepo` |
-| `validar($id)` | PATCH | Validar/rechazar | Redirect a `index` | `doctoresRepo` |
-| `horarios($id)` | GET | Ver horarios y bloqueos | `doctores.horarios` | `doctoresRepo` + `horariosRepo` + `bloqueosRepo` |
-| `storeHorario($id)` | POST | Crear horario | Redirect back | `horariosRepo` |
-| `updateHorario($id)` | PUT | Actualizar horario | Redirect back | `horariosRepo` |
-| `deleteHorario($id)` | DELETE | Eliminar horario | Redirect back | `horariosRepo` |
-| `storeBloqueo($id)` | POST | Crear bloqueo | Redirect back | `bloqueosRepo` |
-| `deleteBloqueo($id)` | DELETE | Eliminar bloqueo | Redirect back | `bloqueosRepo` |
+        return view('doctores.index', compact('doctores', 'especialidades'));
+    }
 
-**Método `index()` — Composición de datos para la vista:**
+    public function store(StoreDoctorRequest $request)
+    {
+        try {
+            $this->doctoresRepository->registrarDoctor($request->all());
+            return redirect()->route('doctores.index')->with('success', 'Médico registrado con éxito. Pendiente de validación.');
+        } catch (\Exception $e) {
+            return back()->withInput()->with('error', $e->getMessage());
+        }
+    }
 
-```php
-public function index()
-{
-    $resDoctores = $this->doctoresRepository->obtenerDoctores();
-    $doctores = $resDoctores['data'] ?? [];
+    public function update(Request $request, $id)
+    {
+        try {
+            $this->doctoresRepository->actualizarDoctor($id, $request->all());
+            return redirect()->route('doctores.index')->with('success', 'Médico actualizado con éxito.');
+        } catch (\Exception $e) {
+            return back()->withInput()->with('error', $e->getMessage());
+        }
+    }
 
-    $resEsp = $this->especialidadesRepository->obtenerEspecialidades();
-    $especialidades = $resEsp['data'] ?? [];
+    public function validar(Request $request, $id)
+    {
+        try {
+            $this->doctoresRepository->validarDoctor($id, $request->all(), $request->user()->id);
+            return redirect()->route('doctores.index')->with('success', 'Estado de validación del médico actualizado.');
+        } catch (\Exception $e) {
+            return back()->with('error', $e->getMessage());
+        }
+    }
 
-    return view('doctores.index', compact('doctores', 'especialidades'));
+    public function horarios($doctorId)
+    {
+        try {
+            $doctorRes   = $this->doctoresRepository->obtenerDoctor($doctorId);
+            $doctor      = $doctorRes['data'] ?? null;
+
+            $horariosRes = $this->horariosRepository->obtenerHorarios($doctorId);
+            $horarios    = $horariosRes['data'] ?? [];
+
+            $bloqueosRes = $this->bloqueosRepository->obtenerBloqueos($doctorId);
+            $bloqueos    = $bloqueosRes['data'] ?? [];
+
+            return view('doctores.horarios', compact('doctor', 'horarios', 'bloqueos', 'doctorId'));
+        } catch (\Exception $e) {
+            return redirect()->route('doctores.index')->with('error', $e->getMessage());
+        }
+    }
+
+    public function storeHorario(StoreHorarioRequest $request, $doctorId)
+    {
+        try {
+            $this->horariosRepository->registrarHorario($doctorId, $request->all());
+            return back()->with('success', 'Horario registrado correctamente.');
+        } catch (\Exception $e) {
+            return back()->withInput()->with('error', $e->getMessage());
+        }
+    }
+
+    public function updateHorario(Request $request, $id)
+    {
+        try {
+            $this->horariosRepository->actualizarHorario($id, $request->all());
+            return back()->with('success', 'Horario actualizado correctamente.');
+        } catch (\Exception $e) {
+            return back()->withInput()->with('error', $e->getMessage());
+        }
+    }
+
+    public function deleteHorario($id)
+    {
+        try {
+            $this->horariosRepository->eliminarHorario($id);
+            return back()->with('success', 'Horario eliminado.');
+        } catch (\Exception $e) {
+            return back()->with('error', $e->getMessage());
+        }
+    }
+
+    public function storeBloqueo(StoreBloqueoRequest $request, $doctorId)
+    {
+        try {
+            $this->bloqueosRepository->registrarBloqueo($doctorId, $request->all(), $request->user()->id);
+            return back()->with('success', 'Bloqueo de horario registrado.');
+        } catch (\Exception $e) {
+            return back()->withInput()->with('error', $e->getMessage());
+        }
+    }
+
+    public function deleteBloqueo($id)
+    {
+        try {
+            $this->bloqueosRepository->eliminarBloqueo($id);
+            return back()->with('success', 'Bloqueo eliminado.');
+        } catch (\Exception $e) {
+            return back()->with('error', $e->getMessage());
+        }
+    }
 }
 ```
-
-**`compact('doctores', 'especialidades')`:** Es un shortcut de PHP que crea un array asociativo a partir de nombres de variables:
-```php
-compact('doctores', 'especialidades')
-// Equivale a: ['doctores' => $doctores, 'especialidades' => $especialidades]
-```
-
-Las dos variables se pasan a la vista Blade para renderizar la tabla de doctores y el dropdown de especialidades del formulario de registro.
-
-**Método `horarios($doctorId)` — Agregación de datos:**
-
-```php
-public function horarios(int $doctorId)
-{
-    $doctorRes   = $this->doctoresRepository->obtenerDoctor($doctorId);
-    $doctor      = $doctorRes['data'] ?? null;
-
-    $horariosRes = $this->horariosRepository->obtenerHorarios($doctorId);
-    $horarios    = $horariosRes['data'] ?? [];
-
-    $bloqueosRes = $this->bloqueosRepository->obtenerBloqueos($doctorId);
-    $bloqueos    = $bloqueosRes['data'] ?? [];
-
-    return view('doctores.horarios', compact('doctor', 'horarios', 'bloqueos', 'doctorId'));
-}
-```
-
-Este método demuestra el patrón de **agregación**: combina datos de 3 repositorios diferentes para alimentar una sola vista que muestra el perfil del doctor, sus horarios regulares y sus bloqueos vigentes.
 
 ---
 
-### 8.4 `EspecialidadesWebController` (Web)
+### 8.4 `EspecialidadesWebController` (Web Blade SSR)
 
 **Archivo:** `app/Http/Controllers/Web/EspecialidadesWebController.php`
 
 ```php
+<?php
+
+namespace App\Http\Controllers\Web;
+
+use App\Http\Controllers\Controller;
+use App\Http\Repository\EspecialidadesRepository;
+use Illuminate\Http\Request;
+
 class EspecialidadesWebController extends Controller
 {
     protected $especialidadesRepository;
@@ -1156,12 +1172,12 @@ class EspecialidadesWebController extends Controller
     {
         $res = $this->especialidadesRepository->obtenerEspecialidades();
         $especialidades = $res['data'] ?? [];
+
         return view('especialidades.index', compact('especialidades'));
     }
 
     public function store(Request $request)
     {
-        // Validación inline (simple, solo 2 campos)
         $request->validate([
             'nombre'      => 'required|string|max:100|unique:especialidades,nombre',
             'descripcion' => 'nullable|string|max:255',
@@ -1170,7 +1186,7 @@ class EspecialidadesWebController extends Controller
         try {
             $this->especialidadesRepository->registrarEspecialidad($request->all());
             return redirect()->route('especialidades.index')
-                             ->with('success', 'Especialidad creada con éxito.');
+                ->with('success', 'Especialidad creada con éxito.');
         } catch (\Exception $e) {
             return back()->withInput()->with('error', $e->getMessage());
         }
@@ -1178,371 +1194,521 @@ class EspecialidadesWebController extends Controller
 }
 ```
 
-**Diferencia clave:** En el `store()`, la validación se hace **inline** con `$request->validate()` en vez de usar un Form Request dedicado. Cuando la validación falla en un contexto web (no API), Laravel automáticamente redirige `back()` con los errores en la sesión flash.
+---
+
+## 9. Capa de Vistas (Blade SSR UI y Componentes)
+
+Las vistas del módulo están construidas con **Blade SSR + Tailwind CSS (Clinical Clarity)** y **Material Symbols**:
+
+### 9.1 Panel de Gestión de Doctores (`doctores/index.blade.php`)
+
+**Archivo:** `resources/views/doctores/index.blade.php`
+
+- **Listado y Filtros:** Barra de búsqueda por nombre y dropdown dinámico de especialidades.
+- **Badges de Estado de Validación:**
+  - `validado`: Verde esmeralda (`bg-emerald-50 text-emerald-700`).
+  - `pendiente`: Amarillo ámbar (`bg-amber-50 text-amber-700`).
+  - `rechazado`: Rojo carmesí (`bg-red-50 text-red-700`).
+- **Modales Integrados:** Modal de alta de médico con checklist de especialidades múltiples, modal de edición de datos, y modal de dictamen de validación rápida.
+- **Acceso Directo a Horarios:** Botón para navegar a la configuración de turnos del doctor (`route('doctores.horarios', $doc->id)`).
 
 ---
 
-## 9. Rutas (API y Web)
+### 9.2 Gestión de Horarios y Bloqueos (`doctores/horarios.blade.php`)
 
-### 9.1 Rutas API
+**Archivo:** `resources/views/doctores/horarios.blade.php`
+
+- **Encabezado Clínico:** Tarjeta resumen con avatar del médico, cédula profesional y badges de especialidades asignadas.
+- **Grilla de Horarios Semanales:** Configuración de días (`lunes` a `domingo`), `hora_inicio`, `hora_fin` y duración por consulta (`duracion_consulta_minutos`).
+- **Listado de Bloqueos:** Tabla de ausencias programadas y modal para registrar nuevos bloqueos por fecha o rango de horas con motivo clínico.
+
+---
+
+### 9.3 Catálogo de Especialidades (`especialidades/index.blade.php`)
+
+**Archivo:** `resources/views/especialidades/index.blade.php`
+
+```html
+@extends('layouts.app')
+@section('titulo', 'Catálogo de Especialidades')
+
+@section('content')
+<!-- Header Controls -->
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6">
+    <div>
+        <h1 class="text-2xl font-bold text-primary-dark">Catálogo de Especialidades</h1>
+        <p class="text-xs text-text-secondary mt-0.5">Especialidades configuradas para los servicios del centro médico</p>
+    </div>
+    <button type="button" onclick="abrirModalEspecialidad()" class="px-5 py-2.5 bg-primary text-white rounded-xl font-semibold text-xs flex items-center justify-center gap-2 shadow-md hover:bg-primary-dark active:scale-[0.99] transition-all">
+        <span class="material-symbols-outlined text-lg">add</span>
+        <span>Nueva Especialidad</span>
+    </button>
+</div>
+
+<!-- Especialidades Table Card -->
+<div class="bg-surface rounded-2xl card-shadow border border-border overflow-hidden max-w-4xl">
+    <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+            <thead>
+                <tr class="bg-background/60 border-b border-border text-xs font-semibold text-text-secondary uppercase tracking-wider">
+                    <th class="px-6 py-4"># ID</th>
+                    <th class="px-6 py-4">Nombre de la Especialidad</th>
+                    <th class="px-6 py-4">Descripción</th>
+                    <th class="px-6 py-4 text-right">Estado</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-border text-sm">
+                @forelse($especialidades as $esp)
+                    <tr class="hover:bg-background/40 transition-colors">
+                        <td class="px-6 py-4 font-bold text-primary text-xs whitespace-nowrap">#{{ $esp['id'] }}</td>
+                        <td class="px-6 py-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-9 h-9 rounded-lg bg-primary-light/40 text-primary-dark font-bold text-xs flex items-center justify-center flex-shrink-0">
+                                    {{ strtoupper(substr($esp['nombre'] ?? 'E', 0, 1)) }}
+                                </div>
+                                <span class="font-semibold text-text-primary text-xs">{{ $esp['nombre'] }}</span>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 text-xs text-text-secondary">{{ $esp['descripcion'] ?? 'Sin descripción' }}</td>
+                        <td class="px-6 py-4 text-right whitespace-nowrap">
+                            <span class="inline-flex items-center px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-semibold border border-emerald-200">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-2 animate-pulse"></span>
+                                Activo
+                            </span>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="4" class="text-center py-10 text-xs text-text-muted">
+                            <span class="material-symbols-outlined text-4xl mb-1 block text-text-muted">stethoscope</span>
+                            No hay especialidades registradas.
+                        </td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modal Nueva Especialidad -->
+<div id="modal_especialidad" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm hidden p-4">
+    <div class="bg-surface rounded-2xl shadow-2xl border border-border w-full max-w-md overflow-hidden">
+        <div class="px-6 py-4 bg-background border-b border-border flex items-center justify-between">
+            <h3 class="font-bold text-primary-dark text-base">Nueva Especialidad Médica</h3>
+            <button type="button" onclick="cerrarModalEspecialidad()" class="text-text-muted hover:text-text-primary transition-colors">
+                <span class="material-symbols-outlined text-2xl">close</span>
+            </button>
+        </div>
+        <form method="POST" action="{{ route('especialidades.store') }}" class="p-6 space-y-4">
+            @csrf
+            <div class="space-y-1">
+                <label for="txt_nombre_esp" class="text-xs font-semibold text-text-secondary block">Nombre de la Especialidad *</label>
+                <input type="text" id="txt_nombre_esp" name="nombre" required placeholder="Ej: Cardiología, Pediatría" class="w-full px-4 py-2.5 bg-white border border-border rounded-xl text-sm text-text-primary focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all">
+            </div>
+            <div class="space-y-1">
+                <label for="txt_desc_esp" class="text-xs font-semibold text-text-secondary block">Descripción</label>
+                <input type="text" id="txt_desc_esp" name="descripcion" placeholder="Descripción opcional..." class="w-full px-4 py-2.5 bg-white border border-border rounded-xl text-sm text-text-primary focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all">
+            </div>
+            <div class="pt-4 border-t border-border flex items-center justify-end gap-3">
+                <button type="button" onclick="cerrarModalEspecialidad()" class="px-4 py-2.5 rounded-xl border border-border text-text-secondary text-xs font-semibold hover:bg-background transition-all">Cancelar</button>
+                <button type="submit" class="px-5 py-2.5 rounded-xl bg-primary hover:bg-primary-dark text-white text-xs font-semibold shadow-md transition-all">Guardar</button>
+            </div>
+        </form>
+    </div>
+</div>
+@endsection
+
+@section('scripts')
+<script>
+    function abrirModalEspecialidad() { document.getElementById('modal_especialidad').classList.remove('hidden'); }
+    function cerrarModalEspecialidad() { document.getElementById('modal_especialidad').classList.add('hidden'); }
+</script>
+@endsection
+```
+
+---
+
+## 10. Rutas (API y Web)
+
+### 10.1 Rutas API (`routes/api.php`)
 
 ```php
-// ═══════════════════════════════════════════
-// RUTAS PÚBLICAS (sin autenticación)
-// ═══════════════════════════════════════════
-Route::get('/obtenerDoctores', [DoctoresController::class, 'obtenerDoctores']);
-Route::get('/obtenerDoctor/{id}', [DoctoresController::class, 'obtenerDoctor']);
-Route::get('/obtenerEspecialidades', [EspecialidadesController::class, 'obtenerEspecialidades']);
+use App\Http\Controllers\DoctoresController;
+use App\Http\Controllers\EspecialidadesController;
+use Illuminate\Support\Facades\Route;
 
-// ═══════════════════════════════════════════
-// RUTAS PROTEGIDAS — Solo Admin
-// ═══════════════════════════════════════════
+// ═════════════════════════════════════════════════════════════════════
+// RUTAS PÚBLICAS (Consumo de Móvil Android / Pacientes sin Auth)
+// ═════════════════════════════════════════════════════════════════════
+Route::get('/obtenerDoctores',        [DoctoresController::class, 'obtenerDoctores']);
+Route::get('/obtenerDoctor/{id}',     [DoctoresController::class, 'obtenerDoctor']);
+Route::get('/obtenerEspecialidades',  [EspecialidadesController::class, 'obtenerEspecialidades']);
+
+// ═════════════════════════════════════════════════════════════════════
+// RUTAS PROTEGIDAS — Solo Administrador (Sanctum Token + Rol Admin)
+// ═════════════════════════════════════════════════════════════════════
 Route::middleware(['auth:sanctum', 'check.status'])->group(function () {
     Route::middleware(['role:admin'])->group(function () {
-        // Doctores
-        Route::post('/registrarDoctor', [DoctoresController::class, 'registrarDoctor']);
-        Route::put('/actualizarDoctor/{id}', [DoctoresController::class, 'actualizarDoctor']);
-        Route::patch('/validarDoctor/{id}', [DoctoresController::class, 'validarDoctor']);
+        // Gestión de Doctores
+        Route::post('/registrarDoctor',       [DoctoresController::class, 'registrarDoctor']);
+        Route::put('/actualizarDoctor/{id}',  [DoctoresController::class, 'actualizarDoctor']);
+        Route::patch('/validarDoctor/{id}',   [DoctoresController::class, 'validarDoctor']);
 
-        // Especialidades
+        // Gestión de Especialidades
         Route::post('/registrarEspecialidad', [EspecialidadesController::class, 'registrarEspecialidad']);
     });
 });
 ```
 
-**Tabla de endpoints completa:**
+### Tabla de Endpoints API REST
 
-| Método HTTP | URL | Auth | Rol | Descripción |
+| Verbo HTTP | Endpoint URI | Auth / Middleware | Rol | Descripción Funcional |
 |---|---|---|---|---|
-| `GET` | `/api/obtenerDoctores` | Pública | — | Listar doctores (soporta filtros query) |
-| `GET` | `/api/obtenerDoctor/{id}` | Pública | — | Detalle de un doctor |
-| `GET` | `/api/obtenerEspecialidades` | Pública | — | Catálogo de especialidades |
-| `POST` | `/api/registrarDoctor` | Sanctum | Admin | Crear doctor desde admin |
-| `PUT` | `/api/actualizarDoctor/{id}` | Sanctum | Admin | Actualizar datos del doctor |
-| `PATCH` | `/api/validarDoctor/{id}` | Sanctum | Admin | Aprobar/rechazar doctor |
-| `POST` | `/api/registrarEspecialidad` | Sanctum | Admin | Crear nueva especialidad |
-
-**¿Por qué `PUT` para actualizar y `PATCH` para validar?**
-
-| Verbo | Semántica RESTful | Uso en este módulo |
-|---|---|---|
-| `PUT` | Reemplazo completo del recurso | `actualizarDoctor` → se puede actualizar nombre, email, cédula, especialidades |
-| `PATCH` | Modificación parcial del recurso | `validarDoctor` → solo se cambia el `estado_validacion` |
+| `GET` | `/api/obtenerDoctores` | Ninguna (Pública) | — | Listar médicos con filtros query (`buscar`, `especialidad_id`, `estado_validacion`) y paginación. |
+| `GET` | `/api/obtenerDoctor/{id}` | Ninguna (Pública) | — | Obtener perfil completo del médico con especialidades y horarios. |
+| `GET` | `/api/obtenerEspecialidades`| Ninguna (Pública) | — | Catálogo completo de especialidades médicas activas ordenadas de A a Z. |
+| `POST` | `/api/registrarDoctor` | `auth:sanctum`, `check.status` | `admin` | Registrar un médico con usuario, perfil y especialidades vinculadas. |
+| `PUT` | `/api/actualizarDoctor/{id}`| `auth:sanctum`, `check.status` | `admin` | Actualizar nombre, contacto, cédulas y especialidades del facultativo. |
+| `PATCH`| `/api/validarDoctor/{id}` | `auth:sanctum`, `check.status` | `admin` | Dictaminar aprobación o rechazo del médico registrando trazabilidad y conmutando el estado de la cuenta. |
+| `POST` | `/api/registrarEspecialidad`| `auth:sanctum`, `check.status` | `admin` | Crear una nueva rama médica en el catálogo maestro. |
 
 ---
 
-### 9.2 Rutas Web
+### 10.2 Rutas Web (`routes/web.php`)
 
 ```php
+use App\Http\Controllers\Web\DoctoresWebController;
+use App\Http\Controllers\Web\EspecialidadesWebController;
+use Illuminate\Support\Facades\Route;
+
 Route::middleware(['auth', 'check.status'])->group(function () {
     Route::middleware(['role:admin'])->group(function () {
+        // Gestión Web de Doctores
+        Route::get('/doctores',                [DoctoresWebController::class, 'index'])->name('doctores.index');
+        Route::post('/doctores',               [DoctoresWebController::class, 'store'])->name('doctores.store');
+        Route::put('/doctores/{id}',           [DoctoresWebController::class, 'update'])->name('doctores.update');
+        Route::patch('/doctores/{id}/validar', [DoctoresWebController::class, 'validar'])->name('doctores.validar');
 
-        // Doctores (CRUD + Validación)
-        Route::get('/doctores',              [DoctoresWebController::class, 'index'])
-             ->name('doctores.index');
-        Route::post('/doctores',             [DoctoresWebController::class, 'store'])
-             ->name('doctores.store');
-        Route::put('/doctores/{id}',         [DoctoresWebController::class, 'update'])
-             ->name('doctores.update');
-        Route::patch('/doctores/{id}/validar',[DoctoresWebController::class, 'validar'])
-             ->name('doctores.validar');
+        // Gestión Web de Horarios y Bloqueos (Anidadas al Doctor)
+        Route::get('/doctores/{id}/horarios',  [DoctoresWebController::class, 'horarios'])->name('doctores.horarios');
+        Route::post('/doctores/{id}/horarios', [DoctoresWebController::class, 'storeHorario'])->name('horarios.store');
+        Route::put('/horarios/{id}',           [DoctoresWebController::class, 'updateHorario'])->name('horarios.update');
+        Route::delete('/horarios/{id}',        [DoctoresWebController::class, 'deleteHorario'])->name('horarios.destroy');
+        Route::post('/doctores/{id}/bloqueos', [DoctoresWebController::class, 'storeBloqueo'])->name('bloqueos.store');
+        Route::delete('/bloqueos/{id}',        [DoctoresWebController::class, 'deleteBloqueo'])->name('bloqueos.destroy');
 
-        // Horarios del doctor
-        Route::get('/doctores/{id}/horarios', [DoctoresWebController::class, 'horarios'])
-             ->name('doctores.horarios');
-        Route::post('/doctores/{id}/horarios',[DoctoresWebController::class, 'storeHorario'])
-             ->name('horarios.store');
-        Route::put('/horarios/{id}',          [DoctoresWebController::class, 'updateHorario'])
-             ->name('horarios.update');
-        Route::delete('/horarios/{id}',       [DoctoresWebController::class, 'deleteHorario'])
-             ->name('horarios.destroy');
-
-        // Bloqueos del doctor
-        Route::post('/doctores/{id}/bloqueos',[DoctoresWebController::class, 'storeBloqueo'])
-             ->name('bloqueos.store');
-        Route::delete('/bloqueos/{id}',       [DoctoresWebController::class, 'deleteBloqueo'])
-             ->name('bloqueos.destroy');
-
-        // Especialidades
-        Route::get('/especialidades',        [EspecialidadesWebController::class, 'index'])
-             ->name('especialidades.index');
-        Route::post('/especialidades',        [EspecialidadesWebController::class, 'store'])
-             ->name('especialidades.store');
+        // Catálogo Web de Especialidades
+        Route::get('/especialidades',          [EspecialidadesWebController::class, 'index'])->name('especialidades.index');
+        Route::post('/especialidades',         [EspecialidadesWebController::class, 'store'])->name('especialidades.store');
     });
 });
 ```
 
-**Convención de named routes:**
-
-El proyecto sigue la convención `recurso.accion`:
-
-| Named Route | URL | Acción |
-|---|---|---|
-| `doctores.index` | `/doctores` | Listar |
-| `doctores.store` | `/doctores` (POST) | Crear |
-| `doctores.update` | `/doctores/{id}` (PUT) | Actualizar |
-| `doctores.validar` | `/doctores/{id}/validar` (PATCH) | Validar |
-| `doctores.horarios` | `/doctores/{id}/horarios` (GET) | Ver horarios |
-
-**Rutas anidadas (nested resources):**
-
-Las rutas de horarios y bloqueos están **anidadas** bajo doctores:
-- `/doctores/{id}/horarios` — Los horarios pertenecen a un doctor específico
-- `/doctores/{id}/bloqueos` — Los bloqueos pertenecen a un doctor específico
-
-Pero las operaciones sobre horarios/bloqueos individuales usan su propio ID:
-- `/horarios/{id}` — Actualizar/eliminar un horario específico
-- `/bloqueos/{id}` — Eliminar un bloqueo específico
-
 ---
 
-## 10. Seeders (Datos Iniciales)
+## 11. Seeders (Datos Iniciales y Carga Idempotente)
 
-### `EspecialidadesSeeder`
+### 11.1 `EspecialidadesSeeder`
 
 **Archivo:** `database/seeders/EspecialidadesSeeder.php`
 
-Precarga 15 especialidades médicas comunes en el catálogo:
+Precarga 15 especialidades médicas estándar durante la inicialización del sistema (`php artisan db:seed`). La ejecución es estrictamente **idempotente** mediante `firstOrCreate()`:
 
 ```php
-$especialidades = [
-    ['nombre' => 'Medicina General',    'descripcion' => 'Atención médica primaria y general.'],
-    ['nombre' => 'Pediatría',           'descripcion' => 'Atención médica para niños y adolescentes.'],
-    ['nombre' => 'Cardiología',         'descripcion' => 'Diagnóstico y tratamiento de enfermedades del corazón.'],
-    ['nombre' => 'Dermatología',        'descripcion' => 'Tratamiento de enfermedades de la piel.'],
-    ['nombre' => 'Ginecología',         'descripcion' => 'Salud reproductiva femenina.'],
-    ['nombre' => 'Oftalmología',        'descripcion' => 'Diagnóstico y tratamiento de enfermedades de los ojos.'],
-    ['nombre' => 'Ortopedia',           'descripcion' => 'Tratamiento del sistema músculo-esquelético.'],
-    ['nombre' => 'Neurología',          'descripcion' => 'Enfermedades del sistema nervioso.'],
-    ['nombre' => 'Psiquiatría',         'descripcion' => 'Salud mental y trastornos psiquiátricos.'],
-    ['nombre' => 'Endocrinología',      'descripcion' => 'Enfermedades hormonales y metabólicas.'],
-    ['nombre' => 'Gastroenterología',   'descripcion' => 'Enfermedades del aparato digestivo.'],
-    ['nombre' => 'Urología',            'descripcion' => 'Enfermedades del aparato urinario.'],
-    ['nombre' => 'Otorrinolaringología','descripcion' => 'Oídos, nariz y garganta.'],
-    ['nombre' => 'Neumología',          'descripcion' => 'Enfermedades del aparato respiratorio.'],
-    ['nombre' => 'Reumatología',        'descripcion' => 'Enfermedades articulares y autoinmunes.'],
-];
+<?php
 
-foreach ($especialidades as $esp) {
-    Especialidad::firstOrCreate(['nombre' => $esp['nombre']], $esp);
+namespace Database\Seeders;
+
+use App\Models\Especialidad;
+use Illuminate\Database\Seeder;
+
+class EspecialidadesSeeder extends Seeder
+{
+    public function run(): void
+    {
+        $especialidades = [
+            ['nombre' => 'Medicina General',       'descripcion' => 'Atención médica primaria y general.'],
+            ['nombre' => 'Pediatría',              'descripcion' => 'Atención médica para niños y adolescentes.'],
+            ['nombre' => 'Cardiología',            'descripcion' => 'Diagnóstico y tratamiento de enfermedades del corazón.'],
+            ['nombre' => 'Dermatología',           'descripcion' => 'Tratamiento de enfermedades de la piel.'],
+            ['nombre' => 'Ginecología',            'descripcion' => 'Salud reproductiva femenina.'],
+            ['nombre' => 'Oftalmología',           'descripcion' => 'Diagnóstico y tratamiento de enfermedades de los ojos.'],
+            ['nombre' => 'Ortopedia',              'descripcion' => 'Tratamiento del sistema músculo-esquelético.'],
+            ['nombre' => 'Neurología',             'descripcion' => 'Enfermedades del sistema nervioso.'],
+            ['nombre' => 'Psiquiatría',            'descripcion' => 'Salud mental y trastornos psiquiátricos.'],
+            ['nombre' => 'Endocrinología',         'descripcion' => 'Enfermedades hormonales y metabólicas.'],
+            ['nombre' => 'Gastroenterología',      'descripcion' => 'Enfermedades del aparato digestivo.'],
+            ['nombre' => 'Urología',               'descripcion' => 'Enfermedades del aparato urinario.'],
+            ['nombre' => 'Otorrinolaringología',   'descripcion' => 'Oídos, nariz y garganta.'],
+            ['nombre' => 'Neumología',             'descripcion' => 'Enfermedades del aparato respiratorio.'],
+            ['nombre' => 'Reumatología',           'descripcion' => 'Enfermedades articulares y autoinmunes.'],
+        ];
+
+        foreach ($especialidades as $esp) {
+            Especialidad::firstOrCreate(['nombre' => $esp['nombre']], $esp);
+        }
+    }
 }
 ```
 
-**`firstOrCreate(['nombre' => $esp['nombre']], $esp)`:**
-
-| Parámetro | Propósito |
-|---|---|
-| 1° `['nombre' => ...]` | Criterio de búsqueda: ¿existe una especialidad con este nombre? |
-| 2° `$esp` | Datos para crear si no existe |
-
-Esto hace el seeder **idempotente**: si se ejecuta `php artisan db:seed` múltiples veces, no se crearán duplicados.
-
 ---
 
-## 11. Flujos Completos de Operación
+## 12. Flujos Completos de Operación
 
-### 11.1 Flujo de Registro y Validación de Doctor (Admin)
+### 12.1 Flujo de Registro y Validación de Doctor (Web Admin)
 
 ```
-                    ADMINISTRADOR
-                         │
-    ┌────────────────────┼────────────────────────┐
-    │                    ▼                        │
-    │    GET /doctores (Panel Web)                │
-    │    ← Vista con tabla de doctores            │
-    │      + formulario de registro               │
-    │      + dropdown de especialidades           │
-    │                    │                        │
-    │                    ▼                        │
-    │    POST /doctores                           │
-    │    { nombre, email, cedula_profesional,     │
-    │      especialidades: [1, 3] }               │
-    │                    │                        │
-    │         ┌──────────┼──────────┐             │
-    │         ▼                     ▼             │
-    │  StoreDoctorRequest     DoctoresRepository  │
-    │  • email unique         • Usuario::create   │
-    │  • cédula unique        • PerfilDoctor::create
-    │  • espec. exists        • sync(especialidades)
-    │         │                     │             │
-    │         └──────────┬──────────┘             │
-    │                    ▼                        │
-    │    Estado: estado_validacion = 'pendiente'  │
-    │    El doctor existe pero NO puede loguearse │
-    │    (AuthRepository verifica estado_validacion│
-    │     en el método login)                     │
-    │                    │                        │
-    │                    ▼                        │
-    │    PATCH /doctores/{id}/validar             │
-    │    { estado_validacion: 'validado',         │
-    │      notas_validacion: 'Verificado' }       │
-    │                    │                        │
-    │         ┌──────────┼──────────┐             │
-    │         ▼                     ▼             │
-    │  DoctoresRepository    Efecto cascada:      │
-    │  • estado_validacion   • usuario.estado     │
-    │    = 'validado'          = 'activo'         │
-    │  • validado_por = 1    (o 'inactivo' si     │
-    │  • validado_en = now()  rechazado)          │
-    │         └──────────┬──────────┘             │
-    │                    ▼                        │
-    │    Estado: Doctor puede loguearse ✅         │
-    └─────────────────────────────────────────────┘
+ADMINISTRADOR (Browser)               DoctoresWebController                  DoctoresRepository                 Base de Datos (MySQL)
+         │                                      │                                      │                                 │
+         │ 1. POST /doctores                    │                                      │                                 │
+         │    {nombre, email, cedula,           │                                      │                                 │
+         │     especialidades: [1, 3]}          │                                      │                                 │
+         ├─────────────────────────────────────►│                                      │                                 │
+         │                                      │ StoreDoctorRequest::validate()       │                                 │
+         │                                      │ ──► doctoresRepo->registrarDoctor()  │                                 │
+         │                                      ├─────────────────────────────────────►│                                 │
+         │                                      │                                      │ 1. Usuario::create()            │
+         │                                      │                                      ├────────────────────────────────►│
+         │                                      │                                      │ 2. PerfilDoctor::create()       │
+         │                                      │                                      ├────────────────────────────────►│
+         │                                      │                                      │ 3. sync([1, 3]) (Pivote)        │
+         │                                      │                                      ├────────────────────────────────►│
+         │                                      │                                      │◄────────────────────────────────┤
+         │                                      │◄─────────────────────────────────────┤                                 │
+         │ 302 Redirect (/doctores)             │                                      │                                 │
+         │ [Estado: 'pendiente']                │                                      │                                 │
+         │◄─────────────────────────────────────┤                                      │                                 │
+         │                                      │                                      │                                 │
+         │ 2. PATCH /doctores/{id}/validar      │                                      │                                 │
+         │    {estado_validacion: 'validado'}   │                                      │                                 │
+         ├─────────────────────────────────────►│                                      │                                 │
+         │                                      │ ──► doctoresRepo->validarDoctor()    │                                 │
+         │                                      ├─────────────────────────────────────►│                                 │
+         │                                      │                                      │ UPDATE perfiles_doctor SET      │
+         │                                      │                                      │  estado_validacion='validado',  │
+         │                                      │                                      │  validado_por=1, validado_en=NOW│
+         │                                      │                                      ├────────────────────────────────►│
+         │                                      │                                      │ UPDATE usuarios SET             │
+         │                                      │                                      │  estado='activo' (Cascada)      │
+         │                                      │                                      ├────────────────────────────────►│
+         │                                      │                                      │◄────────────────────────────────┤
+         │                                      │◄─────────────────────────────────────┤                                 │
+         │ 302 Redirect (/doctores)             │                                      │                                 │
+         │ [Doctor Habilitado para Login ✅]    │                                      │                                 │
+         │◄─────────────────────────────────────┤                                      │                                 │
 ```
 
 ---
 
-### 11.2 Flujo de Consulta Pública de Doctores (App Móvil)
+### 12.2 Flujo de Consulta Pública de Doctores con Filtros (API REST / Móvil)
 
 ```
-    PACIENTE (Sin autenticación)
-         │
-         │  GET /api/obtenerDoctores?especialidad_id=3&buscar=López
-         │
-         ▼
-    ┌───────────────────────────────────────────┐
-    │ DoctoresController::obtenerDoctores()     │
-    │ → DoctoresRepository::obtenerDoctores()   │
-    │                                           │
-    │ Query construido dinámicamente:            │
-    │ PerfilDoctor::with(['usuario','espec.'])  │
-    │   ->whereHas('especialidades', id=3)      │
-    │   ->whereHas('usuario', nombre LIKE López)│
-    │   ->paginate(15)                          │
-    └───────────────────┬───────────────────────┘
-                        │
-                        ▼
-    JSON Response (200):
-    {
-      "mensaje": "Doctores obtenidos correctamente",
-      "data": {
-        "data": [
+PACIENTE / APP ANDROID                         DoctoresController                    DoctoresRepository                 Base de Datos (MySQL)
+         │                                              │                                      │                                 │
+         │ GET /api/obtenerDoctores?especialidad_id=3   │                                      │                                 │
+         │                         &buscar=López        │                                      │                                 │
+         ├─────────────────────────────────────────────►│                                      │                                 │
+         │                                              │ obtenerDoctores($filtros)            │                                 │
+         │                                              ├─────────────────────────────────────►│                                 │
+         │                                              │                                      │ SELECT * FROM perfiles_doctor   │
+         │                                              │                                      │  WHERE EXISTS (pivot esp_id=3)  │
+         │                                              │                                      │  AND EXISTS (user LIKE 'López') │
+         │                                              │                                      │  LIMIT 15 OFFSET 0              │
+         │                                              │                                      ├────────────────────────────────►│
+         │                                              │                                      │◄────────────────────────────────┤
+         │                                              │◄─────────────────────────────────────┤                                 │
+         │ JSON 200 OK                                  │                                      │                                 │
+         │◄─────────────────────────────────────────────┤                                      │                                 │
+```
+
+**Ejemplo de Payload JSON Retornado (200 OK):**
+
+```json
+{
+  "mensaje": "Doctores obtenidos correctamente",
+  "data": {
+    "current_page": 1,
+    "data": [
+      {
+        "id": 1,
+        "usuario_id": 2,
+        "cedula_profesional": "12345678",
+        "cedula_especialidad": "ESP-9988",
+        "estado_validacion": "validado",
+        "usuario": {
+          "id": 2,
+          "nombre": "Dr. Juan Carlos López",
+          "email": "dr.lopez@citasmedicas.com",
+          "telefono": "5551234567"
+        },
+        "especialidades": [
           {
-            "id": 1,
-            "cedula_profesional": "1234567",
-            "estado_validacion": "validado",
-            "usuario": {
-              "id": 2,
-              "nombre": "Dr. Juan Carlos López",
-              "email": "dr.lopez@email.com"
-            },
-            "especialidades": [
-              { "id": 3, "nombre": "Cardiología" }
-            ]
+            "id": 3,
+            "nombre": "Cardiología",
+            "activa": true
           }
-        ],
-        "current_page": 1,
-        "total": 1,
-        "per_page": 15
+        ]
       }
-    }
+    ],
+    "per_page": 15,
+    "total": 1
+  }
+}
 ```
 
 ---
 
-### 11.3 Flujo de Gestión de Horarios desde el Panel de Doctores
+### 12.3 Flujo de Consulta Pública de Especialidades (API REST)
 
 ```
-    GET /doctores/{id}/horarios
-         │
-         ▼
-    DoctoresWebController::horarios()
-    ├── doctoresRepo->obtenerDoctor(id)    → Datos del doctor
-    ├── horariosRepo->obtenerHorarios(id)  → Horarios regulares
-    └── bloqueosRepo->obtenerBloqueos(id)  → Bloqueos vigentes
-         │
-         ▼
-    Vista: doctores.horarios
-    ┌──────────────────────────────────────────┐
-    │  Dr. Juan Carlos López                   │
-    │  Cardiología, Medicina General           │
-    │                                          │
-    │  ┌── Horarios Regulares ──────────────┐  │
-    │  │ Lunes    08:00 - 14:00             │  │
-    │  │ Miércoles 09:00 - 13:00            │  │
-    │  │ [+ Agregar] [Editar] [Eliminar]    │  │
-    │  └────────────────────────────────────┘  │
-    │                                          │
-    │  ┌── Bloqueos ────────────────────────┐  │
-    │  │ 01/08/2026 - 15/08/2026            │  │
-    │  │ Motivo: Vacaciones                 │  │
-    │  │ [+ Agregar] [Eliminar]             │  │
-    │  └────────────────────────────────────┘  │
-    └──────────────────────────────────────────┘
+APP MÓVIL (Kotlin / Volley)               EspecialidadesController              EspecialidadesRepository            Base de Datos (MySQL)
+         │                                              │                                      │                                 │
+         │ GET /api/obtenerEspecialidades               │                                      │                                 │
+         ├─────────────────────────────────────────────►│                                      │                                 │
+         │                                              │ obtenerEspecialidades()              │                                 │
+         │                                              ├─────────────────────────────────────►│                                 │
+         │                                              │                                      │ SELECT * FROM especialidades    │
+         │                                              │                                      │  WHERE activa = 1               │
+         │                                              │                                      │  ORDER BY nombre ASC            │
+         │                                              │                                      ├────────────────────────────────►│
+         │                                              │                                      │◄────────────────────────────────┤
+         │                                              │◄─────────────────────────────────────┤                                 │
+         │ JSON 200 OK                                  │                                      │                                 │
+         │◄─────────────────────────────────────────────┤                                      │                                 │
 ```
 
 ---
 
-## 12. Relación con Otros Módulos
+### 12.4 Flujo de Creación de Nueva Especialidad (Web Admin)
 
 ```
-                    ┌──────────────────────┐
-                    │  Mod 1: Autenticación│
-                    │  AuthRepository      │
-                    │  registrarMedico()   │──── Auto-registro público
-                    └──────────┬───────────┘    con verificación de cédula
-                               │
-            Comparte: Modelo Usuario, middleware role:admin
-                               │
-                    ┌──────────▼───────────┐
-                    │ Mod 2: DOCTORES      │
-                    │ DoctoresRepository   │
-                    │ registrarDoctor()    │──── Registro desde admin
-                    │ validarDoctor()      │──── Habilita/deshabilita login
-                    └──────────┬───────────┘
-                               │
-          ┌────────────────────┼────────────────────┐
-          │                    │                    │
-    ┌─────▼──────┐    ┌───────▼────────┐   ┌──────▼───────┐
-    │ Mod 4:     │    │ Mod 5: Citas   │   │ Mod 7: Notas │
-    │ Horarios   │    │ CitasRepository│   │ Diagnóstico  │
-    │ Bloqueos   │    │ Usa doctor_id  │   │ Usa doctor_id│
-    │ Disponib.  │    │ + especialidad │   │ por cita     │
-    └────────────┘    └────────────────┘   └──────────────┘
+ADMINISTRADOR (Browser)               EspecialidadesWebController            EspecialidadesRepository            Base de Datos (MySQL)
+         │                                          │                                      │                                 │
+         │ 1. Abre modal #modal_especialidad        │                                      │                                 │
+         │ 2. POST /especialidades                  │                                      │                                 │
+         │    {nombre: "Neurología"}                │                                      │                                 │
+         ├─────────────────────────────────────────►│                                      │                                 │
+         │                                          │ $request->validate()                 │                                 │
+         │                                          │ ──► registrarEspecialidad($data)     │                                 │
+         │                                          ├─────────────────────────────────────►│                                 │
+         │                                          │                                      │ INSERT INTO especialidades      │
+         │                                          │                                      │  (nombre, activa, created_at)   │
+         │                                          │                                      │  VALUES ('Neurología', 1, NOW)  │
+         │                                          │                                      ├────────────────────────────────►│
+         │                                          │                                      │◄────────────────────────────────┤
+         │                                          │◄─────────────────────────────────────┤                                 │
+         │ 302 Redirect (/especialidades)           │                                      │                                 │
+         │ + Flash Session: "Especialidad creada..."│                                      │                                 │
+         │◄─────────────────────────────────────────┤                                      │                                 │
 ```
 
 ---
 
-## Mapa de Archivos del Módulo
+### 12.5 Flujo de Gestión Integrada de Horarios y Bloqueos (Web Admin)
+
+```
+ADMINISTRADOR (Browser)                    DoctoresWebController                     Repositorios Inyectados
+         │                                            │                                         │
+         │ GET /doctores/{id}/horarios                │                                         │
+         ├───────────────────────────────────────────►│                                         │
+         │                                            │ 1. doctoresRepo->obtenerDoctor(id)      │
+         │                                            ├────────────────────────────────────────►│ ──► PerfilDoctor + User
+         │                                            │ 2. horariosRepo->obtenerHorarios(id)    │
+         │                                            ├────────────────────────────────────────►│ ──► Horarios semanales
+         │                                            │ 3. bloqueosRepo->obtenerBloqueos(id)    │
+         │                                            ├────────────────────────────────────────►│ ──► Bloqueos vigentes
+         │                                            │                                         │
+         │ Renderiza Vista Blade                      │                                         │
+         │ `doctores.horarios`                        │                                         │
+         │◄───────────────────────────────────────────┤                                         │
+```
+
+---
+
+## 13. Relación con Otros Módulos
+
+```
+                               ┌─────────────────────────────────────────┐
+                               │       Módulo 1: Autenticación           │
+                               │  • Auto-registro de médicos (mock SEP)  │
+                               │  • Middleware check.status y role:admin │
+                               └────────────────────┬────────────────────┘
+                                                    │
+                                                    ▼
+                               ┌─────────────────────────────────────────┐
+                               │   Módulo 2: DOCTORES Y ESPECIALIDADES   │
+                               │  • Gestión de perfiles y validación     │
+                               │  • Catálogo maestro de especialidades   │
+                               │  • Tabla pivote doctor_especialidad     │
+                               └──────┬──────────────────────┬───────────┘
+                                      │                      │
+                   ┌──────────────────┘                      └──────────────────┐
+                   ▼                                                            ▼
+┌────────────────────────────────────────┐                   ┌────────────────────────────────────────┐
+│  Módulo 4: Horarios y Bloqueos         │                   │  Módulo 5: Gestión de Citas            │
+│  • Define turnos y horas de consulta   │                   │  • Agendamiento por especialidad y doc │
+│  • Bloqueos por vacaciones/permisos    │                   │  • Validación de slots disponibles     │
+│  • Motor de slots libres para citas    │                   │  • Historial clínico del paciente      │
+└──────────────────┬─────────────────────┘                   └──────────────────┬─────────────────────┘
+                   │                                                            │
+                   └────────────────────────────┬───────────────────────────────┘
+                                                │
+                                                ▼
+                               ┌─────────────────────────────────────────┐
+                               │  Módulo 7: Notas de Consulta            │
+                               │  Módulo 9: Reportes y Estadísticas      │
+                               │  • Diagnóstico y recetas por médico     │
+                               │  • Métricas de citas por especialidad   │
+                               └─────────────────────────────────────────┘
+```
+
+1. **Módulo 1 (Autenticación y Seguridad):** Comparte el modelo `Usuario` y el middleware de control de estado. El estado `validado`/`rechazado` del doctor conmuta directamente `usuarios.estado = 'activo'|'inactivo'`.
+2. **Módulo 4 (Horarios y Disponibilidad):** Utiliza `perfil_doctor_id` como clave foránea para estructurar la jornada laboral semanal (`horarios_doctor`) y las excepciones de agenda (`bloqueos_horario`).
+3. **Módulo 5 (Gestión de Citas):** Las citas almacenan concurrentemente `perfil_doctor_id` y `especialidad_id`, asegurando trazabilidad exacta de la disciplina en que se brindó la atención.
+4. **Módulo 7 (Notas de Consulta):** Cada nota médica registra el diagnóstico y tratamiento emitido por el `perfil_doctor_id` asociado a la cita completada.
+5. **Módulo 9 (Reportes y Estadísticas):** Agrupa estadísticas de demanda y volumen de consultas atendidas por especialidad médica y por facultativo.
+
+---
+
+## 14. Mapa de Archivos del Módulo
 
 ```
 sistema-de-gestion-de-citas-medicas/
 ├── app/
 │   ├── Http/
 │   │   ├── Controllers/
-│   │   │   ├── DoctoresController.php              # API: CRUD doctores + validación
-│   │   │   ├── EspecialidadesController.php         # API: Catálogo de especialidades
+│   │   │   ├── DoctoresController.php              # API REST: Endpoints JSON de doctores
+│   │   │   ├── EspecialidadesController.php         # API REST: Endpoints JSON de especialidades
 │   │   │   └── Web/
-│   │   │       ├── DoctoresWebController.php        # Web: Doctores + horarios + bloqueos
-│   │   │       └── EspecialidadesWebController.php  # Web: Catálogo de especialidades
+│   │   │       ├── DoctoresWebController.php        # Web SSR: Orquestación Doctores + Horarios
+│   │   │       └── EspecialidadesWebController.php  # Web SSR: Catálogo de especialidades
 │   │   ├── Repository/
-│   │   │   ├── DoctoresRepository.php               # Lógica CRUD + validación de doctores
-│   │   │   └── EspecialidadesRepository.php          # Lógica del catálogo de especialidades
+│   │   │   ├── DoctoresRepository.php               # Lógica de datos, Eager loading y validación
+│   │   │   └── EspecialidadesRepository.php          # Lógica de datos del catálogo maestro
 │   │   └── Requests/
-│   │       └── StoreDoctorRequest.php                # Validación registro doctor (admin)
+│   │       └── StoreDoctorRequest.php                # Validación de entrada para médicos
 │   └── Models/
-│       ├── PerfilDoctor.php                          # Perfil profesional (6 relaciones)
-│       └── Especialidad.php                          # Catálogo de especialidades
+│       ├── PerfilDoctor.php                          # Modelo Eloquent con 6 relaciones
+│       └── Especialidad.php                          # Modelo Eloquent del catálogo maestro
 ├── database/
 │   ├── migrations/
-│   │   ├── ..._crear_tabla_especialidades.php        # Catálogo maestro
-│   │   ├── ..._crear_tabla_perfiles_doctor.php       # Perfil con validación y trazabilidad
-│   │   └── ..._crear_tabla_doctor_especialidad.php   # Tabla pivot M:N
+│   │   ├── 2026_01_01_000002_crear_tabla_especialidades.php   # Migración catálogo especialidades
+│   │   ├── 2026_01_01_000003_crear_tabla_perfiles_doctor.php  # Migración perfil profesional
+│   │   └── 2026_01_01_000006_crear_tabla_doctor_especialidad.php # Migración tabla pivote M:N
 │   └── seeders/
-│       └── EspecialidadesSeeder.php                   # 15 especialidades precargadas
+│       └── EspecialidadesSeeder.php                   # Seeder idempotente (15 especialidades)
 ├── resources/views/
 │   ├── doctores/
-│   │   ├── index.blade.php                            # Lista + CRUD + validación
-│   │   └── horarios.blade.php                         # Gestión horarios + bloqueos
+│   │   ├── index.blade.php                            # Vista Web: Tabla de doctores y modales
+│   │   └── horarios.blade.php                         # Vista Web: Gestión de horarios y bloqueos
 │   └── especialidades/
-│       └── index.blade.php                            # Catálogo CRUD
+│       └── index.blade.php                            # Vista Web: Catálogo de especialidades
 └── routes/
-    ├── api.php                                        # Endpoints públicos + admin
-    └── web.php                                        # Rutas panel admin
+    ├── api.php                                        # Definición de rutas REST públicas y admin
+    └── web.php                                        # Definición de rutas Web SSR con sesión
 ```
 
 ---
 
-> **Módulo anterior:** [01 - Autenticación y Seguridad](./01-Autenticacion-y-Seguridad.md)
-> **Siguiente módulo:** [03 - Especialidades](./03-Especialidades.md) *(integrado en este documento)*
-> **Siguiente módulo funcional:** [04 - Horarios y Bloqueos](./04-Horarios-y-Bloqueos.md)
+> **Módulo anterior:** [01 - Autenticación y Seguridad](./01-Autenticacion-y-Seguridad.md)  
+> **Siguiente módulo:** [04 - Horarios y Bloqueos](./04-Horarios-y-Bloqueos.md)

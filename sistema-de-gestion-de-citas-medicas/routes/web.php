@@ -122,6 +122,11 @@ Route::middleware(['auth', 'check.status'])->group(function () {
     // Rutas Exclusivas de Médico
     Route::middleware(['role:doctor'])->group(function () {
         Route::get('/mi-agenda', [DoctorWebController::class, 'agenda'])->name('doctor.agenda');
+        Route::get('/mi-horario', [DoctorWebController::class, 'horario'])->name('doctor.horario');
+        Route::post('/mi-horario', [DoctorWebController::class, 'storeHorario'])->name('doctor.horario.store');
+        Route::put('/mi-horario/{id}', [DoctorWebController::class, 'updateHorario'])->name('doctor.horario.update');
+        Route::delete('/mi-horario/{id}', [DoctorWebController::class, 'deleteHorario'])->name('doctor.horario.destroy');
+
         Route::get('/diagnostico/{citaId}', [DoctorWebController::class, 'diagnostico'])->name('doctor.diagnostico');
         Route::patch('/citas/{id}/iniciar', [DoctorWebController::class, 'iniciarConsulta'])->name('citas.iniciar');
         Route::patch('/citas/{id}/completar', [DoctorWebController::class, 'completarCita'])->name('citas.completar');

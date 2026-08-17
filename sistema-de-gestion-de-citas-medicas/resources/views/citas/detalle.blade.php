@@ -4,7 +4,7 @@
 @section('content')
 <!-- Header Controls -->
 <div class="flex items-center gap-3 mb-6">
-    <a href="{{ route('citas.index') }}" class="p-2 bg-surface border border-border rounded-xl text-text-secondary hover:text-primary transition-all">
+    <a href="{{ Auth::user()->rol === 'doctor' ? route('doctor.agenda') : route('citas.index') }}" class="p-2 bg-surface border border-border rounded-xl text-text-secondary hover:text-primary transition-all">
         <span class="material-symbols-outlined text-xl">arrow_back</span>
     </a>
     <div>
@@ -23,13 +23,21 @@
             'cancelada' => 'bg-rose-50 text-rose-800 border-rose-200',
             default => 'bg-amber-50 text-amber-800 border-amber-200'
         };
+        $estadoNombre = match($estado) {
+            'completada' => 'Finalizada',
+            'en_consulta' => 'En Consulta',
+            'cancelada' => 'Cancelada',
+            'confirmada' => 'Confirmada',
+            'agendada' => 'Agendada',
+            default => ucfirst($estado)
+        };
     @endphp
     <div class="p-4 rounded-2xl border {{ $statusStyle }} flex items-center justify-between shadow-sm">
         <div class="flex items-center gap-3">
             <span class="material-symbols-outlined text-2xl">event_available</span>
             <div>
                 <span class="text-xs font-bold uppercase tracking-wider block">Estado de la Cita</span>
-                <span class="text-sm font-semibold capitalize">{{ $cita['estado'] }}</span>
+                <span class="text-sm font-semibold">{{ $estadoNombre }}</span>
             </div>
         </div>
         <span class="font-mono text-xs font-bold opacity-80">REF-{{ str_pad($cita['id'], 5, '0', STR_PAD_LEFT) }}</span>
@@ -80,31 +88,103 @@
         </div>
     </div>
 
-    <!-- Doctor Clinical Notes Card (If available) -->
-    @if(!empty($cita['nota_consulta']) || !empty($cita['notas']))
-        @php
-            $nota = $cita['nota_consulta'] ?? $cita['notas'] ?? null;
-        @endphp
-        <div class="bg-surface rounded-2xl card-shadow border-l-4 border-emerald-500 border border-border p-6 space-y-3">
-            <h3 class="font-bold text-emerald-800 text-base border-b border-border pb-3 flex items-center gap-2">
-                <span class="material-symbols-outlined text-emerald-600 text-xl">clinical_notes</span>
-                <span>Diagnóstico y Tratamiento Médico</span>
-            </h3>
+    <!-- Doctor Clinical Notes & Medical Report Card (If available) -->
+    @php
+        $nota = $cita->notaConsulta ?? $cita['nota_consulta'] ?? $cita['notas'] ?? null;
+    @endphp
+    @if($nota)
+        <div class="bg-surface rounded-2xl card-shadow border-l-4 border-emerald-500 border border-border p-6 space-y-5">
+            <div class="flex items-center justify-between border-b border-border pb-3">
+                <h3 class="font-bold text-emerald-800 text-base flex items-center gap-2">
+                    <span class="material-symbols-outlined text-emerald-600 text-xl">clinical_notes</span>
+                    <span>Informe Médico y Diagnóstico</span>
+                </h3>
+                <span class="text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
+                    Consulta Concluida
+                </span>
+            </div>
 
-            <div class="space-y-3 text-xs">
+            <!-- Signos Vitales -->
+            @if(!empty($nota['presion_arterial']) || !empty($nota['frecuencia_cardiaca']) || !empty($nota['temperatura']) || !empty($nota['peso']))
                 <div>
-                    <span class="font-bold text-text-primary block mb-1">Diagnóstico Clínico:</span>
-                    <p class="text-text-secondary bg-emerald-50/50 p-3 rounded-xl border border-emerald-100">
-                        {{ $nota['diagnostico'] ?? $nota['nota'] ?? 'N/A' }}
-                    </p>
+                    <h4 class="text-xs font-bold text-text-secondary uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
+                        <span class="material-symbols-outlined text-rose-500 text-base">heart_pulse</span>
+                        <span>Signos Vitales Registrados</span>
+                    </h4>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+                        @if(!empty($nota['presion_arterial']))
+                            <div class="p-3 bg-background rounded-xl border border-border">
+                                <span class="text-text-muted text-[10px] block">Presión Arterial</span>
+                                <strong class="text-text-primary text-sm">{{ $nota['presion_arterial'] }}</strong>
+                                <span class="text-[10px] text-text-secondary block">mmHg</span>
+                            </div>
+                        @endif
+                        @if(!empty($nota['frecuencia_cardiaca']))
+                            <div class="p-3 bg-background rounded-xl border border-border">
+                                <span class="text-text-muted text-[10px] block">Frecuencia Cardíaca</span>
+                                <strong class="text-text-primary text-sm">{{ $nota['frecuencia_cardiaca'] }}</strong>
+                                <span class="text-[10px] text-text-secondary block">bpm</span>
+                            </div>
+                        @endif
+                        @if(!empty($nota['temperatura']))
+                            <div class="p-3 bg-background rounded-xl border border-border">
+                                <span class="text-text-muted text-[10px] block">Temperatura</span>
+                                <strong class="text-text-primary text-sm">{{ $nota['temperatura'] }}</strong>
+                                <span class="text-[10px] text-text-secondary block">°C</span>
+                            </div>
+                        @endif
+                        @if(!empty($nota['peso']))
+                            <div class="p-3 bg-background rounded-xl border border-border">
+                                <span class="text-text-muted text-[10px] block">Peso Corporal</span>
+                                <strong class="text-text-primary text-sm">{{ $nota['peso'] }}</strong>
+                                <span class="text-[10px] text-text-secondary block">kg</span>
+                            </div>
+                        @endif
+                    </div>
                 </div>
+            @endif
 
-                <div>
-                    <span class="font-bold text-text-primary block mb-1">Tratamiento Indicado:</span>
-                    <p class="text-text-secondary bg-emerald-50/50 p-3 rounded-xl border border-emerald-100">
-                        {{ $nota['tratamiento'] ?? 'N/A' }}
-                    </p>
+            <!-- Diagnóstico -->
+            <div class="space-y-1.5 text-xs">
+                <span class="font-bold text-text-primary flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-primary text-base">assignment</span>
+                    <span>Diagnóstico Clínico:</span>
+                </span>
+                <div class="text-text-primary bg-primary/5 p-4 rounded-xl border border-primary/15 leading-relaxed whitespace-pre-line">
+                    {{ $nota['diagnostico'] ?? $nota['nota'] ?? 'Sin diagnóstico registrado' }}
                 </div>
+            </div>
+
+            <!-- Tratamiento -->
+            <div class="space-y-1.5 text-xs">
+                <span class="font-bold text-text-primary flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-sky-700 text-base">medication</span>
+                    <span>Tratamiento y Recomendaciones Médicas:</span>
+                </span>
+                <div class="text-text-primary bg-sky-50/50 p-4 rounded-xl border border-sky-200/60 leading-relaxed whitespace-pre-line">
+                    {{ $nota['tratamiento'] ?? 'Sin tratamiento especificado' }}
+                </div>
+            </div>
+
+            <!-- Observaciones Adicionales -->
+            @if(!empty($nota['notas_adicionales']))
+                <div class="space-y-1.5 text-xs">
+                    <span class="font-bold text-text-primary flex items-center gap-1.5">
+                        <span class="material-symbols-outlined text-amber-600 text-base">notes</span>
+                        <span>Observaciones Adicionales:</span>
+                    </span>
+                    <div class="text-text-secondary bg-background p-3.5 rounded-xl border border-border leading-relaxed whitespace-pre-line">
+                        {{ $nota['notas_adicionales'] }}
+                    </div>
+                </div>
+            @endif
+
+            <!-- Footer con Médico y Fecha -->
+            <div class="pt-3 border-t border-border/80 flex items-center justify-between text-[11px] text-text-muted">
+                <span>Registrado por: <strong>Dr. {{ $nota->creadoPor?->nombre ?? $cita['perfilDoctor']['usuario']['nombre'] ?? 'Médico Tratante' }}</strong></span>
+                @if(!empty($nota['created_at']))
+                    <span>{{ \Carbon\Carbon::parse($nota['created_at'])->isoFormat('D [de] MMMM, YYYY - h:i A') }}</span>
+                @endif
             </div>
         </div>
     @endif

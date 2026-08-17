@@ -104,7 +104,7 @@ class CitasRepository
     public function obtenerCita(int $id)
     {
         try {
-            $cita = Cita::with(['perfilPaciente.usuario', 'perfilDoctor.usuario', 'especialidad', 'notaConsulta'])->find($id);
+            $cita = Cita::with(['perfilPaciente.usuario', 'perfilDoctor.usuario', 'especialidad', 'notaConsulta.creadoPor'])->find($id);
             if (!$cita) {
                 return ['mensaje' => 'Cita no encontrada'];
             }
@@ -120,7 +120,7 @@ class CitasRepository
     public function obtenerCitaPaciente(int $id, int $pacienteId)
     {
         try {
-            $cita = Cita::with(['perfilPaciente.usuario', 'perfilDoctor.usuario', 'especialidad', 'notaConsulta'])
+            $cita = Cita::with(['perfilPaciente.usuario', 'perfilDoctor.usuario', 'especialidad', 'notaConsulta.creadoPor'])
                 ->where('id', $id)
                 ->where('perfil_paciente_id', $pacienteId)
                 ->first();
@@ -249,11 +249,13 @@ class CitasRepository
                 return ['mensaje' => 'Cita no encontrada'];
             }
 
-            if ($cita->estado !== 'confirmada') {
-                return ['mensaje' => 'Solo se puede iniciar consulta en citas confirmadas (con check-in).'];
+            if (!in_array($cita->estado, ['agendada', 'confirmada', 'en_consulta'])) {
+                return ['mensaje' => 'Solo se puede iniciar consulta en citas agendadas o confirmadas.'];
             }
 
-            $cita->update(['estado' => 'en_consulta']);
+            if ($cita->estado !== 'en_consulta') {
+                $cita->update(['estado' => 'en_consulta']);
+            }
 
             return [
                 'mensaje' => 'Consulta iniciada',
@@ -272,8 +274,8 @@ class CitasRepository
                 return ['mensaje' => 'Cita no encontrada'];
             }
 
-            if ($cita->estado !== 'en_consulta') {
-                return ['mensaje' => 'Solo se puede completar una cita en consulta.'];
+            if ($cita->estado === 'cancelada') {
+                return ['mensaje' => 'No se puede completar una cita cancelada.'];
             }
 
             $cita->update(['estado' => 'completada']);

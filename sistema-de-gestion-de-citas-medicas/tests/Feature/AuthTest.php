@@ -114,20 +114,20 @@ class AuthTest extends TestCase
 
     public function test_registro_medico_requiere_cedula_valida(): void
     {
-        // Cédula no existe en mock
-        $response = $this->postJson('/api/auth/registrarMedico', [
+        // Cédula con formato inválido (menos de 7 dígitos)
+        $responseInvalido = $this->postJson('/api/auth/registrarMedico', [
             'nombre'                => 'Doctor Invalido',
             'email'                 => 'doctor.falso@test.com',
             'password'              => 'Password123!',
             'password_confirmation' => 'Password123!',
             'curp'                  => 'BBBB900101HDFXXX02',
-            'cedula_profesional'    => '0000000',
+            'cedula_profesional'    => '12345',
         ]);
 
-        $response->assertStatus(200)
-            ->assertJsonPath('mensaje', 'La cédula profesional no se encuentra registrada en el sistema de verificación.');
+        $responseInvalido->assertStatus(422)
+            ->assertJsonPath('mensaje', 'La cédula profesional debe contener de 7 a 8 dígitos numéricos.');
 
-        // Cédula válida (1234567 existe en Seeder)
+        // Cédula con formato válido (7 a 8 dígitos numéricos)
         $responseValido = $this->postJson('/api/auth/registrarMedico', [
             'nombre'                => 'Doctor Valido',
             'email'                 => 'doctor.valido@test.com',
@@ -139,5 +139,10 @@ class AuthTest extends TestCase
 
         $responseValido->assertStatus(200)
             ->assertJsonPath('mensaje', 'Médico registrado. Tu cuenta está pendiente de validación por el administrador.');
+
+        $this->assertDatabaseHas('perfiles_doctor', [
+            'cedula_profesional' => '1234567',
+            'estado_validacion'  => 'pendiente',
+        ]);
     }
 }

@@ -1699,4 +1699,4 @@ sistema-de-gestion-de-citas-medicas/
 
 ---
 
-> **Siguiente módulo:** [02 - Gestión de Doctores](./02-Gestion-de-Doctores.md)
+> **Siguiente módulo:** [02 - Gestión de Doctores y Especialidades](./02-Gestion-de-Doctores.md)

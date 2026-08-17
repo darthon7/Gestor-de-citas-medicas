@@ -9,7 +9,6 @@ use App\Models\PerfilDoctor;
 use App\Models\PerfilPaciente;
 use App\Models\PerfilRecepcionista;
 use App\Models\Usuario;
-use App\Models\VerificacionCedula;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;

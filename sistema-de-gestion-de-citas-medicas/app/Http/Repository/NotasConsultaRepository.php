@@ -16,22 +16,35 @@ class NotasConsultaRepository
                 return ['mensaje' => 'Cita no encontrada'];
             }
 
-            if ($cita->estado !== 'en_consulta' && $cita->estado !== 'completada') {
-                return ['mensaje' => 'Solo se pueden registrar notas en citas en consulta o completadas.'];
+            if (!in_array($cita->estado, ['agendada', 'confirmada', 'en_consulta', 'completada'])) {
+                return ['mensaje' => 'Solo se pueden registrar notas en citas agendadas, confirmadas, en consulta o completadas.'];
             }
 
-            // Verificar que no exista ya una nota
-            if ($cita->notaConsulta) {
-                return ['mensaje' => 'Esta cita ya tiene una nota de consulta registrada.'];
+            // Si ya existe nota de consulta, la actualizamos
+            $nota = NotaConsulta::where('cita_id', $citaId)->first();
+            if ($nota) {
+                $nota->update([
+                    'presion_arterial'    => $data['presion_arterial'] ?? $nota->presion_arterial,
+                    'frecuencia_cardiaca' => $data['frecuencia_cardiaca'] ?? $nota->frecuencia_cardiaca,
+                    'temperatura'         => $data['temperatura'] ?? $nota->temperatura,
+                    'peso'                => $data['peso'] ?? $nota->peso,
+                    'diagnostico'         => $data['diagnostico'],
+                    'tratamiento'         => $data['tratamiento'],
+                    'notas_adicionales'   => $data['notas_adicionales'] ?? null,
+                ]);
+            } else {
+                $nota = NotaConsulta::create([
+                    'cita_id'             => $citaId,
+                    'presion_arterial'    => $data['presion_arterial'] ?? null,
+                    'frecuencia_cardiaca' => $data['frecuencia_cardiaca'] ?? null,
+                    'temperatura'         => $data['temperatura'] ?? null,
+                    'peso'                => $data['peso'] ?? null,
+                    'diagnostico'         => $data['diagnostico'],
+                    'tratamiento'         => $data['tratamiento'],
+                    'notas_adicionales'   => $data['notas_adicionales'] ?? null,
+                    'creado_por'          => $doctorUsuarioId,
+                ]);
             }
-
-            $nota = NotaConsulta::create([
-                'cita_id'           => $citaId,
-                'diagnostico'       => $data['diagnostico'],
-                'tratamiento'       => $data['tratamiento'],
-                'notas_adicionales' => $data['notas_adicionales'] ?? null,
-                'creado_por'        => $doctorUsuarioId,
-            ]);
 
             // Marcar cita como completada
             $cita->update(['estado' => 'completada']);

@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use App\Models\Especialidad;
 use App\Models\PerfilDoctor;
 use App\Models\Usuario;
-use App\Models\VerificacionCedula;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -13,17 +12,6 @@ class DoctorGoGoSeeder extends Seeder
 {
     public function run(): void
     {
-        // Cédula válida en mock SEP
-        VerificacionCedula::firstOrCreate(
-            ['numero_cedula' => '3456789'],
-            [
-                'nombre_titular' => 'GoGo Doctor',
-                'profesion'      => 'Médico Cirujano',
-                'institucion'    => 'UNAM',
-                'es_valida'      => true,
-            ]
-        );
-
         // Crear usuario doctor GoGo
         $usuario = Usuario::firstOrCreate(
             ['email' => 'gogo@doctor.com'],

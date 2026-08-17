@@ -13,3 +13,5 @@ playwright-report/
 blob-report/
 **/playwright.config.js
 **/tests/e2e/
+Resumen Docs
+docs
